@@ -11,6 +11,6 @@ package residueix.residueixapp;
 public class Residueixapp {
 
     public static void main(String[] args) {
-        System.out.println("Joper!");
+        System.out.println("Hola mundo");
     }
 }
