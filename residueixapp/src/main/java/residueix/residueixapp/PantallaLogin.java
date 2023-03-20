@@ -301,13 +301,10 @@ public class PantallaLogin extends javax.swing.JFrame {
             if(json.get("codi_error").equals("0")){
                 // Creem un nou usuari amb les dades
                 Usuari usuari = new Usuari(Integer.parseInt(json.get("id").toString()),Integer.parseInt(json.get("tipus").toString()),json.get("email").toString(),json.get("password").toString(),json.get("nom").toString(),json.get("cognom1").toString(),json.get("cognom2").toString(),json.get("telefon").toString(),json.get("token").toString());
-                System.out.println(usuari.getEmail());
-                System.out.println(usuari.getNom());
-                System.out.println(String.valueOf(usuari.getTipus()));
                 // Comprovem quin tipus d'usuari és
                 switch(usuari.getTipus()){
                     case 1,2 -> {
-                        this.setVisible(false);
+                        this.dispose();
                         PantallaPrincipal pantallaPrincipal = new PantallaPrincipal(usuari);
                         pantallaPrincipal.setVisible(true);
                     }

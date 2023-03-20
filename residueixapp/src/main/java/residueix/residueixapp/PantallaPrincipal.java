@@ -3,6 +3,7 @@ package residueix.residueixapp;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import residueix.residueixapp.models.Usuari;
+import residueix.residueixapp.utils.Api;
 
 /**
  * Classe per obrir la pantalla principal de l'aplicació.
@@ -25,19 +26,28 @@ public class PantallaPrincipal extends javax.swing.JFrame {
      * Posició y del ratolí.
      */
     private int yMouse;  
+    /**
+     * Utils API.java
+     */
+    private Api api;
 
     /**
      * Crea una nova instància de la classe PantallaPrincipal.
      * @param usuari: Usuari loginat a l'aplicació.
      */
     public PantallaPrincipal(Usuari usuari) {
+        // Utilitats api
+        api = new Api();
+        // Assignació usuari
         this.usuari = usuari;
+        // Inicialització dels componets
         initComponents();
         // Posem el nom de l'usuari a la part superior
         labelUsuari.setText( usuari.getNom() + " " + usuari.getCognom1() + " " + usuari.getCognom2() );
         // Centrar pantalla.
         Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
         setLocation(((pantalla.width)-this.getWidth())/2,((pantalla.height)-this.getHeight())/2);
+        // Mostrem o no els botons en funció de l'usuari
         switch(usuari.getTipus()){
             case 1 -> { 
             }
@@ -55,7 +65,7 @@ public class PantallaPrincipal extends javax.swing.JFrame {
     private void initComponents() {
 
         panelPrincipal = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
+        panelContingut = new javax.swing.JPanel();
         panelBar = new javax.swing.JPanel();
         labelUsuari = new javax.swing.JLabel();
         panelOpcions = new javax.swing.JPanel();
@@ -88,8 +98,8 @@ public class PantallaPrincipal extends javax.swing.JFrame {
         panelPrincipal.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102), 2));
         panelPrincipal.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel1.setOpaque(false);
-        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        panelContingut.setOpaque(false);
+        panelContingut.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         panelBar.setOpaque(false);
 
@@ -98,9 +108,9 @@ public class PantallaPrincipal extends javax.swing.JFrame {
         labelUsuari.setPreferredSize(new java.awt.Dimension(600, 30));
         panelBar.add(labelUsuari);
 
-        jPanel1.add(panelBar, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 800, 50));
+        panelContingut.add(panelBar, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 800, 50));
 
-        panelPrincipal.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(2, 2, 798, 746));
+        panelPrincipal.add(panelContingut, new org.netbeans.lib.awtextra.AbsoluteConstraints(2, 2, 798, 746));
 
         panelOpcions.setBackground(new java.awt.Color(255, 255, 255));
         panelOpcions.setOpaque(false);
@@ -114,6 +124,11 @@ public class PantallaPrincipal extends javax.swing.JFrame {
         buttonLlistatUsuaris.setAutoscrolls(true);
         buttonLlistatUsuaris.setBorderPainted(false);
         buttonLlistatUsuaris.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        buttonLlistatUsuaris.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonLlistatUsuarisActionPerformed(evt);
+            }
+        });
         panelOpcions.add(buttonLlistatUsuaris, new org.netbeans.lib.awtextra.AbsoluteConstraints(25, 80, 150, 30));
 
         buttonLogOut.setBackground(new java.awt.Color(153, 0, 0));
@@ -175,8 +190,20 @@ public class PantallaPrincipal extends javax.swing.JFrame {
      * @param evt ActionEvent: Pulsar el botó.
      */
     private void buttonLogOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonLogOutActionPerformed
-         System.exit( 0); 
+        // Fem el logout
+        api.logout(usuari);
+        System.exit( 0); 
     }//GEN-LAST:event_buttonLogOutActionPerformed
+
+    /**
+     * Mètode utiitzar quan es prem el botó de Llistat d'usauris.
+     * @param evt ActionEvent: Pulsar el botó.
+     */
+    private void buttonLlistatUsuarisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonLlistatUsuarisActionPerformed
+        this.dispose();
+        PantallaLlistatUsuaris pantallaLlistatUsuaris = new PantallaLlistatUsuaris(usuari);
+        pantallaLlistatUsuaris.setVisible(true);
+    }//GEN-LAST:event_buttonLlistatUsuarisActionPerformed
 
     /**
      * Mètode principal de la classe.
@@ -231,10 +258,6 @@ public class PantallaPrincipal extends javax.swing.JFrame {
     */
     private javax.swing.JButton buttonPerfil;
     /**
-    * Panel per tenir el contingut de la pantalla.
-    */
-    private javax.swing.JPanel jPanel1;
-    /**
     * Label per contenir el logo de l'aplicació.
     */
     private javax.swing.JLabel labelPrincipal;
@@ -246,6 +269,10 @@ public class PantallaPrincipal extends javax.swing.JFrame {
     * Panel per contenir la informació de l'usuari loginat
     */
     private javax.swing.JPanel panelBar;
+    /**
+    * Panel per tenir el contingut de la pantalla.
+    */
+    private javax.swing.JPanel panelContingut;
     /**
     * Panel per tenir les opcions.
     */
