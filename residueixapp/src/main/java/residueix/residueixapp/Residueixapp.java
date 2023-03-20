@@ -1,16 +1,26 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- */
-
 package residueix.residueixapp;
 
 /**
- *
- * @author isard
+ * Classe principal del nostre projecte que obre PantallaLogin.
+ * @author Daniel Garcia Ruiz
+ * @version 12/03/2023
  */
 public class Residueixapp {
-
-    public static void main(String[] args) {
-        System.out.println("Hola mundo");
+    
+   /**
+    * Crea una nova instància de la classe Residueixapp
+    */
+    public Residueixapp(){
     }
+    
+    /**
+     * Mètode principal de l'aplicació.
+     * @param args els arguments de la linia d'ordres.
+     */
+    public static void main (String [ ] args) {
+        // Obrim la pantalla de Login.
+        PantallaLogin pantallaLogin = new PantallaLogin();
+        pantallaLogin.setVisible(true);
+    }
+    
 }
