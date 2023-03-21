@@ -36,25 +36,15 @@ public class PantallaPrincipal extends javax.swing.JFrame {
      * @param usuari: Usuari loginat a l'aplicació.
      */
     public PantallaPrincipal(Usuari usuari) {
-        // Utilitats api
-        api = new Api();
-        // Assignació usuari
+        // Iniciem els atributs.
+        this.api = new Api();
         this.usuari = usuari;
-        // Inicialització dels componets
+        // Iniciem els components
         initComponents();
-        // Posem el nom de l'usuari a la part superior
-        labelUsuari.setText( usuari.getNom() + " " + usuari.getCognom1() + " " + usuari.getCognom2() );
-        // Centrar pantalla.
-        Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
-        setLocation(((pantalla.width)-this.getWidth())/2,((pantalla.height)-this.getHeight())/2);
-        // Mostrem o no els botons en funció de l'usuari
-        switch(usuari.getTipus()){
-            case 1 -> { 
-            }
-            case 2 -> {
-                buttonLlistatUsuaris.setVisible(false);
-            }
-        }
+        // Centrem pantalla
+        centrarPantalla();
+        // Accions en funcio de l'usuari
+        gestioUsuari();
     }
 
      /**
@@ -165,7 +155,32 @@ public class PantallaPrincipal extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    
+    /**
+     * Mètode per gestionar accions en funció de l'usuari
+     */
+    private void gestioUsuari(){
+        // Posem el nom de l'usuari a la part superior
+        labelUsuari.setText( usuari.getNom() + " " + usuari.getCognom1() + " " + usuari.getCognom2() );   
+        // Tractament de permisos per mostrar opcions disponibles.
+        switch(usuari.getTipus()){
+            case 1 -> { 
+            }
+            case 2 -> {
+                buttonLlistatUsuaris.setVisible(false);
+            }
+        }
+    }
+    
+    /**
+     * Mètode per centrar la pantalla
+     */
+    private void centrarPantalla(){
+        // Centrar pantalla.
+        Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
+        setLocation(((pantalla.width)-this.getWidth())/2,((pantalla.height)-this.getHeight())/2);
+    }
+    
     /**
      * Mètode per capturar la x i y del mouse quan el deixem pulsat sobre el frame principal.
      * @param evt MouseEvent: event de deixar pulsat el botó del ratolí.

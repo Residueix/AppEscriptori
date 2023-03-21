@@ -26,17 +26,18 @@ public class PantallaLogin extends javax.swing.JFrame {
     /**
      * Utils API.java
      */
-    private Api api;
+    private final Api api;
 
     /**
      * Crea una nova instància de la classe PantallaLogin
      */
     public PantallaLogin() {
-        api = new Api();
+        // Iniciem els atributs.
+        this.api = new Api();
+        // Iniciem els components
         initComponents();
-        // Centrar pantalla.
-        Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
-        setLocation(((pantalla.width)-this.getWidth())/2,((pantalla.height)-this.getHeight())/2);
+        // Centrem pantalla
+        centrarPantalla();
     }
 
     /**
@@ -244,7 +245,16 @@ public class PantallaLogin extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    
+    /**
+     * Mètode per centrar la pantalla
+     */
+    private void centrarPantalla(){
+        // Centrar pantalla.
+        Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
+        setLocation(((pantalla.width)-this.getWidth())/2,((pantalla.height)-this.getHeight())/2);
+    }
+    
     /**
      * Mètode per capturar la x i y del mouse quan el deixem pulsat sobre el frame principal.
      * @param evt MouseEvent: event de deixar pulsat el botó del ratolí.
@@ -308,10 +318,17 @@ public class PantallaLogin extends javax.swing.JFrame {
                         PantallaPrincipal pantallaPrincipal = new PantallaPrincipal(usuari);
                         pantallaPrincipal.setVisible(true);
                     }
-                    default -> labelResposta.setText("Error: app_2 - No té permís per accedir a l'aplicació.");
+                    default -> {
+                        PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia("Error: app_2 - No té permís per accedir a l'aplicació.");
+                        pantallaAdvertencia.setVisible(true); 
+                        //labelResposta.setText();
+                    }
                 }
             }else{
-                labelResposta.setText("Error: " + json.get("codi_error") + " - " + json.get("error"));
+                PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia("Error: app_2 - No té permís per accedir a l'aplicació.");
+                pantallaAdvertencia.setVisible(true); 
+                
+                //labelResposta.setText("Error: " + json.get("codi_error") + " - " + json.get("error"));
             }
         }
     }//GEN-LAST:event_buttonLoginActionPerformed

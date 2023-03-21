@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import javax.swing.SwingConstants;
-import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import org.json.JSONArray;
@@ -13,11 +12,11 @@ import residueix.residueixapp.models.Usuari;
 import residueix.residueixapp.utils.Api;
 
 /**
- * Classe per obrir la pantalla principal de l'aplicació.
+ * Classe per obrir la pantalla per donar d'alta un usuari
  * @author Daniel Garcia Ruiz
  * @version 12/03/2023
  */
-public class PantallaLlistatUsuaris extends javax.swing.JFrame {
+public class PantallaAltaUsuari extends javax.swing.JFrame {
     
     
     // Atributs
@@ -42,7 +41,7 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
      * Crea una nova instància de la classe PantallaPrincipal.
      * @param usuari: Usuari loginat a l'aplicació.
      */
-    public PantallaLlistatUsuaris(Usuari usuari) {
+    public PantallaAltaUsuari(Usuari usuari) {
         // Utilitats api
         api = new Api();
         // Assignació de l'usuari
@@ -52,9 +51,7 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
         // Centrem pantalla
         centrarPantalla();
         // Accions en funcio de l'usuari
-        gestioUsuari();        
-        // Llistat d'usuaris - omplir la taula
-        omplirTaula(0);
+        gestioUsuari();
     }
 
      /**
@@ -71,9 +68,18 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
         labelUsuari = new javax.swing.JLabel();
         panelTitol = new javax.swing.JPanel();
         labelTitol = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTableUsuaris = new javax.swing.JTable();
-        comboBoxLlistat = new javax.swing.JComboBox<>();
+        separadorAdresa = new javax.swing.JSeparator();
+        labelEmail = new javax.swing.JLabel();
+        labelPassword = new javax.swing.JLabel();
+        labelTipus = new javax.swing.JLabel();
+        labelNom = new javax.swing.JLabel();
+        labelCognom1 = new javax.swing.JLabel();
+        labelCognom2 = new javax.swing.JLabel();
+        labelTelefon = new javax.swing.JLabel();
+        labelActiu = new javax.swing.JLabel();
+        separadorAdresa1 = new javax.swing.JSeparator();
+        javax.swing.JLabel labelTitolDades = new javax.swing.JLabel();
+        javax.swing.JLabel labelTitolDades1 = new javax.swing.JLabel();
         panelOpcions = new javax.swing.JPanel();
         buttonTornar = new javax.swing.JButton();
         buttonAlta = new javax.swing.JButton();
@@ -123,64 +129,58 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
         panelTitol.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         labelTitol.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
-        labelTitol.setText("Llistat d'usuaris");
+        labelTitol.setText("Alta Usuari");
         labelTitol.setToolTipText("");
         panelTitol.add(labelTitol, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 600, 30));
 
         panelContingut.add(panelTitol, new org.netbeans.lib.awtextra.AbsoluteConstraints(2, 51, 800, 50));
+        panelContingut.add(separadorAdresa, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 140, 700, 10));
 
-        jScrollPane1.setBackground(new java.awt.Color(255, 255, 255));
-        jScrollPane1.setBorder(null);
-        jScrollPane1.setOpaque(false);
+        labelEmail.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
+        labelEmail.setText("Email");
+        panelContingut.add(labelEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 160, 100, 30));
 
-        jTableUsuaris.setAutoCreateRowSorter(true);
-        jTableUsuaris.setFont(new java.awt.Font("Sansation", 0, 12)); // NOI18N
-        jTableUsuaris.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
-            },
-            new String [] {
-                "Email", "Tipus", "Nom", "Cognom1", "Cognom2"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
-            };
+        labelPassword.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
+        labelPassword.setText("Password");
+        panelContingut.add(labelPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 200, 100, 30));
 
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
+        labelTipus.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
+        labelTipus.setText("Tipus");
+        panelContingut.add(labelTipus, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 240, 100, 30));
 
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jTableUsuaris.setToolTipText("Llistat d'usuaris");
-        jTableUsuaris.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jTableUsuaris.setOpaque(false);
-        jTableUsuaris.setRowHeight(28);
-        jTableUsuaris.setRowMargin(5);
-        jTableUsuaris.setShowGrid(true);
-        jScrollPane1.setViewportView(jTableUsuaris);
+        labelNom.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
+        labelNom.setText("Nom");
+        panelContingut.add(labelNom, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 280, 100, 30));
 
-        panelContingut.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(22, 250, 700, 470));
+        labelCognom1.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
+        labelCognom1.setText("Cognom 1");
+        panelContingut.add(labelCognom1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 320, 100, 30));
 
-        comboBoxLlistat.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
-        comboBoxLlistat.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tots els usuaris", "Tipus 1 - Administradors", "Tipus 2 - Treballadors", "Tipus 3 - Residuents", "Tipus 4 - Adherits" }));
-        comboBoxLlistat.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        comboBoxLlistat.setPreferredSize(new java.awt.Dimension(200, 30));
-        comboBoxLlistat.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                comboBoxLlistatActionPerformed(evt);
-            }
-        });
-        panelContingut.add(comboBoxLlistat, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 210, -1, -1));
+        labelCognom2.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
+        labelCognom2.setText("Cognom 2");
+        labelCognom2.setToolTipText("");
+        panelContingut.add(labelCognom2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 360, 100, 30));
+
+        labelTelefon.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
+        labelTelefon.setText("Telèfon");
+        labelTelefon.setToolTipText("");
+        panelContingut.add(labelTelefon, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 400, 100, 30));
+
+        labelActiu.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
+        labelActiu.setText("Actiu");
+        labelActiu.setToolTipText("");
+        panelContingut.add(labelActiu, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 440, 100, 30));
+        panelContingut.add(separadorAdresa1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 510, 700, 10));
+
+        labelTitolDades.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
+        labelTitolDades.setForeground(new java.awt.Color(153, 153, 153));
+        labelTitolDades.setText("Adreça (només Residuents i Adherits)");
+        panelContingut.add(labelTitolDades, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 490, -1, -1));
+
+        labelTitolDades1.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
+        labelTitolDades1.setForeground(new java.awt.Color(153, 153, 153));
+        labelTitolDades1.setText("Dades de l'usuari");
+        panelContingut.add(labelTitolDades1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 120, -1, -1));
 
         panelPrincipal.add(panelContingut, new org.netbeans.lib.awtextra.AbsoluteConstraints(2, 2, 798, 746));
 
@@ -190,7 +190,7 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
 
         buttonTornar.setBackground(new java.awt.Color(255, 204, 0));
         buttonTornar.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
-        buttonTornar.setText("Tornar principal");
+        buttonTornar.setText("Tornar Llistat");
         buttonTornar.setToolTipText("Sortir");
         buttonTornar.setBorderPainted(false);
         buttonTornar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -291,52 +291,7 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
         Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
         setLocation(((pantalla.width)-this.getWidth())/2,((pantalla.height)-this.getHeight())/2);
     }
-    
-    /**
-     * Mètode per omplir la taula amb les dades dels usuaris.
-     * @param llistatUsuaris (JSONArray) json amb el llistat d'usuaris.
-     */
-    private void omplirTaula(int opcio){
-        
-        JSONArray jsonArray = (JSONArray) api.llistatUsuaris(usuari,opcio);
-        
-        DefaultTableModel model = new DefaultTableModel();
-        model.addColumn("id");
-        model.addColumn("Email");
-        model.addColumn("Tipus");
-        model.addColumn("Nom");
-        model.addColumn("Cognom1");
-        model.addColumn("Cognom2");
-        
-        if(!jsonArray.isEmpty()){
-            for(int i = 0; i < jsonArray.length(); i++){
-                JSONObject jsonUsuari = jsonArray.getJSONObject(i);
-                Object []obj = new Object[6];
-                obj[0] = jsonUsuari.get("id").toString();
-                obj[1] = jsonUsuari.get("email").toString();
-                obj[2] = jsonUsuari.get("tipus").toString();
-                obj[3] = jsonUsuari.get("nom").toString();
-                obj[4] = jsonUsuari.get("cognom1").toString();
-                obj[5] = jsonUsuari.get("cognom2").toString();
-                model.addRow(obj);
-            }
-        }else{
-            // Sense usuaris
-        }
-        
-        jTableUsuaris.setModel(model);   
-        jTableUsuaris.getTableHeader().setPreferredSize(new java.awt.Dimension(40,40));
-        jTableUsuaris.getTableHeader().setBackground(new Color(51,102,255));
-        jTableUsuaris.getTableHeader().setForeground(new Color(255,255,255));
-        jTableUsuaris.getColumnModel().getColumn(0).setMaxWidth(50);
-        jTableUsuaris.getColumnModel().getColumn(2).setMaxWidth(50);
-        DefaultTableCellRenderer renderTaula = new DefaultTableCellRenderer();
-        renderTaula.setHorizontalAlignment(SwingConstants.CENTER);
-        jTableUsuaris.getColumnModel().getColumn(1).setCellRenderer(renderTaula);
-        
-        
-    }
-    
+     
     /**
      * Mètode per capturar la x i y del mouse quan el deixem pulsat sobre el frame principal.
      * @param evt MouseEvent: event de deixar pulsat el botó del ratolí.
@@ -372,10 +327,6 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
         System.exit( 0);
     }//GEN-LAST:event_buttonLogOutActionPerformed
 
-    private void comboBoxLlistatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboBoxLlistatActionPerformed
-        omplirTaula(comboBoxLlistat.getSelectedIndex());
-    }//GEN-LAST:event_comboBoxLlistatActionPerformed
-
     private void buttonAltaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAltaActionPerformed
         this.dispose();
         PantallaAltaUsuari pantallaAltaUsuari = new PantallaAltaUsuari(usuari);
@@ -401,14 +352,18 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(PantallaLlistatUsuaris.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PantallaAltaUsuari.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(PantallaLlistatUsuaris.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PantallaAltaUsuari.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(PantallaLlistatUsuaris.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PantallaAltaUsuari.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(PantallaLlistatUsuaris.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PantallaAltaUsuari.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -417,7 +372,7 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new PantallaLlistatUsuaris(usuari).setVisible(true);
+                new PantallaAltaUsuari(usuari).setVisible(true);
             }
         });
         
@@ -450,20 +405,19 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
     * Botó per tornar a la pantalla principal.
     */
     private javax.swing.JButton buttonTornar;
-    /**
-    * Combo box amb diferents opcions per filtrar el llistat d'usauris
-    */
-    private javax.swing.JComboBox<String> comboBoxLlistat;
     private javax.swing.JFileChooser jFileChooser1;
-    private javax.swing.JScrollPane jScrollPane1;
-    /**
-    * Taula per contenir als usuaris
-    */
-    private javax.swing.JTable jTableUsuaris;
+    private javax.swing.JLabel labelActiu;
+    private javax.swing.JLabel labelCognom1;
+    private javax.swing.JLabel labelCognom2;
+    private javax.swing.JLabel labelEmail;
+    private javax.swing.JLabel labelNom;
+    private javax.swing.JLabel labelPassword;
     /**
     * Label per contenir el logo de l'aplicació.
     */
     private javax.swing.JLabel labelPrincipal;
+    private javax.swing.JLabel labelTelefon;
+    private javax.swing.JLabel labelTipus;
     /**
     * Label per el títol de la pantalla.
     */
@@ -492,5 +446,7 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
     * Panel per contenir el títol de la pantalla
     */
     private javax.swing.JPanel panelTitol;
+    private javax.swing.JSeparator separadorAdresa;
+    private javax.swing.JSeparator separadorAdresa1;
     // End of variables declaration//GEN-END:variables
 }

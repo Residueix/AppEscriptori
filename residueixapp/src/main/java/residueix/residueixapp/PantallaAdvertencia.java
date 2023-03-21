@@ -1,34 +1,15 @@
 package residueix.residueixapp;
 
+import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.Toolkit;
-import java.util.Date;
-import java.util.Properties;
-import javax.mail.Authenticator;
-import javax.mail.BodyPart;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 
 /**
  * Classe per obrir la finestra per Restablir paraula clau.
  * @author Daniel Garcia Ruiz
  * @version 12/03/2023
  */
-public class PantallaRestablirParaulaClau extends javax.swing.JFrame {
+public class PantallaAdvertencia extends javax.swing.JFrame {
 
     // Atributs
     /**
@@ -39,13 +20,24 @@ public class PantallaRestablirParaulaClau extends javax.swing.JFrame {
      * Posició y del ratolí.
      */
     private int yMouse;
+    /**
+     * Missatge per mostrar
+     */
+    private static String missatge;
     
     /**
      * Crea una nova instpancia de la classe PantallaRestablirParaulaClau.
+     * @param missatge (String) : missatge a mostrar.
      */
-    public PantallaRestablirParaulaClau() {
+    public PantallaAdvertencia(String missatge) {
+        // Iniciem els atributs
+        this.missatge = missatge;
+        // Iniciem els components
         initComponents();
+        // Centrar pantalla
         centrarPantalla();
+        // Característiques del textarea.
+        definicioTextArea(missatge);
     }
 
     /**
@@ -57,10 +49,8 @@ public class PantallaRestablirParaulaClau extends javax.swing.JFrame {
 
         panelPrincipal = new javax.swing.JPanel();
         buttonTancar = new javax.swing.JButton();
-        labelEmail = new javax.swing.JLabel();
-        textFieldEmail = new javax.swing.JTextField();
-        buttonRestablir = new javax.swing.JButton();
-        labelResposta = new javax.swing.JLabel();
+        scrollPaneMissatge = new javax.swing.JScrollPane();
+        textAreaMissatge = new javax.swing.JTextArea();
         labelFons = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -81,7 +71,7 @@ public class PantallaRestablirParaulaClau extends javax.swing.JFrame {
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         panelPrincipal.setBackground(new java.awt.Color(255, 255, 255));
-        panelPrincipal.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102), 2));
+        panelPrincipal.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 153, 0), 2));
         panelPrincipal.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         buttonTancar.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
@@ -98,30 +88,18 @@ public class PantallaRestablirParaulaClau extends javax.swing.JFrame {
         });
         panelPrincipal.add(buttonTancar, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
 
-        labelEmail.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
-        labelEmail.setForeground(new java.awt.Color(102, 102, 102));
-        labelEmail.setText("Introdueix el teu e-mail d'usuari.");
-        panelPrincipal.add(labelEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 70, -1, -1));
+        scrollPaneMissatge.setBorder(null);
+        scrollPaneMissatge.setOpaque(false);
 
-        textFieldEmail.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
-        textFieldEmail.setForeground(new java.awt.Color(102, 102, 102));
-        textFieldEmail.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        textFieldEmail.setToolTipText("E-mail d'usuari");
-        panelPrincipal.add(textFieldEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 110, 200, 30));
+        textAreaMissatge.setColumns(20);
+        textAreaMissatge.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
+        textAreaMissatge.setRows(5);
+        textAreaMissatge.setText("prueba de texto.");
+        textAreaMissatge.setBorder(null);
+        textAreaMissatge.setOpaque(false);
+        scrollPaneMissatge.setViewportView(textAreaMissatge);
 
-        buttonRestablir.setBackground(new java.awt.Color(0, 204, 51));
-        buttonRestablir.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
-        buttonRestablir.setForeground(new java.awt.Color(255, 255, 255));
-        buttonRestablir.setText("Restablir");
-        buttonRestablir.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonRestablirActionPerformed(evt);
-            }
-        });
-        panelPrincipal.add(buttonRestablir, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 150, 200, 30));
-
-        labelResposta.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        panelPrincipal.add(labelResposta, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 210, 350, 30));
+        panelPrincipal.add(scrollPaneMissatge, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 100, 340, 170));
 
         labelFons.setBackground(new java.awt.Color(255, 255, 255));
         labelFons.setIcon(new javax.swing.ImageIcon("C:\\Users\\isard\\Downloads\\logo_pantalles_petites.png")); // NOI18N
@@ -131,7 +109,7 @@ public class PantallaRestablirParaulaClau extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    
     /**
      * Mètode per centrar la pantalla
      */
@@ -139,6 +117,19 @@ public class PantallaRestablirParaulaClau extends javax.swing.JFrame {
         // Centrar pantalla.
         Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
         setLocation(((pantalla.width)-this.getWidth())/2,((pantalla.height)-this.getHeight())/2);
+    }
+    
+    /**
+     * Mètode per donar estil al textarea
+     */
+    private void definicioTextArea(String missatge){
+        scrollPaneMissatge.setOpaque(false);
+        scrollPaneMissatge.getViewport().setOpaque(false);
+        scrollPaneMissatge.setBorder(null);
+        scrollPaneMissatge.setViewportBorder(null);
+        textAreaMissatge.setBorder(null);
+        textAreaMissatge.setBackground(new Color(0,0,0,0));
+        textAreaMissatge.setText(missatge);
     }
     
     /**
@@ -169,17 +160,6 @@ public class PantallaRestablirParaulaClau extends javax.swing.JFrame {
     }//GEN-LAST:event_formMouseDragged
     
     /**
-     * Mètode per restablir paraula clau i enviar un correu al destinatari.
-     * @param evt Action event: event quan clickem el botó.
-     */
-    private void buttonRestablirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRestablirActionPerformed
-        // Enviament de correu.
-		
-        textFieldEmail.setText("");
-        labelResposta.setText("E-mail enviat, comprova el teu correu.");
-    }//GEN-LAST:event_buttonRestablirActionPerformed
-
-    /**
      * Mètode principal de la classe.
      * @param args arguments de la linia de comandament
      */
@@ -197,53 +177,41 @@ public class PantallaRestablirParaulaClau extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(PantallaRestablirParaulaClau.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PantallaAdvertencia.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(PantallaRestablirParaulaClau.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PantallaAdvertencia.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(PantallaRestablirParaulaClau.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PantallaAdvertencia.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(PantallaRestablirParaulaClau.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PantallaAdvertencia.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new PantallaRestablirParaulaClau().setVisible(true);
+                new PantallaAdvertencia(missatge).setVisible(true);
             }
         });
     }                     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     /**
-    * Botó restablir per demanar nova paraula clau.
-    */
-    private javax.swing.JButton buttonRestablir;
-    /**
     * Botó per tancar la finestra.
     */
     private javax.swing.JButton buttonTancar;
-    /**
-    * Label email.
-    */
-    private javax.swing.JLabel labelEmail;
     /**
     * Label que conté la imatge de fons de la pantalla.
     */
     private javax.swing.JLabel labelFons;
     /**
-    * Label que mostra la resposta a les accions.
-    */
-    private javax.swing.JLabel labelResposta;
-    /**
     * Panel principal per contenir la pantalla.
     */
     private javax.swing.JPanel panelPrincipal;
-    /**
-    * Text Field per posar el email.
-    */
-    private javax.swing.JTextField textFieldEmail;
+    private javax.swing.JScrollPane scrollPaneMissatge;
+    private javax.swing.JTextArea textAreaMissatge;
     // End of variables declaration//GEN-END:variables
 }
