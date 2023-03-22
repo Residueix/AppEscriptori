@@ -89,12 +89,15 @@ public class PantallaAdvertencia extends javax.swing.JFrame {
         panelPrincipal.add(buttonTancar, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
 
         scrollPaneMissatge.setBorder(null);
+        scrollPaneMissatge.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPaneMissatge.setHorizontalScrollBar(null);
         scrollPaneMissatge.setOpaque(false);
 
         textAreaMissatge.setColumns(20);
-        textAreaMissatge.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
+        textAreaMissatge.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
         textAreaMissatge.setRows(5);
-        textAreaMissatge.setText("prueba de texto.");
+        textAreaMissatge.setToolTipText("Missatge");
+        textAreaMissatge.setWrapStyleWord(true);
         textAreaMissatge.setBorder(null);
         textAreaMissatge.setOpaque(false);
         scrollPaneMissatge.setViewportView(textAreaMissatge);
@@ -130,6 +133,7 @@ public class PantallaAdvertencia extends javax.swing.JFrame {
         textAreaMissatge.setBorder(null);
         textAreaMissatge.setBackground(new Color(0,0,0,0));
         textAreaMissatge.setText(missatge);
+        textAreaMissatge.setLineWrap(true);
     }
     
     /**

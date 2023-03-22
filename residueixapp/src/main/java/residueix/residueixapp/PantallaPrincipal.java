@@ -215,9 +215,10 @@ public class PantallaPrincipal extends javax.swing.JFrame {
      * @param evt ActionEvent: Pulsar el botó.
      */
     private void buttonLlistatUsuarisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonLlistatUsuarisActionPerformed
-        this.dispose();
+        
         PantallaLlistatUsuaris pantallaLlistatUsuaris = new PantallaLlistatUsuaris(usuari);
         pantallaLlistatUsuaris.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_buttonLlistatUsuarisActionPerformed
 
     /**

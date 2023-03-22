@@ -255,6 +255,7 @@
                     <StringItem index="4" value="Tipus 4 - Adherits"/>
                   </StringArray>
                 </Property>
+                <Property name="toolTipText" type="java.lang.String" value="Filtrar per tipus d&apos;usuari"/>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
                     <LineBorder/>
@@ -308,7 +309,7 @@
                   <Font name="Sansation" size="14" style="1"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Tornar principal"/>
-                <Property name="toolTipText" type="java.lang.String" value="Sortir"/>
+                <Property name="toolTipText" type="java.lang.String" value="Tornar a la pantalla principal"/>
                 <Property name="borderPainted" type="boolean" value="false"/>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                   <Color id="Hand Cursor"/>
@@ -338,7 +339,7 @@
                   <Color blue="ff" green="ff" red="ff" type="rgb"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Alta"/>
-                <Property name="toolTipText" type="java.lang.String" value="Alta"/>
+                <Property name="toolTipText" type="java.lang.String" value="Alta d&apos;usuari"/>
                 <Property name="borderPainted" type="boolean" value="false"/>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                   <Color id="Hand Cursor"/>
@@ -368,7 +369,7 @@
                   <Color blue="ff" green="ff" red="ff" type="rgb"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Logout"/>
-                <Property name="toolTipText" type="java.lang.String" value="Sortir"/>
+                <Property name="toolTipText" type="java.lang.String" value="Sortir de l&apos;aplicaci&#xf3;"/>
                 <Property name="borderPainted" type="boolean" value="false"/>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                   <Color id="Hand Cursor"/>
@@ -398,7 +399,7 @@
                   <Color blue="ff" green="ff" red="ff" type="rgb"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Modificar"/>
-                <Property name="toolTipText" type="java.lang.String" value="Modificar"/>
+                <Property name="toolTipText" type="java.lang.String" value="Modificaci&#xf3; d&apos;usuari"/>
                 <Property name="borderPainted" type="boolean" value="false"/>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                   <Color id="Hand Cursor"/>
@@ -425,12 +426,15 @@
                   <Color blue="ff" green="ff" red="ff" type="rgb"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Baixa"/>
-                <Property name="toolTipText" type="java.lang.String" value="Baixa"/>
+                <Property name="toolTipText" type="java.lang.String" value="Baixa d&apos;usuari"/>
                 <Property name="borderPainted" type="boolean" value="false"/>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                   <Color id="Hand Cursor"/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonBaixaActionPerformed"/>
+              </Events>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_DeclarationPre" type="java.lang.String" value="/**&#xa; * Bot&#xf3; per donar de baixa un usuari.&#xa; */"/>
               </AuxValues>

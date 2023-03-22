@@ -306,26 +306,27 @@ public class PantallaLogin extends javax.swing.JFrame {
         
         // Controlem el que ens ha arribat
         if(json.isEmpty()) {
-           labelResposta.setText("Error: app_1 - Hi ha hagut un error al fer la petició. Posi's en contacte amb l'administrador del sistema.");
+            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(api.error((1)));
+            pantallaAdvertencia.setVisible(true); 
         }else{
-            if(json.get("codi_error").equals("0")){
+            if(json.get("codi_error").toString().equals("0")){
                 // Creem un nou usuari amb les dades
                 Usuari usuari = new Usuari(Integer.parseInt(json.get("id").toString()),Integer.parseInt(json.get("tipus").toString()),json.get("email").toString(),json.get("password").toString(),json.get("nom").toString(),json.get("cognom1").toString(),json.get("cognom2").toString(),json.get("telefon").toString(),json.get("token").toString());
                 // Comprovem quin tipus d'usuari és
                 switch(usuari.getTipus()){
                     case 1,2 -> {
-                        this.dispose();
                         PantallaPrincipal pantallaPrincipal = new PantallaPrincipal(usuari);
                         pantallaPrincipal.setVisible(true);
+                        this.dispose();
                     }
                     default -> {
-                        PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia("Error: app_2 - No té permís per accedir a l'aplicació.");
+                        PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(api.error((2)));
                         pantallaAdvertencia.setVisible(true); 
                         //labelResposta.setText();
                     }
                 }
             }else{
-                PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia("Error: app_2 - No té permís per accedir a l'aplicació.");
+                PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(json.get("codi_error").toString() + " - " + json.get("error").toString());
                 pantallaAdvertencia.setVisible(true); 
                 
                 //labelResposta.setText("Error: " + json.get("codi_error") + " - " + json.get("error"));

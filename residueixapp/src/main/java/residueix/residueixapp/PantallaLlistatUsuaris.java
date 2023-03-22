@@ -173,6 +173,7 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
 
         comboBoxLlistat.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
         comboBoxLlistat.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tots els usuaris", "Tipus 1 - Administradors", "Tipus 2 - Treballadors", "Tipus 3 - Residuents", "Tipus 4 - Adherits" }));
+        comboBoxLlistat.setToolTipText("Filtrar per tipus d'usuari");
         comboBoxLlistat.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         comboBoxLlistat.setPreferredSize(new java.awt.Dimension(200, 30));
         comboBoxLlistat.addActionListener(new java.awt.event.ActionListener() {
@@ -191,7 +192,7 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
         buttonTornar.setBackground(new java.awt.Color(255, 204, 0));
         buttonTornar.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
         buttonTornar.setText("Tornar principal");
-        buttonTornar.setToolTipText("Sortir");
+        buttonTornar.setToolTipText("Tornar a la pantalla principal");
         buttonTornar.setBorderPainted(false);
         buttonTornar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         buttonTornar.addActionListener(new java.awt.event.ActionListener() {
@@ -205,7 +206,7 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
         buttonAlta.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
         buttonAlta.setForeground(new java.awt.Color(255, 255, 255));
         buttonAlta.setText("Alta");
-        buttonAlta.setToolTipText("Alta");
+        buttonAlta.setToolTipText("Alta d'usuari");
         buttonAlta.setBorderPainted(false);
         buttonAlta.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         buttonAlta.addActionListener(new java.awt.event.ActionListener() {
@@ -219,7 +220,7 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
         buttonLogOut.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
         buttonLogOut.setForeground(new java.awt.Color(255, 255, 255));
         buttonLogOut.setText("Logout");
-        buttonLogOut.setToolTipText("Sortir");
+        buttonLogOut.setToolTipText("Sortir de l'aplicació");
         buttonLogOut.setBorderPainted(false);
         buttonLogOut.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         buttonLogOut.addActionListener(new java.awt.event.ActionListener() {
@@ -233,7 +234,7 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
         buttonModificacio.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
         buttonModificacio.setForeground(new java.awt.Color(255, 255, 255));
         buttonModificacio.setText("Modificar");
-        buttonModificacio.setToolTipText("Modificar");
+        buttonModificacio.setToolTipText("Modificació d'usuari");
         buttonModificacio.setBorderPainted(false);
         buttonModificacio.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         panelOpcions.add(buttonModificacio, new org.netbeans.lib.awtextra.AbsoluteConstraints(25, 110, 150, 30));
@@ -242,9 +243,14 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
         buttonBaixa.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
         buttonBaixa.setForeground(new java.awt.Color(255, 255, 255));
         buttonBaixa.setText("Baixa");
-        buttonBaixa.setToolTipText("Baixa");
+        buttonBaixa.setToolTipText("Baixa d'usuari");
         buttonBaixa.setBorderPainted(false);
         buttonBaixa.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        buttonBaixa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonBaixaActionPerformed(evt);
+            }
+        });
         panelOpcions.add(buttonBaixa, new org.netbeans.lib.awtextra.AbsoluteConstraints(25, 150, 150, 30));
 
         buttonPerfil2.setBackground(new java.awt.Color(51, 102, 255));
@@ -298,42 +304,51 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
      */
     private void omplirTaula(int opcio){
         
-        JSONArray jsonArray = (JSONArray) api.llistatUsuaris(usuari,opcio);
+        JSONObject jsonObject = (JSONObject) api.llistatUsuaris(usuari,opcio);
         
-        DefaultTableModel model = new DefaultTableModel();
-        model.addColumn("id");
-        model.addColumn("Email");
-        model.addColumn("Tipus");
-        model.addColumn("Nom");
-        model.addColumn("Cognom1");
-        model.addColumn("Cognom2");
-        
-        if(!jsonArray.isEmpty()){
-            for(int i = 0; i < jsonArray.length(); i++){
-                JSONObject jsonUsuari = jsonArray.getJSONObject(i);
-                Object []obj = new Object[6];
-                obj[0] = jsonUsuari.get("id").toString();
-                obj[1] = jsonUsuari.get("email").toString();
-                obj[2] = jsonUsuari.get("tipus").toString();
-                obj[3] = jsonUsuari.get("nom").toString();
-                obj[4] = jsonUsuari.get("cognom1").toString();
-                obj[5] = jsonUsuari.get("cognom2").toString();
-                model.addRow(obj);
+        if(!jsonObject.isEmpty()){
+            if(jsonObject.get("codi_error").toString().equals("0")) {
+                // Definició del model
+                DefaultTableModel model = new DefaultTableModel();
+                model.addColumn("id");
+                model.addColumn("Email");
+                model.addColumn("Tipus");
+                model.addColumn("Nom");
+                model.addColumn("Cognom1");
+                model.addColumn("Cognom2");
+                // Bucle per omplir la taula
+                JSONArray jsonArray = new JSONArray(jsonObject.getJSONArray("llistat"));
+                for(int i = 0; i < jsonArray.length(); i++){
+                    JSONObject jsonUsuari = jsonArray.getJSONObject(i);
+                    Object []obj = new Object[6];
+                    obj[0] = jsonUsuari.get("id").toString();
+                    obj[1] = jsonUsuari.get("email").toString();
+                    obj[2] = jsonUsuari.get("tipus").toString();
+                    obj[3] = jsonUsuari.get("nom").toString();
+                    obj[4] = jsonUsuari.get("cognom1").toString();
+                    obj[5] = jsonUsuari.get("cognom2").toString();
+                    model.addRow(obj);
+                }
+                // Personalització de la taula
+                jTableUsuaris.setModel(model);   
+                jTableUsuaris.getTableHeader().setPreferredSize(new java.awt.Dimension(40,40));
+                jTableUsuaris.getTableHeader().setBackground(new Color(51,102,255));
+                jTableUsuaris.getTableHeader().setForeground(new Color(255,255,255));
+                jTableUsuaris.getColumnModel().getColumn(0).setMaxWidth(50);
+                jTableUsuaris.getColumnModel().getColumn(2).setMaxWidth(50);
+                DefaultTableCellRenderer renderTaula = new DefaultTableCellRenderer();
+                renderTaula.setHorizontalAlignment(SwingConstants.CENTER);
+                jTableUsuaris.getColumnModel().getColumn(1).setCellRenderer(renderTaula);
+            }else{
+                // Mostrem l'error que ens està enviant.
+                PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(jsonObject.get("codi_error").toString() + " - " + jsonObject.get("error").toString());
+                pantallaAdvertencia.setVisible(true);
             }
         }else{
-            // Sense usuaris
+            // Mostrem que hi ha hagut un error al sistema
+            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(api.error(3));
+            pantallaAdvertencia.setVisible(true);
         }
-        
-        jTableUsuaris.setModel(model);   
-        jTableUsuaris.getTableHeader().setPreferredSize(new java.awt.Dimension(40,40));
-        jTableUsuaris.getTableHeader().setBackground(new Color(51,102,255));
-        jTableUsuaris.getTableHeader().setForeground(new Color(255,255,255));
-        jTableUsuaris.getColumnModel().getColumn(0).setMaxWidth(50);
-        jTableUsuaris.getColumnModel().getColumn(2).setMaxWidth(50);
-        DefaultTableCellRenderer renderTaula = new DefaultTableCellRenderer();
-        renderTaula.setHorizontalAlignment(SwingConstants.CENTER);
-        jTableUsuaris.getColumnModel().getColumn(1).setCellRenderer(renderTaula);
-        
         
     }
     
@@ -357,31 +372,59 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
     }//GEN-LAST:event_formMouseDragged
 
     /**
-     * Mètode utilitzat quan es prem el botó de logout per tancar la sessió.
+     * Mètode utilitzat quan es prem el botó de tornar a la pantalla principal.
      * @param evt ActionEvent: Pulsar el botó.
      */
     private void buttonTornarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonTornarActionPerformed
-         this.dispose();
          PantallaPrincipal pantallaPrincipal = new PantallaPrincipal(usuari);
          pantallaPrincipal.setVisible(true);
+         this.dispose();
     }//GEN-LAST:event_buttonTornarActionPerformed
 
+    /**
+     * Mètode utilitzat quan es prem el botó de logout per tancar la sessió.
+     * @param evt ActionEvent: Pulsar el botó.
+     */
     private void buttonLogOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonLogOutActionPerformed
         // Fem el logout
         api.logout(usuari);
         System.exit( 0);
     }//GEN-LAST:event_buttonLogOutActionPerformed
 
+    /**
+     * Mètode utilitzat quan es canvia de selecció al combo de filtratge
+     * @param evt 
+     */
     private void comboBoxLlistatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboBoxLlistatActionPerformed
         omplirTaula(comboBoxLlistat.getSelectedIndex());
     }//GEN-LAST:event_comboBoxLlistatActionPerformed
 
+    /**
+     * Mètode utilitzat quan es prem el botó d'alta s'usuari.
+     * @param evt ActionEvent: Pulsar el botó.
+     */
     private void buttonAltaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAltaActionPerformed
-        this.dispose();
         PantallaAltaUsuari pantallaAltaUsuari = new PantallaAltaUsuari(usuari);
         pantallaAltaUsuari.setVisible(true);
+        this.dispose();
                 
     }//GEN-LAST:event_buttonAltaActionPerformed
+
+    /**
+     * Mètode utilitzat quan es prem el botó baixa d'usari
+     * @param evt  (ActionEvent) : Pulsar el botó.
+     */
+    private void buttonBaixaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonBaixaActionPerformed
+        // Mirem si tenim seleccionat fila del llistat 
+        int filaSeleccionada = jTableUsuaris.getSelectedRow();
+        if(filaSeleccionada != -1){
+            DefaultTableModel model = (DefaultTableModel) jTableUsuaris.getModel();
+            System.out.println(model.getValueAt(filaSeleccionada, 0));
+        }else{
+            
+        }
+        
+    }//GEN-LAST:event_buttonBaixaActionPerformed
 
     /**
      * Mètode principal de la classe.
