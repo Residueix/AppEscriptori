@@ -142,6 +142,11 @@ public class PantallaPrincipal extends javax.swing.JFrame {
         buttonPerfil.setToolTipText("Perfil");
         buttonPerfil.setBorderPainted(false);
         buttonPerfil.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        buttonPerfil.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonPerfilActionPerformed(evt);
+            }
+        });
         panelOpcions.add(buttonPerfil, new org.netbeans.lib.awtextra.AbsoluteConstraints(25, 30, 150, 30));
 
         panelPrincipal.add(panelOpcions, new org.netbeans.lib.awtextra.AbsoluteConstraints(798, 2, 200, 746));
@@ -220,6 +225,16 @@ public class PantallaPrincipal extends javax.swing.JFrame {
         pantallaLlistatUsuaris.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_buttonLlistatUsuarisActionPerformed
+
+    /**
+     * Mètode utilitzat quan es prem el botó de perfil
+     * @param evt (ActionEvent) : Pulsar el botó.
+     */
+    private void buttonPerfilActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPerfilActionPerformed
+        PantallaPerfil pantallaPerfil = new PantallaPerfil(usuari,usuari.getId());
+        pantallaPerfil.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_buttonPerfilActionPerformed
 
     /**
      * Mètode principal de la classe.

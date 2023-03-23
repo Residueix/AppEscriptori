@@ -56,7 +56,6 @@ public class PantallaLogin extends javax.swing.JFrame {
         buttonLogin = new javax.swing.JButton();
         buttonTancar = new javax.swing.JButton();
         labelRestablirParaulaClau = new javax.swing.JLabel();
-        labelResposta = new javax.swing.JLabel();
         panelLogo = new javax.swing.JPanel();
         labelLogo = new javax.swing.JLabel();
 
@@ -146,11 +145,6 @@ public class PantallaLogin extends javax.swing.JFrame {
             }
         });
 
-        labelResposta.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        labelResposta.setForeground(new java.awt.Color(153, 51, 0));
-        labelResposta.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        labelResposta.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-
         javax.swing.GroupLayout panelFormulariLayout = new javax.swing.GroupLayout(panelFormulari);
         panelFormulari.setLayout(panelFormulariLayout);
         panelFormulariLayout.setHorizontalGroup(
@@ -159,10 +153,6 @@ public class PantallaLogin extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(buttonTancar)
                 .addContainerGap(477, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelFormulariLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(labelResposta, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(49, 49, 49))
             .addGroup(panelFormulariLayout.createSequentialGroup()
                 .addGap(0, 177, Short.MAX_VALUE)
                 .addGroup(panelFormulariLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -184,9 +174,7 @@ public class PantallaLogin extends javax.swing.JFrame {
             .addGroup(panelFormulariLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(buttonTancar)
-                .addGap(242, 242, 242)
-                .addComponent(labelResposta, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
+                .addGap(284, 284, 284)
                 .addComponent(labelUsuari, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(textFieldUsuari, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -298,39 +286,42 @@ public class PantallaLogin extends javax.swing.JFrame {
      */
     private void buttonLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonLoginActionPerformed
         
-        // Resetejem el labelResposta per mostrar missatges
-        labelResposta.setText("");
+        // Validem l'email.
+        if(api.validarEmail(textFieldUsuari.getText().toString())){
+            
+            // Criidem a l'api per loginar-se.
+            JSONObject json = api.login(textFieldUsuari.getText(), passwordFieldParaulaClau.getText());
         
-        // Cridem a l'api per loginar-se.
-        JSONObject json = api.login(textFieldUsuari.getText(), passwordFieldParaulaClau.getText());
-        
-        // Controlem el que ens ha arribat
-        if(json.isEmpty()) {
-            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(api.error((1)));
-            pantallaAdvertencia.setVisible(true); 
-        }else{
-            if(json.get("codi_error").toString().equals("0")){
-                // Creem un nou usuari amb les dades
-                Usuari usuari = new Usuari(Integer.parseInt(json.get("id").toString()),Integer.parseInt(json.get("tipus").toString()),json.get("email").toString(),json.get("password").toString(),json.get("nom").toString(),json.get("cognom1").toString(),json.get("cognom2").toString(),json.get("telefon").toString(),json.get("token").toString());
-                // Comprovem quin tipus d'usuari és
-                switch(usuari.getTipus()){
-                    case 1,2 -> {
-                        PantallaPrincipal pantallaPrincipal = new PantallaPrincipal(usuari);
-                        pantallaPrincipal.setVisible(true);
-                        this.dispose();
-                    }
-                    default -> {
-                        PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(api.error((2)));
-                        pantallaAdvertencia.setVisible(true); 
-                        //labelResposta.setText();
-                    }
-                }
-            }else{
-                PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(json.get("codi_error").toString() + " - " + json.get("error").toString());
+            // Controlem el que ens ha arribat
+            if(json.isEmpty()) {
+                PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(api.error((1)));
                 pantallaAdvertencia.setVisible(true); 
+            }else{
+                if(json.get("codi_error").toString().equals("0")){
+                // Creem un nou usuari amb les dades
+                Usuari usuari = new Usuari(Integer.parseInt(json.get("id").toString()),Integer.parseInt(json.get("tipus").toString()),json.get("tipus_nom").toString(),json.get("email").toString(),json.get("password").toString(),json.get("nom").toString(),json.get("cognom1").toString(),json.get("cognom2").toString(),json.get("telefon").toString(),json.get("token").toString());
+                // Comprovem quin tipus d'usuari és
+                    switch(usuari.getTipus()){
+                        case 1,2 -> {
+                            PantallaPrincipal pantallaPrincipal = new PantallaPrincipal(usuari);
+                            pantallaPrincipal.setVisible(true);
+                            this.dispose();
+                        }
+                        default -> {
+                            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(api.error((2)));
+                            pantallaAdvertencia.setVisible(true); 
+                        }
+                    }
+                }else{
+                    PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(json.get("codi_error").toString() + " - " + json.get("error").toString());
+                    pantallaAdvertencia.setVisible(true); 
                 
-                //labelResposta.setText("Error: " + json.get("codi_error") + " - " + json.get("error"));
+                }
             }
+        }else{
+            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(api.error(13));
+            pantallaAdvertencia.setVisible(true); 
+            this.dispose();
         }
     }//GEN-LAST:event_buttonLoginActionPerformed
 
@@ -384,10 +375,6 @@ public class PantallaLogin extends javax.swing.JFrame {
     * Label paraula clau
     */
     private javax.swing.JLabel labelParaulaClau;
-    /**
-    * Label per indicar la resposta en cas de que el login falli.
-    */
-    private javax.swing.JLabel labelResposta;
     /**
     * Label per restablir la paraula clau.
     */

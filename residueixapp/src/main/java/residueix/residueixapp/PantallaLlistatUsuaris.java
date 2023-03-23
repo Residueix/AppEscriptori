@@ -3,6 +3,7 @@ package residueix.residueixapp;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -53,8 +54,10 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
         centrarPantalla();
         // Accions en funcio de l'usuari
         gestioUsuari();        
+        // Disseny elements
+        estilFormulari();
         // Llistat d'usuaris - omplir la taula
-        omplirTaula(0);
+        omplirTaula(0,0);
     }
 
      /**
@@ -64,7 +67,6 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jFileChooser1 = new javax.swing.JFileChooser();
         panelPrincipal = new javax.swing.JPanel();
         panelContingut = new javax.swing.JPanel();
         panelBar = new javax.swing.JPanel();
@@ -73,7 +75,8 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
         labelTitol = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableUsuaris = new javax.swing.JTable();
-        comboBoxLlistat = new javax.swing.JComboBox<>();
+        comboBoxTipus = new javax.swing.JComboBox<>();
+        comboBoxActiu = new javax.swing.JComboBox<>();
         panelOpcions = new javax.swing.JPanel();
         buttonTornar = new javax.swing.JButton();
         buttonAlta = new javax.swing.JButton();
@@ -137,20 +140,20 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
         jTableUsuaris.setFont(new java.awt.Font("Sansation", 0, 12)); // NOI18N
         jTableUsuaris.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Email", "Tipus", "Nom", "Cognom1", "Cognom2"
+                "Id", "Email", "Tipus", "Nom", "Cognom1", "Cognom2", "Actiu"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -166,22 +169,34 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
         jTableUsuaris.setOpaque(false);
         jTableUsuaris.setRowHeight(28);
         jTableUsuaris.setRowMargin(5);
-        jTableUsuaris.setShowGrid(true);
+        jTableUsuaris.setShowGrid(false);
         jScrollPane1.setViewportView(jTableUsuaris);
 
         panelContingut.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(22, 250, 700, 470));
 
-        comboBoxLlistat.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
-        comboBoxLlistat.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tots els usuaris", "Tipus 1 - Administradors", "Tipus 2 - Treballadors", "Tipus 3 - Residuents", "Tipus 4 - Adherits" }));
-        comboBoxLlistat.setToolTipText("Filtrar per tipus d'usuari");
-        comboBoxLlistat.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        comboBoxLlistat.setPreferredSize(new java.awt.Dimension(200, 30));
-        comboBoxLlistat.addActionListener(new java.awt.event.ActionListener() {
+        comboBoxTipus.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
+        comboBoxTipus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tots els tipus d'usuaris", "Tipus 1 - Administradors", "Tipus 2 - Treballadors", "Tipus 3 - Residuents", "Tipus 4 - Adherits" }));
+        comboBoxTipus.setToolTipText("Filtrar per tipus d'usuari");
+        comboBoxTipus.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        comboBoxTipus.setPreferredSize(new java.awt.Dimension(200, 30));
+        comboBoxTipus.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                comboBoxLlistatActionPerformed(evt);
+                comboBoxTipusActionPerformed(evt);
             }
         });
-        panelContingut.add(comboBoxLlistat, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 210, -1, -1));
+        panelContingut.add(comboBoxTipus, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 210, -1, -1));
+
+        comboBoxActiu.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
+        comboBoxActiu.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tots actius i baixes", "Només Actius", "Només Baixes" }));
+        comboBoxActiu.setToolTipText("Filtrar per usauris actius/baixa");
+        comboBoxActiu.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        comboBoxActiu.setPreferredSize(new java.awt.Dimension(200, 30));
+        comboBoxActiu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboBoxActiuActionPerformed(evt);
+            }
+        });
+        panelContingut.add(comboBoxActiu, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 210, -1, -1));
 
         panelPrincipal.add(panelContingut, new org.netbeans.lib.awtextra.AbsoluteConstraints(2, 2, 798, 746));
 
@@ -237,6 +252,11 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
         buttonModificacio.setToolTipText("Modificació d'usuari");
         buttonModificacio.setBorderPainted(false);
         buttonModificacio.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        buttonModificacio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonModificacioActionPerformed(evt);
+            }
+        });
         panelOpcions.add(buttonModificacio, new org.netbeans.lib.awtextra.AbsoluteConstraints(25, 110, 150, 30));
 
         buttonBaixa.setBackground(new java.awt.Color(51, 102, 255));
@@ -275,6 +295,14 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     /**
+     * Mètode per donar estil a elements del formulari.
+     */
+    private void estilFormulari(){
+        comboBoxTipus.setBackground(new Color(255,255,255,255));
+        comboBoxActiu.setBackground(new Color(255,255,255,255));
+    }
+    
+    /**
      * Mètode per gestionar accions en funció de l'usuari
      */
     private void gestioUsuari(){
@@ -302,9 +330,8 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
      * Mètode per omplir la taula amb les dades dels usuaris.
      * @param llistatUsuaris (JSONArray) json amb el llistat d'usuaris.
      */
-    private void omplirTaula(int opcio){
-        
-        JSONObject jsonObject = (JSONObject) api.llistatUsuaris(usuari,opcio);
+    private void omplirTaula(int tipus, int actiu){
+        JSONObject jsonObject = (JSONObject) api.llistatUsuaris(usuari,tipus,actiu);
         
         if(!jsonObject.isEmpty()){
             if(jsonObject.get("codi_error").toString().equals("0")) {
@@ -316,17 +343,19 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
                 model.addColumn("Nom");
                 model.addColumn("Cognom1");
                 model.addColumn("Cognom2");
+                model.addColumn("Actiu");
                 // Bucle per omplir la taula
                 JSONArray jsonArray = new JSONArray(jsonObject.getJSONArray("llistat"));
                 for(int i = 0; i < jsonArray.length(); i++){
                     JSONObject jsonUsuari = jsonArray.getJSONObject(i);
-                    Object []obj = new Object[6];
+                    Object []obj = new Object[7];
                     obj[0] = jsonUsuari.get("id").toString();
                     obj[1] = jsonUsuari.get("email").toString();
                     obj[2] = jsonUsuari.get("tipus").toString();
                     obj[3] = jsonUsuari.get("nom").toString();
                     obj[4] = jsonUsuari.get("cognom1").toString();
                     obj[5] = jsonUsuari.get("cognom2").toString();
+                    obj[6] = jsonUsuari.get("actiu").toString();
                     model.addRow(obj);
                 }
                 // Personalització de la taula
@@ -336,6 +365,9 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
                 jTableUsuaris.getTableHeader().setForeground(new Color(255,255,255));
                 jTableUsuaris.getColumnModel().getColumn(0).setMaxWidth(50);
                 jTableUsuaris.getColumnModel().getColumn(2).setMaxWidth(50);
+                jTableUsuaris.getColumnModel().getColumn(6).setMaxWidth(50);
+                jTableUsuaris.setRowSelectionAllowed(true);
+                jTableUsuaris.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                 DefaultTableCellRenderer renderTaula = new DefaultTableCellRenderer();
                 renderTaula.setHorizontalAlignment(SwingConstants.CENTER);
                 jTableUsuaris.getColumnModel().getColumn(1).setCellRenderer(renderTaula);
@@ -392,12 +424,12 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonLogOutActionPerformed
 
     /**
-     * Mètode utilitzat quan es canvia de selecció al combo de filtratge
-     * @param evt 
+     * Mètode utilitzat quan es canvia de selecció al combo de filtratge.
+     * @param evt (AcionEvent) : pulsar el botó.
      */
-    private void comboBoxLlistatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboBoxLlistatActionPerformed
-        omplirTaula(comboBoxLlistat.getSelectedIndex());
-    }//GEN-LAST:event_comboBoxLlistatActionPerformed
+    private void comboBoxTipusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboBoxTipusActionPerformed
+        omplirTaula(comboBoxTipus.getSelectedIndex(),comboBoxActiu.getSelectedIndex());
+    }//GEN-LAST:event_comboBoxTipusActionPerformed
 
     /**
      * Mètode utilitzat quan es prem el botó d'alta s'usuari.
@@ -419,12 +451,43 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
         int filaSeleccionada = jTableUsuaris.getSelectedRow();
         if(filaSeleccionada != -1){
             DefaultTableModel model = (DefaultTableModel) jTableUsuaris.getModel();
-            System.out.println(model.getValueAt(filaSeleccionada, 0));
+            int idUsuari = Integer.parseInt(model.getValueAt(filaSeleccionada, 0).toString());
+            PantallaBaixaUsuari pantallaBaixaUsuari = new PantallaBaixaUsuari(usuari,idUsuari);
+            pantallaBaixaUsuari.setVisible(true);
+            this.dispose();
         }else{
-            
+            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia("Has de seleccionar una fila de la taula d'usuaris.");
+            pantallaAdvertencia.setVisible(true);
         }
         
     }//GEN-LAST:event_buttonBaixaActionPerformed
+
+    /**
+     * Mètode utilitzat quan es canvia de selecció al combo de filtratge per actiu/baixa
+     * @param evt (AcionEvent) : pulsar el botó.
+     */
+    private void comboBoxActiuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboBoxActiuActionPerformed
+        omplirTaula(comboBoxTipus.getSelectedIndex(),comboBoxActiu.getSelectedIndex());
+    }//GEN-LAST:event_comboBoxActiuActionPerformed
+
+    /**
+     * Métode utilitzat quan es prem el botó de modificar usuari.
+     * @param evt (ActionEvent) : pulsar el botó.
+     */
+    private void buttonModificacioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonModificacioActionPerformed
+        // Mirem si tenim seleccionat fila del llistat 
+        int filaSeleccionada = jTableUsuaris.getSelectedRow();
+        if(filaSeleccionada != -1){
+            DefaultTableModel model = (DefaultTableModel) jTableUsuaris.getModel();
+            int idUsuari = Integer.parseInt(model.getValueAt(filaSeleccionada, 0).toString());
+            PantallaModificarUsuari pantallaModificarUsuari = new PantallaModificarUsuari(usuari,idUsuari);
+            pantallaModificarUsuari.setVisible(true);
+            this.dispose();
+        }else{
+            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(api.error(8));
+            pantallaAdvertencia.setVisible(true);
+        }
+    }//GEN-LAST:event_buttonModificacioActionPerformed
 
     /**
      * Mètode principal de la classe.
@@ -496,8 +559,14 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
     /**
     * Combo box amb diferents opcions per filtrar el llistat d'usauris
     */
-    private javax.swing.JComboBox<String> comboBoxLlistat;
-    private javax.swing.JFileChooser jFileChooser1;
+    private javax.swing.JComboBox<String> comboBoxActiu;
+    /**
+    * Combo box amb diferents opcions per filtrar el llistat d'usauris
+    */
+    private javax.swing.JComboBox<String> comboBoxTipus;
+    /**
+    * Scroll pane per contenir el jtable
+    */
     private javax.swing.JScrollPane jScrollPane1;
     /**
     * Taula per contenir als usuaris

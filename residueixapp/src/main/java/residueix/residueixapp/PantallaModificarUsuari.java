@@ -16,7 +16,7 @@ import residueix.residueixapp.utils.Api;
  * @author Daniel Garcia Ruiz
  * @version 12/03/2023
  */
-public class PantallaAltaUsuari extends javax.swing.JFrame {
+public class PantallaModificarUsuari extends javax.swing.JFrame {
     
     
     // Atributs
@@ -37,9 +37,9 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
      */
     private Api api;
     /**
-     * Llistat de tipus d'usuari.
+     * Id usuari a modificar.
      */
-    private ArrayList<String[]> llistatTipus = new ArrayList<String[]>();
+    private static int idUsuari; 
     /**
      * Llistat de tipus d'usuari.
      */
@@ -53,11 +53,12 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
      * Crea una nova instància de la classe PantallaPrincipal.
      * @param usuari: Usuari loginat a l'aplicació.
      */
-    public PantallaAltaUsuari(Usuari usuari) {
+    public PantallaModificarUsuari(Usuari usuari, int idUsuari) {
         // Utilitats api
         api = new Api();
         // Assignació de l'usuari
         this.usuari = usuari;
+        this.idUsuari = idUsuari;
         // Inicialització dels components
         initComponents();
         // Centrem pantalla
@@ -84,6 +85,8 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
         separadorUsuari = new javax.swing.JSeparator();
         labelPoblacio = new javax.swing.JLabel();
         labelPassword = new javax.swing.JLabel();
+        labelTipusInfoId = new javax.swing.JLabel();
+        labelTipusInfo = new javax.swing.JLabel();
         labelTipus = new javax.swing.JLabel();
         labelNom = new javax.swing.JLabel();
         labelCognom1 = new javax.swing.JLabel();
@@ -104,7 +107,6 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
         labelNomAdherit = new javax.swing.JLabel();
         labelCP = new javax.swing.JLabel();
         textFieldNomAdherit = new javax.swing.JTextField();
-        comboBoxTipusUsuari = new javax.swing.JComboBox<>();
         textFieldTelefon = new javax.swing.JTextField();
         labelTitolAdherit = new javax.swing.JLabel();
         separadorAdherit = new javax.swing.JSeparator();
@@ -114,8 +116,9 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
         textFieldHoraris = new javax.swing.JTextField();
         labelTipusAdherit = new javax.swing.JLabel();
         comboBoxTipusAdherit = new javax.swing.JComboBox<>();
-        buttonAlta = new javax.swing.JButton();
+        buttonModificar = new javax.swing.JButton();
         labelTitolAdresa = new javax.swing.JLabel();
+        labelIdInfo = new javax.swing.JLabel();
         panelOpcions = new javax.swing.JPanel();
         buttonLogOut = new javax.swing.JButton();
         buttonTornar = new javax.swing.JButton();
@@ -161,7 +164,7 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
         panelTitol.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         labelTitol.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
-        labelTitol.setText("Alta Usuari");
+        labelTitol.setText("Modificar usuari");
         labelTitol.setToolTipText("");
         panelTitol.add(labelTitol, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 600, 30));
 
@@ -175,6 +178,13 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
         labelPassword.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
         labelPassword.setText("Password");
         panelContingut.add(labelPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 200, 100, 30));
+
+        labelTipusInfoId.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
+        panelContingut.add(labelTipusInfoId, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 190, 100, 30));
+
+        labelTipusInfo.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
+        labelTipusInfo.setText("Tipus");
+        panelContingut.add(labelTipusInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 160, 130, 30));
 
         labelTipus.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
         labelTipus.setText("Tipus");
@@ -307,17 +317,6 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
         });
         panelContingut.add(textFieldNomAdherit, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 550, 630, 30));
 
-        comboBoxTipusUsuari.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
-        comboBoxTipusUsuari.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tria tipus" }));
-        comboBoxTipusUsuari.setToolTipText("Tipus d'usuari");
-        comboBoxTipusUsuari.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        comboBoxTipusUsuari.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                comboBoxTipusUsuariActionPerformed(evt);
-            }
-        });
-        panelContingut.add(comboBoxTipusUsuari, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 160, 150, 30));
-
         textFieldTelefon.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
         textFieldTelefon.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         textFieldTelefon.setToolTipText("Telèfon d'usuari");
@@ -375,24 +374,27 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
         comboBoxTipusAdherit.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         panelContingut.add(comboBoxTipusAdherit, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 630, 290, 30));
 
-        buttonAlta.setBackground(new java.awt.Color(51, 204, 0));
-        buttonAlta.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
-        buttonAlta.setForeground(new java.awt.Color(255, 255, 255));
-        buttonAlta.setText("Donar d'Alta");
-        buttonAlta.setToolTipText("Donar d'alta l'usuari");
-        buttonAlta.setBorderPainted(false);
-        buttonAlta.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        buttonAlta.addActionListener(new java.awt.event.ActionListener() {
+        buttonModificar.setBackground(new java.awt.Color(51, 204, 0));
+        buttonModificar.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
+        buttonModificar.setForeground(new java.awt.Color(255, 255, 255));
+        buttonModificar.setText("Modificar usuari");
+        buttonModificar.setToolTipText("Modificar les dades d'un usuari");
+        buttonModificar.setBorderPainted(false);
+        buttonModificar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        buttonModificar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonAltaActionPerformed(evt);
+                buttonModificarActionPerformed(evt);
             }
         });
-        panelContingut.add(buttonAlta, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 690, 150, 30));
+        panelContingut.add(buttonModificar, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 690, 150, 30));
 
         labelTitolAdresa.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
         labelTitolAdresa.setForeground(new java.awt.Color(153, 153, 153));
         labelTitolAdresa.setText("Dades de l'adreça (Residuents i adherits)");
         panelContingut.add(labelTitolAdresa, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 340, -1, -1));
+
+        labelIdInfo.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
+        panelContingut.add(labelIdInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 160, 100, 30));
 
         panelPrincipal.add(panelContingut, new org.netbeans.lib.awtextra.AbsoluteConstraints(2, 2, 798, 746));
 
@@ -443,35 +445,11 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
      * Mètode per carregar dades necesàries del formulari
      */
     private void carregaFormulari(){
-       
-        String problemes = "no";
         
-        // Json array amb els tipus d'usuari per al combobox
-        JSONObject jsonTipusUsuaris = api.llistatTipusUsuari(usuari);
-        
-        if(!jsonTipusUsuaris.isEmpty()){
-            if(jsonTipusUsuaris.get("codi_error").toString().equals("0")){
-                JSONArray llistatTipusUsuaris = jsonTipusUsuaris.getJSONArray("llistat");
-                if(!llistatTipusUsuaris.isEmpty()){
-                    for(int i = 0; i < llistatTipusUsuaris.length(); i++){
-                        JSONObject jsonTipus = llistatTipusUsuaris.getJSONObject(i);
-                        comboBoxTipusUsuari.addItem(jsonTipus.get("nom").toString());
-                        llistatTipus.add(new String[]{jsonTipus.get("id").toString(),jsonTipus.get("nom").toString()});
-                    }
-                }else{
-                    problemes += "Hi ha problemes amb el llistat de tipus d'usuari. ";
-                }
-            }else{
-                problemes += "Hi ha problemes amb els tipus d'usuari:  " + jsonTipusUsuaris.get("codi_error").toString() + " - " + jsonTipusUsuaris.get("error").toString() ;
-            }
-        }else{
-            problemes += "Hi ha problemes amb els tipus d'usuari. ";
-        }
-        comboBoxTipusUsuari.setBackground(new Color(255,255,255,255));
+        String problemes = "";
         
         // Json array amb les poblacions
         JSONObject jsonPoblacions = api.llistatPoblacions(usuari);
-        
         if(!jsonPoblacions.isEmpty()){
             if(jsonPoblacions.get("codi_error").toString().equals("0")){
                 JSONArray jsonllistatPoblacions = jsonPoblacions.getJSONArray("llistat");
@@ -494,7 +472,6 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
         
         // Json amb els tipus d'adherits
         JSONObject jsonTipusAdherits = api.llistatTipusAdherit(usuari);
-        
          if(!jsonTipusAdherits.isEmpty()){
             if(jsonTipusAdherits.get("codi_error").toString().equals("0")){
                 JSONArray jsonLlistatTipusAdherit = jsonTipusAdherits.getJSONArray("llistat");
@@ -514,7 +491,209 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
             problemes += "Hi ha problemes amb els tipus d'adherit. ";
         }
         comboBoxTipusAdherit.setBackground(new Color(255,255,255,255));
-       
+        
+        if(!problemes.equals("")){
+            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(problemes);
+            pantallaAdvertencia.setVisible(true); 
+        }
+        
+        
+        // Amb l'usuari seleccionat recuperem les seves dades.
+        JSONObject jsonUsuari = api.consultaUsuari(usuari,idUsuari);
+        if(!jsonUsuari.isEmpty()){
+            if(jsonUsuari.get("codi_error").toString().equals("0")){
+                
+                // Recollim totes les dades de l'usuari.
+                String umId = jsonUsuari.get("id").toString();
+                String umTipus = jsonUsuari.get("tipus").toString();
+                String umTipusNom = jsonUsuari.get("tipus_nom").toString();
+                String umEmail = jsonUsuari.get("email").toString();
+                String umPassword = jsonUsuari.get("password").toString();
+                String umNom = jsonUsuari.get("nom").toString();
+                String umCognom1 = jsonUsuari.get("cognom1").toString();
+                String umCognom2 = jsonUsuari.get("cognom2").toString();
+                String umTelefon = jsonUsuari.get("telefon").toString();
+                String umActiu = jsonUsuari.get("actiu").toString();
+                String umCarrer = jsonUsuari.get("carrer").toString();
+                String umCP = jsonUsuari.get("cp").toString();
+                String umPoblacio = jsonUsuari.get("poblacio").toString();
+                String umPoblacioNom = jsonUsuari.get("poblacio_nom").toString();
+                String umProvincia = jsonUsuari.get("provincia").toString();
+                String umProvinciaNom = jsonUsuari.get("provincia_nom").toString();
+                String umNomAdherit = jsonUsuari.get("nomAdherit").toString();
+                String umHorari = jsonUsuari.get("horari").toString();
+                String umTipusAdherit = jsonUsuari.get("tipusAdherit").toString();
+                String umTipusAdheritNom = jsonUsuari.get("tipusAdherit_nom").toString();
+                
+                
+                // Omplim el formulari amb les dades en funció del tipus d'usuari
+                switch(umTipus){
+                    case "1","2" -> {
+                        labelIdInfo.setText(umId);
+                        labelIdInfo.setVisible(false);
+                        labelTipusInfoId.setText(umTipus);
+                        labelTipusInfoId.setVisible(false);
+                        labelTipusInfo.setText(umTipusNom);
+                        textFieldEmail.setText(umEmail);
+                        passwordFieldPassword.setText(umPassword);
+                        textFieldNom.setText(umNom);
+                        textFieldCognom1.setText(umCognom1);
+                        textFieldCognom2.setText(umCognom2);
+                        textFieldTelefon.setText(umTelefon);
+                        if(umActiu.equals("1")){
+                            checkBoxActiu.setSelected(true);
+                        }else{
+                            checkBoxActiu.setSelected(false);
+                        }
+                        ocultarCamps(umTipus);
+                    }
+                    case "3" -> {
+                        labelIdInfo.setText(umId);
+                        labelIdInfo.setVisible(false);
+                        labelTipusInfoId.setText(umTipus);
+                        labelTipusInfoId.setVisible(false);
+                        labelTipusInfo.setText(umTipusNom);
+                        textFieldEmail.setText(umEmail);
+                        passwordFieldPassword.setText(umPassword);
+                        textFieldNom.setText(umNom);
+                        textFieldCognom1.setText(umCognom1);
+                        textFieldCognom2.setText(umCognom2);
+                        textFieldTelefon.setText(umTelefon);
+                        if(umActiu.equals("1")){
+                            checkBoxActiu.setSelected(true);
+                        }else{
+                            checkBoxActiu.setSelected(false);
+                        }
+                        textFieldCarrer.setText(umCarrer);
+                        textFieldCP.setText(umCP);
+                        comboBoxPoblacio.setSelectedItem(umPoblacioNom + " (" + umProvinciaNom + ")");
+                         ocultarCamps(umTipus);
+                    }
+                    case "4" -> {
+                        labelIdInfo.setText(umId);
+                        labelIdInfo.setVisible(false);
+                        labelTipusInfoId.setText(umTipus);
+                        labelTipusInfoId.setVisible(false);
+                        labelTipusInfo.setText(umTipusNom);
+                        textFieldEmail.setText(umEmail);
+                        passwordFieldPassword.setText(umPassword);
+                        textFieldNom.setText(umNom);
+                        textFieldCognom1.setText(umCognom1);
+                        textFieldCognom2.setText(umCognom2);
+                        textFieldTelefon.setText(umTelefon);
+                        if(umActiu.equals("1")){
+                            checkBoxActiu.setSelected(true);
+                        }else{
+                            checkBoxActiu.setSelected(false);
+                        }
+                        textFieldCarrer.setText(umCarrer);
+                        textFieldCP.setText(umCP);
+                        comboBoxPoblacio.setSelectedItem(umPoblacioNom + " (" + umProvinciaNom + ")");
+                        textFieldNomAdherit.setText(umNomAdherit);
+                        textFieldHoraris.setText(umHorari);
+                        comboBoxTipusAdherit.setSelectedItem(umTipusAdheritNom);
+                         ocultarCamps(umTipus);                        
+                    }
+                    default -> {
+                        // Hi han errors, ho informem.
+                        PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(api.error(7));
+                        pantallaAdvertencia.setVisible(true); 
+                        // Ocltem el bóto.
+                    }
+                }
+                
+                   
+                
+            }else{
+                PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(jsonUsuari.get("codi_error").toString() + " - " +jsonUsuari.get("error").toString());
+                pantallaAdvertencia.setVisible(true); 
+            }
+        }else{
+            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(api.error(5));
+            pantallaAdvertencia.setVisible(true); 
+        }
+              
+    }
+    
+    /**
+     * Mètode per ocultar els camps en funció del tipus d'usuari
+     * @param tipus_num (String) : identificador del tipus d'usuari
+     */
+    private void ocultarCamps(String tipus_num){
+        switch(tipus_num){
+            case "1" -> {
+                labelTitolAdresa.setVisible(false);
+                separadorAdresa.setVisible(false);
+                labelCarrer.setVisible(false);
+                textFieldCarrer.setVisible(false);
+                labelCP.setVisible(false);
+                textFieldCP.setVisible(false);
+                labelPoblacio.setVisible(false);
+                comboBoxPoblacio.setVisible(false);
+                labelTitolAdherit.setVisible(false);
+                separadorAdherit.setVisible(false);
+                labelNomAdherit.setVisible(false);
+                textFieldNomAdherit.setVisible(false);
+                labelHoraris.setVisible(false);
+                textFieldHoraris.setVisible(false);
+                labelTipusAdherit.setVisible(false);
+                comboBoxTipusAdherit.setVisible(false);
+            }
+            case "2" -> {
+                labelTitolAdresa.setVisible(false);
+                separadorAdresa.setVisible(false);
+                labelCarrer.setVisible(false);
+                textFieldCarrer.setVisible(false);
+                labelCP.setVisible(false);
+                textFieldCP.setVisible(false);
+                labelPoblacio.setVisible(false);
+                comboBoxPoblacio.setVisible(false);
+                labelTitolAdherit.setVisible(false);
+                separadorAdherit.setVisible(false);
+                labelNomAdherit.setVisible(false);
+                textFieldNomAdherit.setVisible(false);
+                labelHoraris.setVisible(false);
+                textFieldHoraris.setVisible(false);
+                labelTipusAdherit.setVisible(false);
+                comboBoxTipusAdherit.setVisible(false);
+            }
+            case "3" -> {
+                labelTitolAdresa.setVisible(true);
+                separadorAdresa.setVisible(true);
+                labelCarrer.setVisible(true);
+                textFieldCarrer.setVisible(true);
+                labelCP.setVisible(true);
+                textFieldCP.setVisible(true);
+                labelPoblacio.setVisible(true);
+                comboBoxPoblacio.setVisible(true);
+                labelTitolAdherit.setVisible(false);
+                separadorAdherit.setVisible(false);
+                labelNomAdherit.setVisible(false);
+                textFieldNomAdherit.setVisible(false);
+                labelHoraris.setVisible(false);
+                textFieldHoraris.setVisible(false);
+                labelTipusAdherit.setVisible(false);
+                comboBoxTipusAdherit.setVisible(false);               
+            }
+            case "4" -> {
+                labelTitolAdresa.setVisible(true);
+                separadorAdresa.setVisible(true);
+                labelCarrer.setVisible(true);
+                textFieldCarrer.setVisible(true);
+                labelCP.setVisible(true);
+                textFieldCP.setVisible(true);
+                labelPoblacio.setVisible(true);
+                comboBoxPoblacio.setVisible(true);
+                labelTitolAdherit.setVisible(true);
+                separadorAdherit.setVisible(true);
+                labelNomAdherit.setVisible(true);
+                textFieldNomAdherit.setVisible(true);
+                labelHoraris.setVisible(true);
+                textFieldHoraris.setVisible(true);
+                labelTipusAdherit.setVisible(true);
+                comboBoxTipusAdherit.setVisible(true);
+            }
+        }
     }
     
     /**
@@ -557,7 +736,9 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
      * Mètode per resetejar el formulari
      */
     private void resetFormulari(){
-        comboBoxTipusUsuari.setSelectedIndex(0);
+        labelTipusInfo.setText("");
+        labelTipusInfoId.setText("");
+        labelIdInfo.setText("");
         textFieldEmail.setText("");
         passwordFieldPassword.setText("");
         textFieldNom.setText("");
@@ -596,13 +777,15 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
      * Mètode utilitzat quan es prem el botó de logout per tancar la sessió.
      * @param evt ActionEvent: Pulsar el botó.
      */
-    private void buttonAltaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAltaActionPerformed
+    private void buttonModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonModificarActionPerformed
          
         boolean enviament = true;
         String missatge = "Falta omplir: - ";
         
         // Comprovem les dades del formulari
-         String tipus = comboBoxTipusUsuari.getSelectedItem().toString();
+         String id = labelIdInfo.getText();
+         String tipus_nom = labelTipusInfo.getText();
+         String tipus_id = labelTipusInfoId.getText();
          String email = textFieldEmail.getText();
          String password = passwordFieldPassword.getText();
          String nom = textFieldNom.getText();
@@ -620,9 +803,6 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
          String tipusAdherit = "";
          
          // Fem comprovació
-         if(tipus.equals("Tria tipus")){
-             missatge += " tipus usuari -"; enviament = false;
-         }
          if(email.equals("")){
              missatge += " email -"; enviament = false;
          }else{
@@ -646,20 +826,13 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
                  missatge += " telèfon ha de tenir 9 dígits -"; enviament = false;
              }
          }
-         
-         String tipus_id = "0";
-         for (String[] e : llistatTipus) {
-             if (e[1].equals(tipus)) {
-                 tipus_id = e[0];
-                break;
-             }
-        }
+        
          
         String poblacio_id = "0";
         String tipusAdherit_id = "0";
          
         // Comprovem el tipus d'usuari per saber quins camps més hem d'agafar
-        switch(tipus){
+        switch(tipus_nom){
              case "Administrador","Treballador" -> {
                  // No s'han de comprovar més camps.
              }
@@ -725,14 +898,15 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
          
         if(enviament){
             // Cridem l'api per donar d'alta usari 
-            switch(tipus){
+            switch(tipus_nom){
                 case "Administrador" -> {  
-                    JSONObject jsonRetorn = api.crearUsuariAdministrador(usuari,email,password,tipus_id,nom,cognom1,cognom2,telefon,actiu);
+                    JSONObject jsonRetorn = api.modificarUsuariAdministrador(usuari,id,email,password,tipus_id,nom,cognom1,cognom2,telefon,actiu);
                     if(!jsonRetorn.isEmpty()){
                         if(jsonRetorn.get("codi_error").toString().equals("0")){
                             PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(jsonRetorn.get("descripcio").toString());
                             pantallaAdvertencia.setVisible(true);
                             this.resetFormulari();
+                            buttonModificar.setVisible(false);
                         }else{
                             PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(jsonRetorn.get("codi_error").toString() + " - " +jsonRetorn.get("error").toString());
                             pantallaAdvertencia.setVisible(true); 
@@ -742,13 +916,15 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
                         pantallaAdvertencia.setVisible(true);   
                     }
                 }
+                
                 case "Treballador" -> {
-                    JSONObject jsonRetorn = api.crearUsuariTreballador(usuari,email,password,tipus_id,nom,cognom1,cognom2,telefon,actiu);
+                    JSONObject jsonRetorn = api.modificarUsuariTreballador(usuari,id,email,password,tipus_id,nom,cognom1,cognom2,telefon,actiu);
                     if(!jsonRetorn.isEmpty()){
                         if(jsonRetorn.get("codi_error").toString().equals("0")){
                             PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(jsonRetorn.get("descripcio").toString());
                             pantallaAdvertencia.setVisible(true);
                             this.resetFormulari();
+                            buttonModificar.setVisible(false);
                         }else{
                             PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(jsonRetorn.get("codi_error").toString() + " - " +jsonRetorn.get("error").toString());
                             pantallaAdvertencia.setVisible(true); 
@@ -758,13 +934,15 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
                         pantallaAdvertencia.setVisible(true);   
                     }
                 }
+                
                 case "Residuent" -> {
-                    JSONObject jsonRetorn = api.crearUsuariResiduent(usuari,email,password,tipus_id,nom,cognom1,cognom2,telefon,actiu,carrer,cp,poblacio_id);
+                    JSONObject jsonRetorn = api.modificarUsuariResiduent(usuari,id,email,password,tipus_id,nom,cognom1,cognom2,telefon,actiu,carrer,cp,poblacio_id);
                     if(!jsonRetorn.isEmpty()){
                         if(jsonRetorn.get("codi_error").toString().equals("0")){
                             PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(jsonRetorn.get("descripcio").toString());
                             pantallaAdvertencia.setVisible(true);
                             this.resetFormulari();
+                            buttonModificar.setVisible(false);
                         }else{
                             PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(jsonRetorn.get("codi_error").toString() + " - " +jsonRetorn.get("error").toString());
                             pantallaAdvertencia.setVisible(true); 
@@ -774,13 +952,15 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
                         pantallaAdvertencia.setVisible(true);   
                     }
                 }
+                
                 case "Adherit" -> {
-                    JSONObject jsonRetorn = api.crearUsuariAdherit(usuari,email,password,tipus_id,nom,cognom1,cognom2,telefon,actiu,carrer,cp,poblacio_id,nomAdherit,horaris,tipusAdherit_id);
+                    JSONObject jsonRetorn = api.modificarUsuariAdherit(usuari,id,email,password,tipus_id,nom,cognom1,cognom2,telefon,actiu,carrer,cp,poblacio_id,tipusAdherit_id,nomAdherit,horaris);
                     if(!jsonRetorn.isEmpty()){
                         if(jsonRetorn.get("codi_error").toString().equals("0")){
                             PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(jsonRetorn.get("descripcio").toString());
                             pantallaAdvertencia.setVisible(true);
                             this.resetFormulari();
+                            buttonModificar.setVisible(false);
                         }else{
                             PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(jsonRetorn.get("codi_error").toString() + " - " +jsonRetorn.get("error").toString());
                             pantallaAdvertencia.setVisible(true); 
@@ -796,7 +976,7 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
              pantallaAdvertencia.setVisible(true);
          }
          
-    }//GEN-LAST:event_buttonAltaActionPerformed
+    }//GEN-LAST:event_buttonModificarActionPerformed
     
     /**
      * Mètode utilitzat quan es prem el botó de logout per tancar la sessió.
@@ -818,88 +998,7 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_buttonTornarActionPerformed
     
-    /**
-     * Mètode utilitzat quan es canvia d'item al combobox de tipus d'usuari
-     * @param evt 
-     */
-    private void comboBoxTipusUsuariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboBoxTipusUsuariActionPerformed
-        switch(comboBoxTipusUsuari.getSelectedItem().toString()){
-            case "Administrador" -> {
-                labelTitolAdresa.setVisible(false);
-                separadorAdresa.setVisible(false);
-                labelCarrer.setVisible(false);
-                textFieldCarrer.setVisible(false);
-                labelCP.setVisible(false);
-                textFieldCP.setVisible(false);
-                labelPoblacio.setVisible(false);
-                comboBoxPoblacio.setVisible(false);
-                labelTitolAdherit.setVisible(false);
-                separadorAdherit.setVisible(false);
-                labelNomAdherit.setVisible(false);
-                textFieldNomAdherit.setVisible(false);
-                labelHoraris.setVisible(false);
-                textFieldHoraris.setVisible(false);
-                labelTipusAdherit.setVisible(false);
-                comboBoxTipusAdherit.setVisible(false);
-            }
-            case "Treballador" -> {
-                labelTitolAdresa.setVisible(false);
-                separadorAdresa.setVisible(false);
-                labelCarrer.setVisible(false);
-                textFieldCarrer.setVisible(false);
-                labelCP.setVisible(false);
-                textFieldCP.setVisible(false);
-                labelPoblacio.setVisible(false);
-                comboBoxPoblacio.setVisible(false);
-                labelTitolAdherit.setVisible(false);
-                separadorAdherit.setVisible(false);
-                labelNomAdherit.setVisible(false);
-                textFieldNomAdherit.setVisible(false);
-                labelHoraris.setVisible(false);
-                textFieldHoraris.setVisible(false);
-                labelTipusAdherit.setVisible(false);
-                comboBoxTipusAdherit.setVisible(false);
-            }
-            case "Residuent" -> {
-                labelTitolAdresa.setVisible(true);
-                separadorAdresa.setVisible(true);
-                labelCarrer.setVisible(true);
-                textFieldCarrer.setVisible(true);
-                labelCP.setVisible(true);
-                textFieldCP.setVisible(true);
-                labelPoblacio.setVisible(true);
-                comboBoxPoblacio.setVisible(true);
-                labelTitolAdherit.setVisible(false);
-                separadorAdherit.setVisible(false);
-                labelNomAdherit.setVisible(false);
-                textFieldNomAdherit.setVisible(false);
-                labelHoraris.setVisible(false);
-                textFieldHoraris.setVisible(false);
-                labelTipusAdherit.setVisible(false);
-                comboBoxTipusAdherit.setVisible(false);               
-            }
-            case "Adherit" -> {
-                labelTitolAdresa.setVisible(true);
-                separadorAdresa.setVisible(true);
-                labelCarrer.setVisible(true);
-                textFieldCarrer.setVisible(true);
-                labelCP.setVisible(true);
-                textFieldCP.setVisible(true);
-                labelPoblacio.setVisible(true);
-                comboBoxPoblacio.setVisible(true);
-                labelTitolAdherit.setVisible(true);
-                separadorAdherit.setVisible(true);
-                labelNomAdherit.setVisible(true);
-                textFieldNomAdherit.setVisible(true);
-                labelHoraris.setVisible(true);
-                textFieldHoraris.setVisible(true);
-                labelTipusAdherit.setVisible(true);
-                comboBoxTipusAdherit.setVisible(true);
-            }
-        }
-        
-    }//GEN-LAST:event_comboBoxTipusUsuariActionPerformed
-    
+   
     /**
      * Mètode utilitzat per limitar els caràcters al textfield de telèfon
      * @param evt (KeyEvent) : event de teclat.
@@ -1026,14 +1125,22 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(PantallaAltaUsuari.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PantallaModificarUsuari.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(PantallaAltaUsuari.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PantallaModificarUsuari.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(PantallaAltaUsuari.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PantallaModificarUsuari.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(PantallaAltaUsuari.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PantallaModificarUsuari.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -1046,7 +1153,7 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new PantallaAltaUsuari(usuari).setVisible(true);
+                new PantallaModificarUsuari(usuari,idUsuari).setVisible(true);
             }
         });
         
@@ -1056,13 +1163,13 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     /**
-    * Botó per donar d'alta l'usuari
-    */
-    private javax.swing.JButton buttonAlta;
-    /**
     * Botó per desloginar-se i sortir de l'aplicació.
     */
     private javax.swing.JButton buttonLogOut;
+    /**
+    * Botó per donar d'alta l'usuari
+    */
+    private javax.swing.JButton buttonModificar;
     /**
     * Botó per tornar a la pantalla principal.
     */
@@ -1079,10 +1186,6 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
     * Combo box tipus adherit
     */
     private javax.swing.JComboBox<String> comboBoxTipusAdherit;
-    /**
-    * Combo box tipus usuari
-    */
-    private javax.swing.JComboBox<String> comboBoxTipusUsuari;
     /**
     * Label actiu
     */
@@ -1111,6 +1214,10 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
     * Label horaris
     */
     private javax.swing.JLabel labelHoraris;
+    /**
+    * Label id usuari ocult
+    */
+    private javax.swing.JLabel labelIdInfo;
     /**
     * Label nom usuari
     */
@@ -1143,6 +1250,14 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
     * Label tipus adherit
     */
     private javax.swing.JLabel labelTipusAdherit;
+    /**
+    * Label tipus usuari - contingut
+    */
+    private javax.swing.JLabel labelTipusInfo;
+    /**
+    * Label tipus usuari id ocult
+    */
+    private javax.swing.JLabel labelTipusInfoId;
     /**
     * Label per el títol de la pantalla.
     */

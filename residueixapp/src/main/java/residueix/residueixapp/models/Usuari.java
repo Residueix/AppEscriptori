@@ -17,6 +17,10 @@ public class Usuari {
      */
     private int tipus;
     /**
+     * nom tipus usuari
+     */
+    private String tipus_nom;
+    /**
      * email / usari 
      */
     private String email;
@@ -56,10 +60,11 @@ public class Usuari {
      * @param cognom2 (String) cognom2 usuari
      * @param telefon (String) telefon usuari
      */
-    public Usuari(int id, int tipus, String email, String password, String nom, String cognom1, String cognom2, String telefon, String token){
+    public Usuari(int id, int tipus, String tipus_nom, String email, String password, String nom, String cognom1, String cognom2, String telefon, String token){
         
         this.id = id;
         this.tipus = tipus;
+        this.tipus_nom = tipus_nom;
         this.email = email;
         this.password = password;
         this.nom = nom;
@@ -86,6 +91,14 @@ public class Usuari {
      */
     public int getTipus(){
         return this.tipus;
+    }
+    
+    /**
+     * Retorna el nom del tipus d'uuari.
+     * @return nom tipus usuari. (String)
+     */
+    public String getTipusNom(){
+        return this.tipus_nom;
     }
     
     /**
@@ -160,6 +173,14 @@ public class Usuari {
      */
     public void setTipus(int nouTipus){
         this.tipus = nouTipus;
+    }
+    
+    /**
+     * Modifica el nom tipus de l'usuari.
+     * @param nouNomTipus (String)
+     */
+    public void setTipus(String nouNomTipus){
+        this.tipus_nom = nouNomTipus;
     }
     
     /**

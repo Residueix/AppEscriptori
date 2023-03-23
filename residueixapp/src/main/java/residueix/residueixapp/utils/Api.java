@@ -11,6 +11,8 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import residueix.residueixapp.models.Usuari;
@@ -24,7 +26,8 @@ public class Api {
     
     /**
      * Mètode per obenir un missatge d'error
-     * @param error (int) : codi númeric de l'error
+     * @param codi (int) : codi númeric de l'error
+
      * @return missatge (String) : Missatge amb l'error.
      */
     public String error(int codi){
@@ -32,8 +35,30 @@ public class Api {
             case 1 -> { return "Error: app_1 - Hi ha hagut un error al fer la petició. Posi's en contacte amb l'administrador del sistema."; }
             case 2 -> { return "Error: app_2 - No té permís per accedir a l'aplicació."; }
             case 3 -> { return "Error: app_3 - Hi ha hagut un error al fer la petició. Posi's en contacte amb l'administrador del sistema. El llistat d'usuaris està buit."; }
+            case 4 -> { return "Error: app_4 - Hi ha hagut un error al fer la petició. Posi's en contacte amb l'administrador del sistema. L'usuari no s'ha creat.";}
+            case 5 -> { return "Error: app_5 - Hi ha hagut un error al fer la petició. Posi's en contacte amb l'administrador del sistema. L'usuari no es pot consultar.";}
+            case 6 -> { return "Error: app_6 - Hi ha hagut un error al fer la petició. Posi's en contacte amb l'administrador del sistema. L'usuari no s'ha eliminat.";}
+            case 7 -> { return "Error: app_7 - Hi ha hagut un error al fer la petició. Posi's en contacte amb l'administrador del sistema. El tipus d'usuari no correspon amb cap tipus controlat.";}
+            case 8 -> { return "Has de seleccionar una fila de la taula d'usuaris."; }
+            case 9 -> { return "No s'ha pogut validar el email i no s'ha enviat cap correu."; }
+            case 10 -> { return "No s'ha pogut enviar e correu. Posi's en contacte amb Residueix."; }
+            case 11 -> { return "Correu enviat! comprovi-ho i canvii la paraula clau el més aviat possible."; }
+            case 12 -> { return "S'ha modificat el perfil"; }
+            case 13 -> { return "Format d'email incorrecte."; }
             default -> { return ""; }
         }
+    }
+  
+    /**
+     * Mètode per validar el format de un email
+     * @param email (String) : email a validar
+     * @return true / false (boolean)s
+     */
+    public boolean validarEmail(String email){
+        // Patró
+        Pattern pattern = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+        Matcher mather = pattern.matcher(email);
+        return mather.find();
     }
     
     /**
@@ -139,24 +164,67 @@ public class Api {
     }
     
     /**
-     * Mètode per recuperar el llistat d'usaris
-     * @param usuari (Usuari): usuari que fa la petició.
-     * @param opcio (int) : opció del filtre
-     * @return JSONArray json amb el llistat d'usuaris.
+     * Mètode per comprovar si existeix un correu/usuari
+     * @param correu (String) : correu a cercar
+     * @return JSONObject: json amb la resposta.
      */
-    public JSONObject llistatUsuaris(Usuari usuari,int opcio){
+    public JSONObject existeixCorreu(String correu){
         
         try{
             
-            // Validem l'opció
-            String filtre; String parametre_filtre;
-            switch(opcio){
-                case 1 -> { filtre = "tipus"; parametre_filtre = "1"; }
-                case 2 -> { filtre = "tipus"; parametre_filtre = "2"; }
-                case 3 -> { filtre = "tipus"; parametre_filtre = "3"; }
-                case 4 -> { filtre = "tipus"; parametre_filtre = "4"; }
-                default ->{ filtre = ""; parametre_filtre = ""; }
+            URL url = new URL("http://169.254.142.250/residueix/api/usuaris/existeix/index.php");
+            Map<String,Object> params = new LinkedHashMap<>();
+            
+            // Paràmetres 
+            params.put("email", correu);
+             
+            // Cridem a l'api per recuperar el json
+            String json = this.cridaApi(url, params);
+            
+            System.out.println(json);
+            // Llegim el Json.
+            if(!json.equals("")){
+                JSONObject jsonO = new JSONObject(json);
+                return jsonO;
+            }else{
+                return new JSONObject();
             }
+            
+        } catch (IOException e){
+            System.out.println("Error excepció: " + e.getMessage());
+            return new JSONObject();
+        }
+        
+    }
+    
+    /**
+     * Mètode per recuperar el llistat d'usaris
+     * @param usuari (Usuari): usuari que fa la petició.
+     * @param comboTipus (int) : seleccio del combo tipus
+     * @param comboActiu (int) : seleccio del combo actiu
+     * @return JSONArray json amb el llistat d'usuaris.
+     */
+    public JSONObject llistatUsuaris(Usuari usuari,int comboTipus, int comboActiu){
+        
+        try{
+            
+            // Validem les opcions
+            String filtreTipus; 
+            String filtreActiu;
+            switch(comboTipus){
+                case 1 -> { filtreTipus = "1"; }
+                case 2 -> { filtreTipus = "2"; }
+                case 3 -> { filtreTipus = "3"; }
+                case 4 -> { filtreTipus = "4"; }
+                default ->{ filtreTipus = ""; }
+            }
+            switch(comboActiu){
+                case 1 -> { filtreActiu = "1"; }
+                case 2 -> { filtreActiu = "0"; }
+                default ->{ filtreActiu = ""; }
+            }
+            
+            
             
             URL url = new URL("http://169.254.142.250/residueix/api/usuaris/llistat/index.php");
             Map<String,Object> params = new LinkedHashMap<>();
@@ -165,8 +233,8 @@ public class Api {
             params.put("id_usuari", String.valueOf(usuari.getId()));
             params.put("token", usuari.getToken());
             params.put("permis", String.valueOf(usuari.getTipus()));
-            params.put("filtre", filtre);
-            params.put("parametre_filtre", parametre_filtre);
+            params.put("tipus", filtreTipus);
+            params.put("actiu", filtreActiu);
             
             // Cridem a l'api per recuperar el json
             String json = this.cridaApi(url,params);
@@ -448,8 +516,7 @@ public class Api {
         }
         
     }
-    
-    
+
     /**
      * Mètode per donar d'alta un usuari residuent.
      * @param usuari (Usuari) : usuari que fa la petició.
@@ -513,7 +580,311 @@ public class Api {
         
     }
     
+    /**
+     * Mètode per consultar un usuari
+     * @param usuari (Usuari) : usuari que fa la petició.
+     * @param id (int) : id l'usuari
+     * @return JSONObject: json amb el llistat d'usuaris.
+     */
+    public JSONObject consultaUsuari(Usuari usuari,int id){
+        
+        try{
+            
+            URL url = new URL("http://169.254.142.250/residueix/api/usuaris/consulta/index.php");
+            Map<String,Object> params = new LinkedHashMap<>();
+            
+            // Paràmetres
+            params.put("id_usuari", String.valueOf(usuari.getId()));
+            params.put("token", usuari.getToken());
+            params.put("permis", String.valueOf(usuari.getTipus()));
+            params.put("id",id);
+            
+            // Cridem a l'api per recuperar el json
+            String json = this.cridaApi(url, params);
+            
+            // Llegim el Json.
+            if(!json.equals("")){
+                JSONObject jsonO = new JSONObject(json);
+                return jsonO;
+            }else{
+                return new JSONObject();
+            }
+            
+        } catch (IOException e){
+            System.out.println("Error excepció: " + e.getMessage());
+            return new JSONObject();
+        }
+    }
+        
+     /**
+     * Mètode per donar de baixa un usuari.
+     * @param usuari (Usuari) : usuari que fa la petició.
+     * @param id (int) : id l'usuari
+     * @return JSONArray: json amb el llistat d'usuaris.
+     */
+    public JSONObject eliminarUsuari(Usuari usuari,int id){
+        
+        try{
+            
+            URL url = new URL("http://169.254.142.250/residueix/api/usuaris/baixa/index.php");
+            Map<String,Object> params = new LinkedHashMap<>();
+            
+            // Paràmetres
+            params.put("id_usuari", String.valueOf(usuari.getId()));
+            params.put("token", usuari.getToken());
+            params.put("permis", String.valueOf(usuari.getTipus()));
+            params.put("id",id);
+            
+            // Cridem a l'api per recuperar el json
+            String json = this.cridaApi(url, params);
+            
+            // Llegim el Json.
+            if(!json.equals("")){
+                System.out.print(json);
+                JSONObject jsonO = new JSONObject(json);
+                return jsonO;
+            }else{
+                return new JSONObject();
+            }
+            
+        } catch (IOException e){
+            System.out.println("Error excepció: " + e.getMessage());
+            return new JSONObject();
+        }
+        
+    }
+        
+     /**
+     * Mètode per modificar un usuari administrador.
+     * @param id (String) : id de l'usuari
+     * @param usuari (Usuari) : usuari que fa la petició.
+     * @param email (String) : email de l'usuari
+     * @param password (String) : password de l'usuari
+     * @param tipus (String) : tipus d'usuari
+     * @param nom (String) : nom d'usaris
+     * @param cognom1 (String) : cognom1 de l'usari
+     * @param cognom2 (String) : cognom2  de l'usuari
+     * @param telefon (String) : telèfon de l'usuari
+     * @param actiu (String) : usuari actiu
+     * @return JSONArray: json amb el resultat de l'operació.
+     */
+    public JSONObject modificarUsuariAdministrador(Usuari usuari, String id, String email, String password, String tipus, String nom, String cognom1, String cognom2, String telefon, String actiu){
+        
+        try{
+            
+            URL url = new URL("http://169.254.142.250/residueix/api/usuaris/modificacio/administrador/index.php");
+            Map<String,Object> params = new LinkedHashMap<>();
+            
+            // Paràmetres
+            params.put("id_usuari", String.valueOf(usuari.getId()));
+            params.put("token", usuari.getToken());
+            params.put("permis", String.valueOf(usuari.getTipus()));
+            params.put("email",email);
+            params.put("password",password);
+            params.put("tipus",tipus);
+            params.put("nom",nom);
+            params.put("cognom1",cognom1);
+            params.put("cognom2",cognom2);
+            params.put("telefon",telefon);
+            params.put("actiu",actiu);
+            params.put("id",id);
+            
+            // Cridem a l'api per recuperar el json
+            String json = this.cridaApi(url, params);
+            
+            // Llegim el Json.
+            if(!json.equals("")){
+                JSONObject jsonO = new JSONObject(json);
+                return jsonO;
+            }else{
+                return new JSONObject();
+            }
+            
+        } catch (IOException e){
+            System.out.println("Error excepció: " + e.getMessage());
+            return new JSONObject();
+        }
+        
+    }
+       
+    
+     /**
+     * Mètode per modificar un usuari treballador.
+     * @param id (String) : id de l'usuari
+     * @param usuari (Usuari) : usuari que fa la petició.
+     * @param email (String) : email de l'usuari
+     * @param password (String) : password de l'usuari
+     * @param tipus (String) : tipus d'usuari
+     * @param nom (String) : nom d'usaris
+     * @param cognom1 (String) : cognom1 de l'usari
+     * @param cognom2 (String) : cognom2  de l'usuari
+     * @param telefon (String) : telèfon de l'usuari
+     * @param actiu (String) : usuari actiu
+     * @return JSONArray: json amb el resultat de l'operació.
+     */
+    public JSONObject modificarUsuariTreballador(Usuari usuari, String id, String email, String password, String tipus, String nom, String cognom1, String cognom2, String telefon, String actiu){
+        
+        try{
+            
+            URL url = new URL("http://169.254.142.250/residueix/api/usuaris/modificacio/treballador/index.php");
+            Map<String,Object> params = new LinkedHashMap<>();
+            
+            // Paràmetres
+            params.put("id_usuari", String.valueOf(usuari.getId()));
+            params.put("token", usuari.getToken());
+            params.put("permis", String.valueOf(usuari.getTipus()));
+            params.put("email",email);
+            params.put("password",password);
+            params.put("tipus",tipus);
+            params.put("nom",nom);
+            params.put("cognom1",cognom1);
+            params.put("cognom2",cognom2);
+            params.put("telefon",telefon);
+            params.put("actiu",actiu);
+            params.put("id",id);
+            
+            // Cridem a l'api per recuperar el json
+            String json = this.cridaApi(url, params);
+            
+            // Llegim el Json.
+            if(!json.equals("")){
+                JSONObject jsonO = new JSONObject(json);
+                return jsonO;
+            }else{
+                return new JSONObject();
+            }
+            
+        } catch (IOException e){
+            System.out.println("Error excepció: " + e.getMessage());
+            return new JSONObject();
+        }
+        
+    }
+      
+     /**
+     * Mètode per modificar un usuari residuent.
+     * @param id (String) : id de l'usuari
+     * @param usuari (Usuari) : usuari que fa la petició.
+     * @param email (String) : email de l'usuari
+     * @param password (String) : password de l'usuari
+     * @param tipus (String) : tipus d'usuari
+     * @param nom (String) : nom d'usaris
+     * @param cognom1 (String) : cognom1 de l'usari
+     * @param cognom2 (String) : cognom2  de l'usuari
+     * @param telefon (String) : telèfon de l'usuari
+     * @param actiu (String) : usuari actiu
+     * @param carrer (String) : carrer de l'usuari
+     * @param cp (String) : codi postal de l'usuari
+     * @param poblacio (String) : codi de la població
+     * @return JSONArray: json amb el resultat de l'operació.
+     */
+    public JSONObject modificarUsuariResiduent(Usuari usuari, String id, String email, String password, String tipus, String nom, String cognom1, String cognom2, String telefon, String actiu, String carrer, String cp, String poblacio){
+        
+        try{
+            
+            URL url = new URL("http://169.254.142.250/residueix/api/usuaris/modificacio/residuent/index.php");
+            Map<String,Object> params = new LinkedHashMap<>();
+            
+            // Paràmetres
+            params.put("id_usuari", String.valueOf(usuari.getId()));
+            params.put("token", usuari.getToken());
+            params.put("permis", String.valueOf(usuari.getTipus()));
+            params.put("email",email);
+            params.put("password",password);
+            params.put("tipus",tipus);
+            params.put("nom",nom);
+            params.put("cognom1",cognom1);
+            params.put("cognom2",cognom2);
+            params.put("telefon",telefon);
+            params.put("actiu",actiu);
+            params.put("id",id);
+            params.put("carrer",carrer);
+            params.put("cp",cp);
+            params.put("poblacio",poblacio);
+            
+            // Cridem a l'api per recuperar el json
+            String json = this.cridaApi(url, params);
+            
+            // Llegim el Json.
+            if(!json.equals("")){
+                JSONObject jsonO = new JSONObject(json);
+                return jsonO;
+            }else{
+                return new JSONObject();
+            }
+            
+        } catch (IOException e){
+            System.out.println("Error excepció: " + e.getMessage());
+            return new JSONObject();
+        }
+        
+    }
     
     
+     /**
+     * Mètode per modificar un usuari adherit.
+     * @param id (String) : id de l'usuari
+     * @param usuari (Usuari) : usuari que fa la petició.
+     * @param email (String) : email de l'usuari
+     * @param password (String) : password de l'usuari
+     * @param tipus (String) : tipus d'usuari
+     * @param nom (String) : nom d'usaris
+     * @param cognom1 (String) : cognom1 de l'usari
+     * @param cognom2 (String) : cognom2  de l'usuari
+     * @param telefon (String) : telèfon de l'usuari
+     * @param actiu (String) : usuari actiu
+     * @param carrer (String) : carrer de l'usuari
+     * @param cp (String) : codi postal de l'usuari
+     * @param poblacio (String) : codi de la població
+     * @param tipusAdherit (String) : tipus adherit
+     * @param nomAdherit (String) : nom adherit
+     * @param horari (String) : horari adherit
+     * @return JSONArray: json amb el resultat de l'operació.
+     */
+    public JSONObject modificarUsuariAdherit(Usuari usuari, String id, String email, String password, String tipus, String nom, String cognom1, String cognom2, String telefon, String actiu, String carrer, String cp, String poblacio, String tipusAdherit, String nomAdherit, String horari){
+        
+        try{
+            
+            URL url = new URL("http://169.254.142.250/residueix/api/usuaris/modificacio/adherit/index.php");
+            Map<String,Object> params = new LinkedHashMap<>();
+            
+            // Paràmetres
+            params.put("id_usuari", String.valueOf(usuari.getId()));
+            params.put("token", usuari.getToken());
+            params.put("permis", String.valueOf(usuari.getTipus()));
+            params.put("email",email);
+            params.put("password",password);
+            params.put("tipus",tipus);
+            params.put("nom",nom);
+            params.put("cognom1",cognom1);
+            params.put("cognom2",cognom2);
+            params.put("telefon",telefon);
+            params.put("actiu",actiu);
+            params.put("id",id);
+            params.put("carrer",carrer);
+            params.put("cp",cp);
+            params.put("poblacio",poblacio);
+            params.put("tipus_adherit",tipusAdherit);
+            params.put("nom_adherit",nomAdherit);
+            params.put("horari",horari);
+            
+            // Cridem a l'api per recuperar el json
+            String json = this.cridaApi(url, params);
+            
+            // Llegim el Json.
+            if(!json.equals("")){
+                JSONObject jsonO = new JSONObject(json);
+                return jsonO;
+            }else{
+                return new JSONObject();
+            }
+            
+        } catch (IOException e){
+            System.out.println("Error excepció: " + e.getMessage());
+            return new JSONObject();
+        }
+        
+    }
+       
     
 }
