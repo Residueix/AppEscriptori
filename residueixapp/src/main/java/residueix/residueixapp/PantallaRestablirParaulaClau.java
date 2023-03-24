@@ -133,6 +133,14 @@ public class PantallaRestablirParaulaClau extends javax.swing.JFrame {
     }
     
     /**
+     * Mètode getter per retornar l'atribut api
+     * @return Api
+    */
+    public Api getApi(){
+        return this.api;
+    }
+    
+    /**
      * Mètode executat quan premem el botó per tancar finestra
      * @param evt Action Event: Event de prémer botó
      */

@@ -540,18 +540,6 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
         Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
         setLocation(((pantalla.width)-this.getWidth())/2,((pantalla.height)-this.getHeight())/2);
     }
-     
-    /**
-     * Mètode per validar el format de un email
-     * @param email (String) : email a validar
-     * @return true / false (boolean)s
-     */
-    private boolean validarEmail(String email){
-        // Patró
-        Pattern pattern = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
-        Matcher mather = pattern.matcher(email);
-        return mather.find();
-    }
     
     /**
      * Mètode per resetejar el formulari
@@ -626,7 +614,7 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
          if(email.equals("")){
              missatge += " email -"; enviament = false;
          }else{
-            if(!validarEmail(email)){
+            if(!api.validarEmail(email)){
                missatge += " format email incorrecte -"; enviament = false; 
             }
          }

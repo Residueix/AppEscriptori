@@ -326,6 +326,15 @@ public class PantallaLogin extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonLoginActionPerformed
 
     /**
+     * Mètode getter per retornar l'atribut api
+     * @return Api
+    */
+    public Api getApi(){
+        return this.api;
+    }
+            
+            
+    /**
      * Mètode principal de la classe.
      * @param args arguments de la linia de comandament
      */
