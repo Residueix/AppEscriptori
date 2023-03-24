@@ -9,7 +9,7 @@ import residueix.residueixapp.utils.EnviamentCorreu;
 /**
  * Classe per obrir la finestra per Restablir paraula clau.
  * @author Daniel Garcia Ruiz
- * @version 12/03/2023
+ * @version 24/03/2023
  */
 public class PantallaRestablirParaulaClau extends javax.swing.JFrame {
 
@@ -34,7 +34,7 @@ public class PantallaRestablirParaulaClau extends javax.swing.JFrame {
      */
     public PantallaRestablirParaulaClau() {
         // Utilitats api
-        api = new Api();
+        this.api = new Api();
         initComponents();
         centrarPantalla();
     }
@@ -131,15 +131,7 @@ public class PantallaRestablirParaulaClau extends javax.swing.JFrame {
         Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
         setLocation(((pantalla.width)-this.getWidth())/2,((pantalla.height)-this.getHeight())/2);
     }
-    
-    /**
-     * Mètode getter per retornar l'atribut api
-     * @return Api
-    */
-    public Api getApi(){
-        return this.api;
-    }
-    
+        
     /**
      * Mètode executat quan premem el botó per tancar finestra
      * @param evt Action Event: Event de prémer botó
@@ -174,11 +166,10 @@ public class PantallaRestablirParaulaClau extends javax.swing.JFrame {
     private void buttonRestablirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRestablirActionPerformed
         
         // Validem l'email.
-        if(api.validarEmail(textFieldEmail.getText().toString())){
-               
+        if(api.validarEmail(textFieldEmail.getText())){
             // Comprovem que existeix el correu
             JSONObject jsonExisteixCorreu = api.existeixCorreu(textFieldEmail.getText().toString());
-
+ 
             if(!jsonExisteixCorreu.isEmpty()){
                 if(jsonExisteixCorreu.get("codi_error").toString().equals("0")){
                     // Correcte, intenem enviar el correu
@@ -193,21 +184,22 @@ public class PantallaRestablirParaulaClau extends javax.swing.JFrame {
                         pantallaAdvertencia.setVisible(true); 
                         this.dispose();
                     }
-            }else{
+                }else{
                     // Error al json
                     PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia("Error : " + jsonExisteixCorreu.get("codi_error").toString() + " - " + jsonExisteixCorreu.get("error").toString() );
                     pantallaAdvertencia.setVisible(true); 
                     this.dispose();
                 }
+            }else{
+                PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(api.error(10));
+                pantallaAdvertencia.setVisible(true); 
+                this.dispose();
+            }
         }else{
             PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(api.error(13));
             pantallaAdvertencia.setVisible(true); 
-            this.dispose();
+            this.dispose();    
         }
-        
-        }else{
-            
-            }
         
     }//GEN-LAST:event_buttonRestablirActionPerformed
 

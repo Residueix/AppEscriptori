@@ -14,7 +14,7 @@ import residueix.residueixapp.utils.Api;
 /**
  * Classe per obrir la pantalla per donar d'alta un usuari
  * @author Daniel Garcia Ruiz
- * @version 12/03/2023
+ * @version 24/03/2023
  */
 public class PantallaPerfil extends javax.swing.JFrame {
     
@@ -51,7 +51,8 @@ public class PantallaPerfil extends javax.swing.JFrame {
     
     /**
      * Crea una nova instància de la classe PantallaPrincipal.
-     * @param usuari: Usuari loginat a l'aplicació.
+     * @param usuari (Usuaria) :  Usuari loginat a l'aplicació.
+     * @param idUsuari (int) : usuari a modificar
      */
     public PantallaPerfil(Usuari usuari, int idUsuari) {
         // Utilitats api
@@ -717,9 +718,9 @@ public class PantallaPerfil extends javax.swing.JFrame {
     private void actualitzarUsuari(){
         usuari.setNom(textFieldNom.getText());
         usuari.setCognom1(textFieldCognom1.getText());
-        usuari.setCognom2(textFieldCognom1.getText());
-        usuari.setTelefon(textFieldCognom1.getText());
-        usuari.setPassword(textFieldCognom1.getText());
+        usuari.setCognom2(textFieldCognom2.getText());
+        usuari.setTelefon(textFieldTelefon.getText());
+        usuari.setPassword(passwordFieldPassword.getText());
         gestioUsuari();
     }
     

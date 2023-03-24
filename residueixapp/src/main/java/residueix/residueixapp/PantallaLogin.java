@@ -10,7 +10,7 @@ import residueix.residueixapp.utils.Api;
 /**
  * Classe que representa la pantalla de Login de l'aplicació.
  * @author Daniel Garcia Ruiz
- * @version 13/03/2023
+ * @version 24/03/2023
 */
 public class PantallaLogin extends javax.swing.JFrame {
     
@@ -320,20 +320,10 @@ public class PantallaLogin extends javax.swing.JFrame {
             }
         }else{
             PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(api.error(13));
-            pantallaAdvertencia.setVisible(true); 
-            this.dispose();
+            pantallaAdvertencia.setVisible(true);
         }
     }//GEN-LAST:event_buttonLoginActionPerformed
-
-    /**
-     * Mètode getter per retornar l'atribut api
-     * @return Api
-    */
-    public Api getApi(){
-        return this.api;
-    }
-            
-            
+           
     /**
      * Mètode principal de la classe.
      * @param args arguments de la linia de comandament

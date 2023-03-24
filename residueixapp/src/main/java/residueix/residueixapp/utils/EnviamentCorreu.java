@@ -15,10 +15,15 @@ import javax.mail.internet.MimeMessage;
  */
 
 public class EnviamentCorreu {
+    
+    /**
+     * Mètode constructor buit per instanciar.
+     */
+    public EnviamentCorreu(){}
    
     /**
      * Mètode main de la classe EnviamentCorreu
-     * @param args
+     * @param args paràmetres main.
      */
     public static void main(String[] args){
     }

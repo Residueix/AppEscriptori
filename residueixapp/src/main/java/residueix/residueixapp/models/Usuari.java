@@ -53,12 +53,14 @@ public class Usuari {
      * Crea una nova instància de la classe usuari
      * @param id (int) id usari
      * @param tipus (int) tipus usuari
+     * @param tipus_nom (String) nom del tipus d'usauri
      * @param email (String) email usuari
      * @param password (String) password usuari
      * @param nom (String) nom usuari
      * @param cognom1 (String) cognom1 usuari
      * @param cognom2 (String) cognom2 usuari
      * @param telefon (String) telefon usuari
+     * @param token (String) token de sessió per fer operacions.
      */
     public Usuari(int id, int tipus, String tipus_nom, String email, String password, String nom, String cognom1, String cognom2, String telefon, String token){
         
@@ -179,7 +181,7 @@ public class Usuari {
      * Modifica el nom tipus de l'usuari.
      * @param nouNomTipus (String)
      */
-    public void setTipus(String nouNomTipus){
+    public void setNomTipus(String nouNomTipus){
         this.tipus_nom = nouNomTipus;
     }
     

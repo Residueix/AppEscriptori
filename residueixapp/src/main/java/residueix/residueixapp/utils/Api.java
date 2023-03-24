@@ -20,9 +20,14 @@ import residueix.residueixapp.models.Usuari;
 /**
  * Classe d'utilitats per conectar amb l'API del servidor.
  * @author Daniel Garcia Ruiz
- * @version 19/03/2023
+ * @version 24/03/2023
  */
 public class Api {
+    
+    /**
+    * Constructor - Crea una nova instància de la classe Residueixapp
+    */
+    public Api(){}
     
     /**
      * Mètode per obenir un missatge d'error
@@ -126,8 +131,8 @@ public class Api {
      * @param url (URL) : Url de l'api.
      * @param params (Map) : Mapeig clau-valor dels paràmetres a passar a l'api.
      * @return json (String) : json amb el resultat de l'api.
-     * @throws UnsupportedEncodingException
-     * @throws IOException 
+     * @throws UnsupportedEncodingException Si hi ha una excepció de codificació errònea.
+     * @throws IOException Si hi ha una excepció d'entrada o sortida
      */
     public String cridaApi(URL url, Map<String,Object> params) throws UnsupportedEncodingException, IOException{
         try{
@@ -181,7 +186,7 @@ public class Api {
             // Cridem a l'api per recuperar el json
             String json = this.cridaApi(url, params);
             
-            System.out.println(json);
+            
             // Llegim el Json.
             if(!json.equals("")){
                 JSONObject jsonO = new JSONObject(json);

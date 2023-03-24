@@ -14,7 +14,7 @@ import residueix.residueixapp.utils.Api;
 /**
  * Classe per obrir la pantalla per donar d'alta un usuari
  * @author Daniel Garcia Ruiz
- * @version 12/03/2023
+ * @version 24/03/2023
  */
 public class PantallaModificarUsuari extends javax.swing.JFrame {
     
@@ -51,7 +51,8 @@ public class PantallaModificarUsuari extends javax.swing.JFrame {
     
     /**
      * Crea una nova instància de la classe PantallaPrincipal.
-     * @param usuari: Usuari loginat a l'aplicació.
+     * @param usuari (Usuari): Usuari loginat a l'aplicació.
+     * @param idUsuari (in) : Usuari a modificar.
      */
     public PantallaModificarUsuari(Usuari usuari, int idUsuari) {
         // Utilitats api

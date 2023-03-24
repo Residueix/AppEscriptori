@@ -14,7 +14,7 @@ import residueix.residueixapp.utils.Api;
 /**
  * Classe per obrir la pantalla per donar d'alta un usuari
  * @author Daniel Garcia Ruiz
- * @version 12/03/2023
+ * @version 24/03/2023
  */
 public class PantallaAltaUsuari extends javax.swing.JFrame {
     

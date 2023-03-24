@@ -7,7 +7,7 @@ import java.awt.Toolkit;
 /**
  * Classe per obrir la finestra per Restablir paraula clau.
  * @author Daniel Garcia Ruiz
- * @version 12/03/2023
+ * @version 24/03/2023
  */
 public class PantallaAdvertencia extends javax.swing.JFrame {
 
@@ -215,7 +215,13 @@ public class PantallaAdvertencia extends javax.swing.JFrame {
     * Panel principal per contenir la pantalla.
     */
     private javax.swing.JPanel panelPrincipal;
+    /**
+    * ScrollPane per contenir el textarea del missatge
+    */
     private javax.swing.JScrollPane scrollPaneMissatge;
+    /**
+    * textArea per contenir el missatge
+    */
     private javax.swing.JTextArea textAreaMissatge;
     // End of variables declaration//GEN-END:variables
 }

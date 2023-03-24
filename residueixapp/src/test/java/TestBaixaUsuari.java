@@ -3,14 +3,13 @@ import static org.junit.Assert.assertEquals;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import residueix.residueixapp.PantallaBaixaUsuari;
-import residueix.residueixapp.PantallaLlistatUsuaris;
 import residueix.residueixapp.models.Usuari;
 import residueix.residueixapp.utils.Api;
 
 /**
  * Classe TestPerfil per proves en la pantalla perfil.
  * @author Daniel Garcia Ruiz
- * @version 23/03/2023
+ * @version 24/03/2023
  */
 public class TestBaixaUsuari {
     
@@ -31,12 +30,14 @@ public class TestBaixaUsuari {
     
     /**
      * Métode Beforeclass per inicialitzar les classes necessàries per les proves
+     * @throws java.lang.InterruptedException
      */
     @BeforeClass
-    public static void beforeClass(){
+    public static void beforeClass() throws InterruptedException{
         TestBaixaUsuari.api = new Api();
         JSONObject jsonUser = api.login("danisvh@gmail.com", "danisvh1");
         TestBaixaUsuari.usuari = new Usuari(jsonUser.getInt("id"),jsonUser.getInt("tipus"),jsonUser.getString("tipus_nom"),jsonUser.getString("email"),jsonUser.getString("password"),jsonUser.getString("nom"),jsonUser.getString("cognom1"),jsonUser.getString("cognom2"),jsonUser.getString("telefon"),jsonUser.getString("token")); 
+        Thread.sleep(1000);
         pbu = new PantallaBaixaUsuari(usuari,1);   
     }
     
@@ -79,7 +80,7 @@ public class TestBaixaUsuari {
      */
     @Test
     public void baixaUsuariNoExisteix(){
-        JSONObject jsonUsuari = api.eliminarUsuari(usuari,1);
+        JSONObject jsonUsuari = api.eliminarUsuari(usuari,999);
         String esp = "0";
         String res = jsonUsuari.getString("codi_error");
         assertEquals(esp,res);

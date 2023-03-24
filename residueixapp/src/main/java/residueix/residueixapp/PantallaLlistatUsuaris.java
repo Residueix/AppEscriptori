@@ -16,7 +16,7 @@ import residueix.residueixapp.utils.Api;
 /**
  * Classe per obrir la pantalla principal de l'aplicació.
  * @author Daniel Garcia Ruiz
- * @version 12/03/2023
+ * @version 24/03/2023
  */
 public class PantallaLlistatUsuaris extends javax.swing.JFrame {
     

@@ -1,3 +1,4 @@
+import static java.lang.Thread.sleep;
 import org.json.JSONObject;
 import static org.junit.Assert.assertEquals;
 import org.junit.BeforeClass;
@@ -9,7 +10,7 @@ import residueix.residueixapp.utils.Api;
 /**
  * Classe TestPerfil per proves en la pantalla perfil.
  * @author Daniel Garcia Ruiz
- * @version 23/03/2023
+ * @version 24/03/2023
  */
 public class TestLlistatUsuaris {
     
@@ -30,13 +31,15 @@ public class TestLlistatUsuaris {
     
     /**
      * Métode Beforeclass per inicialitzar les classes necessàries per les proves
+     * @throws java.lang.InterruptedException
      */
     @BeforeClass
-    public static void beforeClass(){
+    public static void beforeClass() throws InterruptedException{
         TestLlistatUsuaris.api = new Api();
         JSONObject jsonUser = api.login("danisvh@gmail.com", "danisvh1");
         TestLlistatUsuaris.usuari = new Usuari(jsonUser.getInt("id"),jsonUser.getInt("tipus"),jsonUser.getString("tipus_nom"),jsonUser.getString("email"),jsonUser.getString("password"),jsonUser.getString("nom"),jsonUser.getString("cognom1"),jsonUser.getString("cognom2"),jsonUser.getString("telefon"),jsonUser.getString("token")); 
-        plu = new PantallaLlistatUsuaris(usuari);   
+        Thread.sleep(1000);
+        plu = new PantallaLlistatUsuaris(usuari);
     }
     
     
