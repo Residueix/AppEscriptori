@@ -5,6 +5,7 @@ import java.awt.Toolkit;
 import org.json.JSONObject;
 import residueix.residueixapp.utils.Api;
 import residueix.residueixapp.utils.EnviamentCorreu;
+import residueix.residueixapp.utils.Utils;
 
 /**
  * Classe per obrir la finestra per Restablir paraula clau.
@@ -22,10 +23,6 @@ public class PantallaRestablirParaulaClau extends javax.swing.JFrame {
      * Posició y del ratolí.
      */
     private int yMouse;
-    /**
-     * Utils API.java
-     */
-    private Api api;   
     
     
     
@@ -33,8 +30,6 @@ public class PantallaRestablirParaulaClau extends javax.swing.JFrame {
      * Crea una nova instpancia de la classe PantallaRestablirParaulaClau.
      */
     public PantallaRestablirParaulaClau() {
-        // Utilitats api
-        this.api = new Api();
         initComponents();
         centrarPantalla();
     }
@@ -166,9 +161,9 @@ public class PantallaRestablirParaulaClau extends javax.swing.JFrame {
     private void buttonRestablirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRestablirActionPerformed
         
         // Validem l'email.
-        if(api.validarEmail(textFieldEmail.getText())){
+        if(Utils.validarEmail(textFieldEmail.getText())){
             // Comprovem que existeix el correu
-            JSONObject jsonExisteixCorreu = api.existeixCorreu(textFieldEmail.getText().toString());
+            JSONObject jsonExisteixCorreu = Api.existeixCorreu(textFieldEmail.getText().toString());
  
             if(!jsonExisteixCorreu.isEmpty()){
                 if(jsonExisteixCorreu.get("codi_error").toString().equals("0")){
@@ -176,11 +171,11 @@ public class PantallaRestablirParaulaClau extends javax.swing.JFrame {
                     EnviamentCorreu correu = new EnviamentCorreu();
                     boolean resultat = correu.enviament("Restabliment de paraula clau a Residueix", "S'ha demanat el restabliment de la paraula clau. La seva paraula clau es : "+ jsonExisteixCorreu.get("password").toString() +" . Aconsellem que la canvii el més aviat possible.", textFieldEmail.getText().toString());
                     if(resultat){
-                       PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(api.error(11));
+                       PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(Utils.error(11));
                         pantallaAdvertencia.setVisible(true); 
                         this.dispose();
                     }else{
-                        PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(api.error(10));
+                        PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(Utils.error(10));
                         pantallaAdvertencia.setVisible(true); 
                         this.dispose();
                     }
@@ -191,12 +186,12 @@ public class PantallaRestablirParaulaClau extends javax.swing.JFrame {
                     this.dispose();
                 }
             }else{
-                PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(api.error(10));
+                PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(Utils.error(10));
                 pantallaAdvertencia.setVisible(true); 
                 this.dispose();
             }
         }else{
-            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(api.error(13));
+            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(Utils.error(13));
             pantallaAdvertencia.setVisible(true); 
             this.dispose();    
         }

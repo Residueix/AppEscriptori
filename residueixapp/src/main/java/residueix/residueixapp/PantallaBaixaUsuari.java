@@ -10,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import residueix.residueixapp.models.Usuari;
 import residueix.residueixapp.utils.Api;
+import residueix.residueixapp.utils.Utils;
 
 /**
  * Classe per obrir la pantalla per donar d'alta un usuari
@@ -37,18 +38,11 @@ public class PantallaBaixaUsuari extends javax.swing.JFrame {
      */
     private static int idUsuari;  
     /**
-     * Utils API.java
-     */
-    private Api api;
-    
-    /**
      * Crea una nova instància de la classe PantallaPrincipal.
      * @param usuari (Usuari) : Usuari loginat a l'aplicació.
      * @param idUsuariSeleccionat (int) : id de l'usuari a eliminar.
      */
     public PantallaBaixaUsuari(Usuari usuari, int idUsuariSeleccionat) {
-        // Utilitats api
-        api = new Api();
         // Assignació de l'usuari
         this.usuari = usuari;
         this.idUsuari = idUsuariSeleccionat;
@@ -239,7 +233,7 @@ public class PantallaBaixaUsuari extends javax.swing.JFrame {
      */
     private void carregarFormulari(int idUsuariSeleccionat){
         // Amb l'usuari seleccionat recuperem les seves dades.
-        JSONObject jsonUsuari = api.consultaUsuari(usuari,idUsuariSeleccionat);
+        JSONObject jsonUsuari = Api.consultaUsuari(usuari,idUsuariSeleccionat);
         if(!jsonUsuari.isEmpty()){
             if(jsonUsuari.get("codi_error").toString().equals("0")){
                labelEmail.setText(jsonUsuari.get("email").toString());
@@ -252,7 +246,7 @@ public class PantallaBaixaUsuari extends javax.swing.JFrame {
                 pantallaAdvertencia.setVisible(true); 
             }
         }else{
-            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(api.error(5));
+            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(Utils.error(5));
             pantallaAdvertencia.setVisible(true); 
         }
     }
@@ -283,7 +277,7 @@ public class PantallaBaixaUsuari extends javax.swing.JFrame {
      */
     private void buttonLogOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonLogOutActionPerformed
         // Fem el logout
-        api.logout(usuari);
+        Api.logout(usuari);
         System.exit( 0);
     }//GEN-LAST:event_buttonLogOutActionPerformed
 
@@ -306,7 +300,7 @@ public class PantallaBaixaUsuari extends javax.swing.JFrame {
      */
     private void buttonBaixaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonBaixaActionPerformed
         // Eliminem l'usuari.
-        JSONObject jsonUsuari = api.eliminarUsuari(usuari,idUsuari);
+        JSONObject jsonUsuari = Api.eliminarUsuari(usuari,idUsuari);
         if(!jsonUsuari.isEmpty()){
             if(jsonUsuari.get("codi_error").toString().equals("0")){
                 PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia("Usuari eliminat.");
@@ -316,7 +310,7 @@ public class PantallaBaixaUsuari extends javax.swing.JFrame {
                 pantallaAdvertencia.setVisible(true); 
             }
         }else{
-            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(api.error(6));
+            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(Utils.error(6));
             pantallaAdvertencia.setVisible(true); 
         }
     }//GEN-LAST:event_buttonBaixaActionPerformed

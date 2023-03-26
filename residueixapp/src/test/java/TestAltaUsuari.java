@@ -6,6 +6,7 @@ import org.junit.Test;
 import residueix.residueixapp.PantallaAltaUsuari;
 import residueix.residueixapp.models.Usuari;
 import residueix.residueixapp.utils.Api;
+import residueix.residueixapp.utils.Utils;
 
 /**
  * Classe TestPerfil per proves en la pantalla perfil.
@@ -25,18 +26,12 @@ public class TestAltaUsuari {
     static Usuari usuari;
     
     /**
-     * Instància d'Api
-     */
-    static Api api;
-    
-    /**
      * Métode Beforeclass per inicialitzar les classes necessàries per les proves
      * @throws java.lang.InterruptedException
      */
     @BeforeClass
     public static void beforeClass() throws InterruptedException{
-        TestAltaUsuari.api = new Api();
-        JSONObject jsonUser = api.login("danisvh@gmail.com", "danisvh1");
+        JSONObject jsonUser = Api.login("danisvh@gmail.com", "danisvh1");
         TestAltaUsuari.usuari = new Usuari(jsonUser.getInt("id"),jsonUser.getInt("tipus"),jsonUser.getString("tipus_nom"),jsonUser.getString("email"),jsonUser.getString("password"),jsonUser.getString("nom"),jsonUser.getString("cognom1"),jsonUser.getString("cognom2"),jsonUser.getString("telefon"),jsonUser.getString("token")); 
         Thread.sleep(1000);
         pau = new PantallaAltaUsuari(usuari);   
@@ -48,7 +43,7 @@ public class TestAltaUsuari {
      */
     @Test
     public void carrearTipusUsuari(){
-        JSONObject jsonTipusUsuaris = api.llistatTipusUsuari(usuari);  
+        JSONObject jsonTipusUsuaris = Api.llistatTipusUsuari(usuari);  
         String esp = "0";
         String res = jsonTipusUsuaris.getString("codi_error");
         assertEquals(esp,res);
@@ -59,7 +54,7 @@ public class TestAltaUsuari {
      */
     @Test
     public void carregarPoblacions(){
-        JSONObject jsonPoblacions = api.llistatPoblacions(usuari);  
+        JSONObject jsonPoblacions = Api.llistatPoblacions(usuari);  
         String esp = "0";
         String res = jsonPoblacions.getString("codi_error");
         assertEquals(esp,res);
@@ -70,7 +65,7 @@ public class TestAltaUsuari {
      */
     @Test
     public void carregarTipusAdherits(){
-        JSONObject jsonTipusAdherits = api.llistatTipusAdherit(usuari); 
+        JSONObject jsonTipusAdherits = Api.llistatTipusAdherit(usuari); 
         String esp = "0";
         String res = jsonTipusAdherits.getString("codi_error");
         assertEquals(esp,res);
@@ -81,7 +76,7 @@ public class TestAltaUsuari {
      */
     @Test
     public void formatEmailCorrecte() {
-        boolean res = api.validarEmail("danisvh@gmail.com");
+        boolean res = Utils.validarEmail("danisvh@gmail.com");
         boolean esp = true;
         assertEquals(esp,res);
     }
@@ -91,7 +86,7 @@ public class TestAltaUsuari {
      */
     @Test
     public void formatEmailIncorrecte() {
-        boolean res = api.validarEmail("malament");
+        boolean res = Utils.validarEmail("malament");
         boolean esp = false;
         assertEquals(esp,res);
     }
@@ -102,7 +97,7 @@ public class TestAltaUsuari {
     @Test
     public void altaAdministrador(){
         int randomNumber = new Random().nextInt(1000000000);
-        JSONObject jsonRetorn = api.crearUsuariAdministrador(usuari,randomNumber+"@gmail.com","provajunit","1","prova","prova","prova","999999999","1");
+        JSONObject jsonRetorn = Api.crearUsuariAdministrador(usuari,randomNumber+"@gmail.com","provajunit","1","prova","prova","prova","999999999","1");
         String esp = "0";
         String res = jsonRetorn.getString("codi_error");
         assertEquals(esp,res);
@@ -114,7 +109,7 @@ public class TestAltaUsuari {
     @Test
     public void altaTreballador(){
         int randomNumber = new Random().nextInt(1000000000);
-        JSONObject jsonRetorn = api.crearUsuariTreballador(usuari,randomNumber+"@gmail.com","provajunit","2","prova","prova","prova","999999999","1");
+        JSONObject jsonRetorn = Api.crearUsuariTreballador(usuari,randomNumber+"@gmail.com","provajunit","2","prova","prova","prova","999999999","1");
         String esp = "0";
         String res = jsonRetorn.getString("codi_error");
         assertEquals(esp,res);
@@ -126,7 +121,7 @@ public class TestAltaUsuari {
     @Test
     public void altaResiduent(){
         int randomNumber = new Random().nextInt(1000000000);
-        JSONObject jsonRetorn = api.crearUsuariResiduent(usuari,randomNumber+"@gmail.com","provajunit","3","prova","prova","prova","999999999","1","carrer","08000","28");
+        JSONObject jsonRetorn = Api.crearUsuariResiduent(usuari,randomNumber+"@gmail.com","provajunit","3","prova","prova","prova","999999999","1","carrer","08000","28");
         String esp = "0";
         String res = jsonRetorn.getString("codi_error");
         assertEquals(esp,res);
@@ -138,7 +133,7 @@ public class TestAltaUsuari {
     @Test
     public void altaAdherit(){
         int randomNumber = new Random().nextInt(1000000000);
-        JSONObject jsonRetorn = api.crearUsuariAdherit(usuari,randomNumber+"@gmail.com","provajunit","4","prova","prova","prova","999999999","1","carrer","08000","28","nom empresa","horaris","8");
+        JSONObject jsonRetorn = Api.crearUsuariAdherit(usuari,randomNumber+"@gmail.com","provajunit","4","prova","prova","prova","999999999","1","carrer","08000","28","nom empresa","horaris","8");
         String esp = "0";
         String res = jsonRetorn.getString("codi_error");
         assertEquals(esp,res);

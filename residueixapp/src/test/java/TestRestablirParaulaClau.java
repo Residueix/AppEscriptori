@@ -5,6 +5,7 @@ import org.junit.BeforeClass;
 import residueix.residueixapp.PantallaRestablirParaulaClau;
 import residueix.residueixapp.utils.Api;
 import residueix.residueixapp.utils.EnviamentCorreu;
+import residueix.residueixapp.utils.Utils;
 
 /**
  * Classe TestRestablirParaulaClau per proves en la pantalla de restablir paraula clau.
@@ -17,17 +18,12 @@ public class TestRestablirParaulaClau {
      * Instància de la classe PantallaLogin
      */
     static PantallaRestablirParaulaClau prpc;
-    /**
-     * Instància d'Api
-     */
-    static Api api;
-    
+
     /**
      * Mètode before utilitzar per inicialitzar la PantallaLogin a cada prova.
      */
     @BeforeClass
     public static void before() {
-        TestRestablirParaulaClau.api = new Api();
         prpc = new PantallaRestablirParaulaClau();
     }
     
@@ -36,7 +32,7 @@ public class TestRestablirParaulaClau {
      */
     @Test
     public void formatEmailCorrecte() {
-        boolean res = api.validarEmail("danisvh@gmail.com");
+        boolean res = Utils.validarEmail("danisvh@gmail.com");
         boolean esp = true;
         assertEquals(esp,res);
     }
@@ -46,7 +42,7 @@ public class TestRestablirParaulaClau {
      */
     @Test
     public void formatEmailIncorrecte() {
-        boolean res = api.validarEmail("malament");
+        boolean res = Utils.validarEmail("malament");
         boolean esp = false;
         assertEquals(esp,res);
     }
@@ -56,7 +52,7 @@ public class TestRestablirParaulaClau {
      */
     @Test
     public void apiValidarExisteixCorreu(){
-        JSONObject json = api.existeixCorreu("danisvh@gmail.com");
+        JSONObject json = Api.existeixCorreu("danisvh@gmail.com");
         String esp = "0";
         String res = json.getString("codi_error");
         assertEquals(esp,res);
@@ -67,7 +63,7 @@ public class TestRestablirParaulaClau {
      */
     @Test
     public void apiValidarExisteixCorreuIncorrecte(){
-        JSONObject json = api.existeixCorreu("malament@gmail.com");
+        JSONObject json = Api.existeixCorreu("malament@gmail.com");
         String esp = "usuaris_26";
         String res = json.getString("codi_error");
         assertEquals(esp,res);

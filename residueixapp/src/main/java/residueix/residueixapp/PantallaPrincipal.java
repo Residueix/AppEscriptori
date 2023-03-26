@@ -1,5 +1,6 @@
 package residueix.residueixapp;
 
+import residueix.residueixapp.Residus.PantallaLlistatResidus;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import residueix.residueixapp.models.Usuari;

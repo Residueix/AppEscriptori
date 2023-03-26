@@ -1,4 +1,4 @@
-package residueix.residueixapp;
+package residueix.residueixapp.Residus;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -10,8 +10,14 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import residueix.residueixapp.PantallaAdvertencia;
+import residueix.residueixapp.PantallaAltaUsuari;
+import residueix.residueixapp.PantallaBaixaUsuari;
+import residueix.residueixapp.PantallaModificarUsuari;
+import residueix.residueixapp.PantallaPrincipal;
 import residueix.residueixapp.models.Usuari;
 import residueix.residueixapp.utils.Api;
+import residueix.residueixapp.utils.Utils;
 
 /**
  * Classe per obrir la pantalla principal de l'aplicació.
@@ -78,6 +84,7 @@ public class PantallaLlistatResidus extends javax.swing.JFrame {
         comboBoxTipus = new javax.swing.JComboBox<>();
         comboBoxActiu = new javax.swing.JComboBox<>();
         panelOpcions = new javax.swing.JPanel();
+        buttonLlistatResidus = new javax.swing.JButton();
         buttonTornar = new javax.swing.JButton();
         buttonAlta = new javax.swing.JButton();
         buttonLogOut = new javax.swing.JButton();
@@ -126,7 +133,7 @@ public class PantallaLlistatResidus extends javax.swing.JFrame {
         panelTitol.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         labelTitol.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
-        labelTitol.setText("Llistat d'usuaris");
+        labelTitol.setText("Llistat residus");
         labelTitol.setToolTipText("");
         panelTitol.add(labelTitol, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 600, 30));
 
@@ -204,6 +211,20 @@ public class PantallaLlistatResidus extends javax.swing.JFrame {
         panelOpcions.setOpaque(false);
         panelOpcions.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        buttonLlistatResidus.setBackground(new java.awt.Color(51, 102, 255));
+        buttonLlistatResidus.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
+        buttonLlistatResidus.setForeground(new java.awt.Color(255, 255, 255));
+        buttonLlistatResidus.setText("Llistat residus");
+        buttonLlistatResidus.setToolTipText("Llistat residus");
+        buttonLlistatResidus.setBorderPainted(false);
+        buttonLlistatResidus.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        buttonLlistatResidus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonLlistatResidusActionPerformed(evt);
+            }
+        });
+        panelOpcions.add(buttonLlistatResidus, new org.netbeans.lib.awtextra.AbsoluteConstraints(25, 190, 150, 30));
+
         buttonTornar.setBackground(new java.awt.Color(255, 204, 0));
         buttonTornar.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
         buttonTornar.setText("Tornar principal");
@@ -221,7 +242,7 @@ public class PantallaLlistatResidus extends javax.swing.JFrame {
         buttonAlta.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
         buttonAlta.setForeground(new java.awt.Color(255, 255, 255));
         buttonAlta.setText("Alta");
-        buttonAlta.setToolTipText("Alta d'usuari");
+        buttonAlta.setToolTipText("Alta residu");
         buttonAlta.setBorderPainted(false);
         buttonAlta.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         buttonAlta.addActionListener(new java.awt.event.ActionListener() {
@@ -249,7 +270,7 @@ public class PantallaLlistatResidus extends javax.swing.JFrame {
         buttonModificacio.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
         buttonModificacio.setForeground(new java.awt.Color(255, 255, 255));
         buttonModificacio.setText("Modificar");
-        buttonModificacio.setToolTipText("Modificació d'usuari");
+        buttonModificacio.setToolTipText("Modificació residu");
         buttonModificacio.setBorderPainted(false);
         buttonModificacio.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         buttonModificacio.addActionListener(new java.awt.event.ActionListener() {
@@ -263,7 +284,7 @@ public class PantallaLlistatResidus extends javax.swing.JFrame {
         buttonBaixa.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
         buttonBaixa.setForeground(new java.awt.Color(255, 255, 255));
         buttonBaixa.setText("Baixa");
-        buttonBaixa.setToolTipText("Baixa d'usuari");
+        buttonBaixa.setToolTipText("Baixa residu");
         buttonBaixa.setBorderPainted(false);
         buttonBaixa.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         buttonBaixa.addActionListener(new java.awt.event.ActionListener() {
@@ -378,7 +399,7 @@ public class PantallaLlistatResidus extends javax.swing.JFrame {
             }
         }else{
             // Mostrem que hi ha hagut un error al sistema
-            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(api.error(3));
+            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(Utils.error(3));
             pantallaAdvertencia.setVisible(true);
         }
         
@@ -436,8 +457,8 @@ public class PantallaLlistatResidus extends javax.swing.JFrame {
      * @param evt ActionEvent: Pulsar el botó.
      */
     private void buttonAltaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAltaActionPerformed
-        PantallaAltaUsuari pantallaAltaUsuari = new PantallaAltaUsuari(usuari);
-        pantallaAltaUsuari.setVisible(true);
+        PantallaAltaResidu pantallaAltaResidu = new PantallaAltaResidu(usuari);
+        pantallaAltaResidu.setVisible(true);
         this.dispose();
                 
     }//GEN-LAST:event_buttonAltaActionPerformed
@@ -484,10 +505,14 @@ public class PantallaLlistatResidus extends javax.swing.JFrame {
             pantallaModificarUsuari.setVisible(true);
             this.dispose();
         }else{
-            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(api.error(8));
+            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(Utils.error(8));
             pantallaAdvertencia.setVisible(true);
         }
     }//GEN-LAST:event_buttonModificacioActionPerformed
+
+    private void buttonLlistatResidusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonLlistatResidusActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_buttonLlistatResidusActionPerformed
 
     /**
      * Mètode principal de la classe.
@@ -544,6 +569,10 @@ public class PantallaLlistatResidus extends javax.swing.JFrame {
     * Botó per donar de baixa un usuari.
     */
     private javax.swing.JButton buttonBaixa;
+    /**
+    * Botó per donar de baixa un usuari.
+    */
+    private javax.swing.JButton buttonLlistatResidus;
     /**
     * Botó per desloginar-se i sortir de l'aplicació.
     */

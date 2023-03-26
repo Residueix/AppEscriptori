@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import residueix.residueixapp.PantallaLogin;
 import residueix.residueixapp.utils.Api;
+import residueix.residueixapp.utils.Utils;
 
 /**
  * Classe TestLogin per proves en la pantalla de login.
@@ -16,17 +17,12 @@ public class TestLogin {
      * Instància de la classe PantallaLogin
      */
     static PantallaLogin pl;
-    /**
-     * Instància d'Api
-     */
-    static Api api;
     
     /**
      * Mètode before utilitzar per inicialitzar la PantallaLogin a cada prova.
      */
     @BeforeClass
     public static void before() {
-        TestLogin.api = new Api();
         pl = new PantallaLogin();
     }
     
@@ -35,7 +31,7 @@ public class TestLogin {
      */
     @Test
     public void formatEmailCorrecte() {
-        boolean res = api.validarEmail("danisvh@gmail.com");
+        boolean res = Utils.validarEmail("danisvh@gmail.com");
         boolean esp = true;
         assertEquals(esp,res);
     }
@@ -45,7 +41,7 @@ public class TestLogin {
      */
     @Test
     public void formatEmailIncorrecte() {
-        boolean res = api.validarEmail("malament");
+        boolean res = Utils.validarEmail("malament");
         boolean esp = false;
         assertEquals(esp,res);
     }
@@ -55,7 +51,7 @@ public class TestLogin {
      */
     @Test
     public void cridaApiLoginCorrecta(){
-        JSONObject json = api.login("danisvh@gmail.com", "danisvh1");
+        JSONObject json = Api.login("danisvh@gmail.com", "danisvh1");
         String esp = "0";
         String res = json.getString("codi_error");
         assertEquals(esp,res);
@@ -66,7 +62,7 @@ public class TestLogin {
      */
     @Test
     public void cridaApiLoginIncorrectaCredencialsErronees(){
-        JSONObject json = api.login("danisvh@gmail.com", "malament");
+        JSONObject json = Api.login("danisvh@gmail.com", "malament");
         String esp = "login_3";
         String res = json.getString("codi_error");
         assertEquals(esp,res);
@@ -77,7 +73,7 @@ public class TestLogin {
      */
     @Test
     public void cridaApiLoginIncorrectaSenseEmail(){
-        JSONObject json = api.login("", "malament");
+        JSONObject json = Api.login("", "malament");
         String esp = "login_3";
         String res = json.getString("codi_error");
         assertEquals(esp,res);
@@ -88,7 +84,7 @@ public class TestLogin {
      */
     @Test
     public void cridaApiLoginIncorrectaSensePassword(){
-        JSONObject json = api.login("danisvh@gmail.com", "");
+        JSONObject json = Api.login("danisvh@gmail.com", "");
         String esp = "login_3";
         String res = json.getString("codi_error");
         assertEquals(esp,res);

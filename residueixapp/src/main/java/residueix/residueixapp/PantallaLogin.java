@@ -5,6 +5,7 @@ import java.awt.Toolkit;
 import org.json.JSONObject;
 import residueix.residueixapp.models.Usuari;
 import residueix.residueixapp.utils.Api;
+import residueix.residueixapp.utils.Utils;
 
 
 /**
@@ -23,17 +24,11 @@ public class PantallaLogin extends javax.swing.JFrame {
      * Posició y del ratolí
      */
     private int yMouse;
-    /**
-     * Utils API.java
-     */
-    private final Api api;
 
     /**
      * Crea una nova instància de la classe PantallaLogin
      */
     public PantallaLogin() {
-        // Iniciem els atributs.
-        this.api = new Api();
         // Iniciem els components
         initComponents();
         // Centrem pantalla
@@ -287,14 +282,14 @@ public class PantallaLogin extends javax.swing.JFrame {
     private void buttonLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonLoginActionPerformed
         
         // Validem l'email.
-        if(api.validarEmail(textFieldUsuari.getText().toString())){
+        if(Utils.validarEmail(textFieldUsuari.getText().toString())){
             
             // Criidem a l'api per loginar-se.
-            JSONObject json = api.login(textFieldUsuari.getText(), passwordFieldParaulaClau.getText());
+            JSONObject json = Api.login(textFieldUsuari.getText(), passwordFieldParaulaClau.getText());
         
             // Controlem el que ens ha arribat
             if(json.isEmpty()) {
-                PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(api.error((1)));
+                PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(Utils.error((1)));
                 pantallaAdvertencia.setVisible(true); 
             }else{
                 if(json.get("codi_error").toString().equals("0")){
@@ -308,7 +303,7 @@ public class PantallaLogin extends javax.swing.JFrame {
                             this.dispose();
                         }
                         default -> {
-                            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(api.error((2)));
+                            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(Utils.error((2)));
                             pantallaAdvertencia.setVisible(true); 
                         }
                     }
@@ -319,7 +314,7 @@ public class PantallaLogin extends javax.swing.JFrame {
                 }
             }
         }else{
-            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(api.error(13));
+            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(Utils.error(13));
             pantallaAdvertencia.setVisible(true);
         }
     }//GEN-LAST:event_buttonLoginActionPerformed

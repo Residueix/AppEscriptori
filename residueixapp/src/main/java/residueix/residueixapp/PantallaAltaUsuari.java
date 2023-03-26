@@ -10,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import residueix.residueixapp.models.Usuari;
 import residueix.residueixapp.utils.Api;
+import residueix.residueixapp.utils.Utils;
 
 /**
  * Classe per obrir la pantalla per donar d'alta un usuari
@@ -33,10 +34,6 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
      */
     private int yMouse;  
     /**
-     * Utils API.java
-     */
-    private Api api;
-    /**
      * Llistat de tipus d'usuari.
      */
     private ArrayList<String[]> llistatTipus = new ArrayList<String[]>();
@@ -54,8 +51,6 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
      * @param usuari: Usuari loginat a l'aplicació.
      */
     public PantallaAltaUsuari(Usuari usuari) {
-        // Utilitats api
-        api = new Api();
         // Assignació de l'usuari
         this.usuari = usuari;
         // Inicialització dels components
@@ -447,7 +442,7 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
         String problemes = "no";
         
         // Json array amb els tipus d'usuari per al combobox
-        JSONObject jsonTipusUsuaris = api.llistatTipusUsuari(usuari);
+        JSONObject jsonTipusUsuaris = Api.llistatTipusUsuari(usuari);
         
         if(!jsonTipusUsuaris.isEmpty()){
             if(jsonTipusUsuaris.get("codi_error").toString().equals("0")){
@@ -470,7 +465,7 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
         comboBoxTipusUsuari.setBackground(new Color(255,255,255,255));
         
         // Json array amb les poblacions
-        JSONObject jsonPoblacions = api.llistatPoblacions(usuari);
+        JSONObject jsonPoblacions = Api.llistatPoblacions(usuari);
         
         if(!jsonPoblacions.isEmpty()){
             if(jsonPoblacions.get("codi_error").toString().equals("0")){
@@ -493,7 +488,7 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
         comboBoxPoblacio.setBackground(new Color(255,255,255,255));
         
         // Json amb els tipus d'adherits
-        JSONObject jsonTipusAdherits = api.llistatTipusAdherit(usuari);
+        JSONObject jsonTipusAdherits = Api.llistatTipusAdherit(usuari);
         
          if(!jsonTipusAdherits.isEmpty()){
             if(jsonTipusAdherits.get("codi_error").toString().equals("0")){
@@ -614,7 +609,7 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
          if(email.equals("")){
              missatge += " email -"; enviament = false;
          }else{
-            if(!api.validarEmail(email)){
+            if(!Utils.validarEmail(email)){
                missatge += " format email incorrecte -"; enviament = false; 
             }
          }
@@ -715,7 +710,7 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
             // Cridem l'api per donar d'alta usari 
             switch(tipus){
                 case "Administrador" -> {  
-                    JSONObject jsonRetorn = api.crearUsuariAdministrador(usuari,email,password,tipus_id,nom,cognom1,cognom2,telefon,actiu);
+                    JSONObject jsonRetorn = Api.crearUsuariAdministrador(usuari,email,password,tipus_id,nom,cognom1,cognom2,telefon,actiu);
                     if(!jsonRetorn.isEmpty()){
                         if(jsonRetorn.get("codi_error").toString().equals("0")){
                             PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(jsonRetorn.get("descripcio").toString());
@@ -726,12 +721,12 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
                             pantallaAdvertencia.setVisible(true); 
                         }
                     }else{
-                        PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(api.error(4));
+                        PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(Utils.error(4));
                         pantallaAdvertencia.setVisible(true);   
                     }
                 }
                 case "Treballador" -> {
-                    JSONObject jsonRetorn = api.crearUsuariTreballador(usuari,email,password,tipus_id,nom,cognom1,cognom2,telefon,actiu);
+                    JSONObject jsonRetorn = Api.crearUsuariTreballador(usuari,email,password,tipus_id,nom,cognom1,cognom2,telefon,actiu);
                     if(!jsonRetorn.isEmpty()){
                         if(jsonRetorn.get("codi_error").toString().equals("0")){
                             PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(jsonRetorn.get("descripcio").toString());
@@ -742,12 +737,12 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
                             pantallaAdvertencia.setVisible(true); 
                         }
                     }else{
-                        PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(api.error(4));
+                        PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(Utils.error(4));
                         pantallaAdvertencia.setVisible(true);   
                     }
                 }
                 case "Residuent" -> {
-                    JSONObject jsonRetorn = api.crearUsuariResiduent(usuari,email,password,tipus_id,nom,cognom1,cognom2,telefon,actiu,carrer,cp,poblacio_id);
+                    JSONObject jsonRetorn = Api.crearUsuariResiduent(usuari,email,password,tipus_id,nom,cognom1,cognom2,telefon,actiu,carrer,cp,poblacio_id);
                     if(!jsonRetorn.isEmpty()){
                         if(jsonRetorn.get("codi_error").toString().equals("0")){
                             PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(jsonRetorn.get("descripcio").toString());
@@ -758,12 +753,12 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
                             pantallaAdvertencia.setVisible(true); 
                         }
                     }else{
-                        PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(api.error(4));
+                        PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(Utils.error(4));
                         pantallaAdvertencia.setVisible(true);   
                     }
                 }
                 case "Adherit" -> {
-                    JSONObject jsonRetorn = api.crearUsuariAdherit(usuari,email,password,tipus_id,nom,cognom1,cognom2,telefon,actiu,carrer,cp,poblacio_id,nomAdherit,horaris,tipusAdherit_id);
+                    JSONObject jsonRetorn = Api.crearUsuariAdherit(usuari,email,password,tipus_id,nom,cognom1,cognom2,telefon,actiu,carrer,cp,poblacio_id,nomAdherit,horaris,tipusAdherit_id);
                     if(!jsonRetorn.isEmpty()){
                         if(jsonRetorn.get("codi_error").toString().equals("0")){
                             PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(jsonRetorn.get("descripcio").toString());
@@ -774,7 +769,7 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
                             pantallaAdvertencia.setVisible(true); 
                         }
                     }else{
-                        PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(api.error(4));
+                        PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(Utils.error(4));
                         pantallaAdvertencia.setVisible(true);   
                     }
                 }
@@ -792,7 +787,7 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
      */
     private void buttonLogOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonLogOutActionPerformed
         // Fem el logout
-        api.logout(usuari);
+        Api.logout(usuari);
         System.exit( 0);
     }//GEN-LAST:event_buttonLogOutActionPerformed
 

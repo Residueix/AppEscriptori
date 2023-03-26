@@ -1,4 +1,4 @@
-package residueix.residueixapp;
+package residueix.residueixapp.Residus;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -9,6 +9,11 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import residueix.residueixapp.PantallaAdvertencia;
+import residueix.residueixapp.PantallaAltaUsuari;
+import residueix.residueixapp.PantallaBaixaUsuari;
+import residueix.residueixapp.PantallaModificarUsuari;
+import residueix.residueixapp.PantallaPrincipal;
 import residueix.residueixapp.models.Usuari;
 import residueix.residueixapp.utils.Api;
 import residueix.residueixapp.utils.Utils;
@@ -18,7 +23,7 @@ import residueix.residueixapp.utils.Utils;
  * @author Daniel Garcia Ruiz
  * @version 24/03/2023
  */
-public class PantallaLlistatUsuaris extends javax.swing.JFrame {
+public class PantallaLlistatTipusResidus extends javax.swing.JFrame {
     
     
     // Atributs
@@ -35,11 +40,13 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
      */
     private int yMouse;  
 
+
     /**
      * Crea una nova instància de la classe PantallaPrincipal.
      * @param usuari: Usuari loginat a l'aplicació.
      */
-    public PantallaLlistatUsuaris(Usuari usuari) {
+    public PantallaLlistatTipusResidus(Usuari usuari) {
+
         // Assignació de l'usuari
         this.usuari = usuari;
         // Inicialització dels components
@@ -72,7 +79,8 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
         comboBoxTipus = new javax.swing.JComboBox<>();
         comboBoxActiu = new javax.swing.JComboBox<>();
         panelOpcions = new javax.swing.JPanel();
-        buttonTornar = new javax.swing.JButton();
+        buttonTornarResidus = new javax.swing.JButton();
+        buttonTornarPrincipal = new javax.swing.JButton();
         buttonAlta = new javax.swing.JButton();
         buttonLogOut = new javax.swing.JButton();
         buttonModificacio = new javax.swing.JButton();
@@ -120,7 +128,7 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
         panelTitol.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         labelTitol.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
-        labelTitol.setText("Llistat d'usuaris");
+        labelTitol.setText("Llistat tipus residus");
         labelTitol.setToolTipText("");
         panelTitol.add(labelTitol, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 600, 30));
 
@@ -198,24 +206,37 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
         panelOpcions.setOpaque(false);
         panelOpcions.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        buttonTornar.setBackground(new java.awt.Color(255, 204, 0));
-        buttonTornar.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
-        buttonTornar.setText("Tornar principal");
-        buttonTornar.setToolTipText("Tornar a la pantalla principal");
-        buttonTornar.setBorderPainted(false);
-        buttonTornar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        buttonTornar.addActionListener(new java.awt.event.ActionListener() {
+        buttonTornarResidus.setBackground(new java.awt.Color(255, 204, 0));
+        buttonTornarResidus.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
+        buttonTornarResidus.setText("Tornar residus");
+        buttonTornarResidus.setToolTipText("Tornar a la pantalla de residus");
+        buttonTornarResidus.setBorderPainted(false);
+        buttonTornarResidus.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        buttonTornarResidus.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonTornarActionPerformed(evt);
+                buttonTornarResidusActionPerformed(evt);
             }
         });
-        panelOpcions.add(buttonTornar, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 660, 150, 30));
+        panelOpcions.add(buttonTornarResidus, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 620, 150, 30));
+
+        buttonTornarPrincipal.setBackground(new java.awt.Color(255, 204, 0));
+        buttonTornarPrincipal.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
+        buttonTornarPrincipal.setText("Tornar principal");
+        buttonTornarPrincipal.setToolTipText("Tornar a la pantalla principal");
+        buttonTornarPrincipal.setBorderPainted(false);
+        buttonTornarPrincipal.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        buttonTornarPrincipal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonTornarPrincipalActionPerformed(evt);
+            }
+        });
+        panelOpcions.add(buttonTornarPrincipal, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 660, 150, 30));
 
         buttonAlta.setBackground(new java.awt.Color(51, 102, 255));
         buttonAlta.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
         buttonAlta.setForeground(new java.awt.Color(255, 255, 255));
         buttonAlta.setText("Alta");
-        buttonAlta.setToolTipText("Alta d'usuari");
+        buttonAlta.setToolTipText("Alta tipus residu");
         buttonAlta.setBorderPainted(false);
         buttonAlta.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         buttonAlta.addActionListener(new java.awt.event.ActionListener() {
@@ -243,7 +264,7 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
         buttonModificacio.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
         buttonModificacio.setForeground(new java.awt.Color(255, 255, 255));
         buttonModificacio.setText("Modificar");
-        buttonModificacio.setToolTipText("Modificació d'usuari");
+        buttonModificacio.setToolTipText("Modificació tipus residu");
         buttonModificacio.setBorderPainted(false);
         buttonModificacio.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         buttonModificacio.addActionListener(new java.awt.event.ActionListener() {
@@ -257,7 +278,7 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
         buttonBaixa.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
         buttonBaixa.setForeground(new java.awt.Color(255, 255, 255));
         buttonBaixa.setText("Baixa");
-        buttonBaixa.setToolTipText("Baixa d'usuari");
+        buttonBaixa.setToolTipText("Baixa tipus residu");
         buttonBaixa.setBorderPainted(false);
         buttonBaixa.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         buttonBaixa.addActionListener(new java.awt.event.ActionListener() {
@@ -401,11 +422,11 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
      * Mètode utilitzat quan es prem el botó de tornar a la pantalla principal.
      * @param evt ActionEvent: Pulsar el botó.
      */
-    private void buttonTornarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonTornarActionPerformed
+    private void buttonTornarPrincipalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonTornarPrincipalActionPerformed
          PantallaPrincipal pantallaPrincipal = new PantallaPrincipal(usuari);
          pantallaPrincipal.setVisible(true);
          this.dispose();
-    }//GEN-LAST:event_buttonTornarActionPerformed
+    }//GEN-LAST:event_buttonTornarPrincipalActionPerformed
 
     /**
      * Mètode utilitzat quan es prem el botó de logout per tancar la sessió.
@@ -483,6 +504,12 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_buttonModificacioActionPerformed
 
+    private void buttonTornarResidusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonTornarResidusActionPerformed
+        PantallaLlistatResidus pantallaLlistatResidus = new PantallaLlistatResidus(usuari);
+        pantallaLlistatResidus.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_buttonTornarResidusActionPerformed
+
     /**
      * Mètode principal de la classe.
      * @param args arguments de la linia de comandament
@@ -501,14 +528,26 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(PantallaLlistatUsuaris.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PantallaLlistatTipusResidus.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(PantallaLlistatUsuaris.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PantallaLlistatTipusResidus.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(PantallaLlistatUsuaris.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PantallaLlistatTipusResidus.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(PantallaLlistatUsuaris.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PantallaLlistatTipusResidus.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -517,7 +556,7 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new PantallaLlistatUsuaris(usuari).setVisible(true);
+                new PantallaLlistatTipusResidus(usuari).setVisible(true);
             }
         });
         
@@ -549,7 +588,11 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
     /**
     * Botó per tornar a la pantalla principal.
     */
-    private javax.swing.JButton buttonTornar;
+    private javax.swing.JButton buttonTornarPrincipal;
+    /**
+    * Botó per tornar a la pantalla principal.
+    */
+    private javax.swing.JButton buttonTornarResidus;
     /**
     * Combo box amb diferents opcions per filtrar el llistat d'usauris
     */

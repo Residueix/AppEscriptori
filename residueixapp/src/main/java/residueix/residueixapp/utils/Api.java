@@ -2,6 +2,7 @@ package residueix.residueixapp.utils;
 
 // Imports
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -10,6 +11,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,46 +27,10 @@ import residueix.residueixapp.models.Usuari;
 public class Api {
     
     /**
-    * Constructor - Crea una nova instància de la classe Residueixapp
+    * Constructor - Crea una nova instància de la classe App
     */
     public Api(){}
     
-    /**
-     * Mètode per obenir un missatge d'error
-     * @param codi (int) : codi númeric de l'error
-
-     * @return missatge (String) : Missatge amb l'error.
-     */
-    public String error(int codi){
-        switch(codi){
-            case 1 -> { return "Error: app_1 - Hi ha hagut un error al fer la petició. Posi's en contacte amb l'administrador del sistema."; }
-            case 2 -> { return "Error: app_2 - No té permís per accedir a l'aplicació."; }
-            case 3 -> { return "Error: app_3 - Hi ha hagut un error al fer la petició. Posi's en contacte amb l'administrador del sistema. El llistat d'usuaris està buit."; }
-            case 4 -> { return "Error: app_4 - Hi ha hagut un error al fer la petició. Posi's en contacte amb l'administrador del sistema. L'usuari no s'ha creat.";}
-            case 5 -> { return "Error: app_5 - Hi ha hagut un error al fer la petició. Posi's en contacte amb l'administrador del sistema. L'usuari no es pot consultar.";}
-            case 6 -> { return "Error: app_6 - Hi ha hagut un error al fer la petició. Posi's en contacte amb l'administrador del sistema. L'usuari no s'ha eliminat.";}
-            case 7 -> { return "Error: app_7 - Hi ha hagut un error al fer la petició. Posi's en contacte amb l'administrador del sistema. El tipus d'usuari no correspon amb cap tipus controlat.";}
-            case 8 -> { return "Has de seleccionar una fila de la taula d'usuaris."; }
-            case 9 -> { return "No s'ha pogut validar el email i no s'ha enviat cap correu."; }
-            case 10 -> { return "No s'ha pogut enviar e correu. Posi's en contacte amb Residueix."; }
-            case 11 -> { return "Correu enviat! comprovi-ho i canvii la paraula clau el més aviat possible."; }
-            case 12 -> { return "S'ha modificat el perfil"; }
-            case 13 -> { return "Format d'email incorrecte."; }
-            default -> { return ""; }
-        }
-    }
-  
-    /**
-     * Mètode per validar el format de un email
-     * @param email (String) : email a validar
-     * @return true / false (boolean)s
-     */
-    public boolean validarEmail(String email){
-        // Patró
-        Pattern pattern = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
-        Matcher mather = pattern.matcher(email);
-        return mather.find();
-    }
     
     /**
      * Mètode per fer el login de l'usari.
@@ -72,7 +38,7 @@ public class Api {
      * @param password :  paraula clau.
      * @return JSONObject: json amb les dades del login o l'error, o buit si hi ha excepció.
      */
-    public JSONObject login(String email, String password){
+    public static JSONObject login(String email, String password){
         
         try{
             
@@ -84,7 +50,7 @@ public class Api {
             params.put("password", password);
             
             // Cridem l'api per recuperar el json
-            String json = this.cridaApi(url,params);
+            String json = Api.cridaApi(url,params);
                       
             // Llegim el Json.
             if(!json.equals("")){
@@ -105,7 +71,7 @@ public class Api {
      * Mètode per fer fer el logout de l'usuari
      * @param usuari : usuari que fa la petició.
      */
-    public void logout(Usuari usuari){
+    public static void logout(Usuari usuari){
         try{
             URL url = new URL("http://169.254.142.250/residueix/api/logout/index.php");
             Map<String,Object> params = new LinkedHashMap<>();
@@ -115,7 +81,7 @@ public class Api {
             params.put("token", usuari.getToken());
             
             // Cridem l'api per recuperar el json
-            String json = this.cridaApi(url, params);
+            String json = Api.cridaApi(url, params);
             
             // Llegim el Json.
             JSONObject jsonObject = new JSONObject(json);
@@ -134,7 +100,7 @@ public class Api {
      * @throws UnsupportedEncodingException Si hi ha una excepció de codificació errònea.
      * @throws IOException Si hi ha una excepció d'entrada o sortida
      */
-    public String cridaApi(URL url, Map<String,Object> params) throws UnsupportedEncodingException, IOException{
+    public static String cridaApi(URL url, Map<String,Object> params) throws UnsupportedEncodingException, IOException{
         try{
             StringBuilder postData = new StringBuilder();
             
@@ -173,7 +139,7 @@ public class Api {
      * @param correu (String) : correu a cercar
      * @return JSONObject: json amb la resposta.
      */
-    public JSONObject existeixCorreu(String correu){
+    public static JSONObject existeixCorreu(String correu){
         
         try{
             
@@ -184,7 +150,7 @@ public class Api {
             params.put("email", correu);
              
             // Cridem a l'api per recuperar el json
-            String json = this.cridaApi(url, params);
+            String json = Api.cridaApi(url, params);
             
             
             // Llegim el Json.
@@ -209,7 +175,7 @@ public class Api {
      * @param comboActiu (int) : seleccio del combo actiu
      * @return JSONArray json amb el llistat d'usuaris.
      */
-    public JSONObject llistatUsuaris(Usuari usuari,int comboTipus, int comboActiu){
+    public static JSONObject llistatUsuaris(Usuari usuari,int comboTipus, int comboActiu){
         
         try{
             
@@ -242,7 +208,7 @@ public class Api {
             params.put("actiu", filtreActiu);
             
             // Cridem a l'api per recuperar el json
-            String json = this.cridaApi(url,params);
+            String json = Api.cridaApi(url,params);
             
             // Llegim el Json.
             if(!json.equals("")){
@@ -264,7 +230,7 @@ public class Api {
      * @param usuari : usuari que fa la petició.
      * @return JSONArray: json amb el llistat d'usuaris.
      */
-    public JSONObject llistatTipusUsuari(Usuari usuari){
+    public static JSONObject llistatTipusUsuari(Usuari usuari){
         
         try{
             
@@ -277,7 +243,7 @@ public class Api {
             params.put("permis", String.valueOf(usuari.getTipus()));
              
             // Cridem a l'api per recuperar el json
-            String json = this.cridaApi(url, params);
+            String json = Api.cridaApi(url, params);
             
             // Llegim el Json.
             if(!json.equals("")){
@@ -299,7 +265,7 @@ public class Api {
      * @param usuari : usuari que fa la petició.
      * @return JSONArray: json amb el llistat de tipus d'adherits
      */
-    public JSONObject llistatTipusAdherit(Usuari usuari){
+    public static JSONObject llistatTipusAdherit(Usuari usuari){
         
         try{
             
@@ -312,7 +278,7 @@ public class Api {
             params.put("permis", String.valueOf(usuari.getTipus()));
             
             // Cridem a l'api per recuperar el json
-            String json = this.cridaApi(url, params);
+            String json = Api.cridaApi(url, params);
             
             // Llegim el Json.
             if(!json.equals("")){
@@ -334,7 +300,7 @@ public class Api {
      * @param usuari : usuari que fa la petició.
      * @return JSONArray: json amb el llistat d'usuaris.
      */
-    public JSONObject llistatPoblacions(Usuari usuari){
+    public static JSONObject llistatPoblacions(Usuari usuari){
         
         try{
             
@@ -347,7 +313,7 @@ public class Api {
             params.put("permis", String.valueOf(usuari.getTipus()));
             
             // Cridem a l'api per recuperar el json
-            String json = this.cridaApi(url, params);
+            String json = Api.cridaApi(url, params);
             // Llegim el Json.
             if(!json.equals("")){
                 JSONObject jsonO = new JSONObject(json);
@@ -376,7 +342,7 @@ public class Api {
      * @param actiu (String) : usuari actiu
      * @return JSONArray: json amb el llistat d'usuaris.
      */
-    public JSONObject crearUsuariAdministrador(Usuari usuari, String email, String password, String tipus, String nom, String cognom1, String cognom2, String telefon, String actiu){
+    public static JSONObject crearUsuariAdministrador(Usuari usuari, String email, String password, String tipus, String nom, String cognom1, String cognom2, String telefon, String actiu){
         
         try{
             
@@ -397,7 +363,7 @@ public class Api {
             params.put("actiu",actiu);
             
             // Cridem a l'api per recuperar el json
-            String json = this.cridaApi(url, params);
+            String json = Api.cridaApi(url, params);
             
             // Llegim el Json.
             if(!json.equals("")){
@@ -427,7 +393,7 @@ public class Api {
      * @param actiu (String) : usuari actiu
      * @return JSONArray: json amb el llistat d'usuaris.
      */
-    public JSONObject crearUsuariTreballador(Usuari usuari, String email, String password, String tipus, String nom, String cognom1, String cognom2, String telefon, String actiu){
+    public static JSONObject crearUsuariTreballador(Usuari usuari, String email, String password, String tipus, String nom, String cognom1, String cognom2, String telefon, String actiu){
         
         try{
             
@@ -448,7 +414,7 @@ public class Api {
             params.put("actiu",actiu);
             
             // Cridem a l'api per recuperar el json
-            String json = this.cridaApi(url, params);
+            String json = Api.cridaApi(url, params);
             
             // Llegim el Json.
             if(!json.equals("")){
@@ -481,7 +447,7 @@ public class Api {
      * @param poblacio (String) : població de l'usuari (en codi)
      * @return JSONArray: json amb el llistat d'usuaris.
      */
-    public JSONObject crearUsuariResiduent(Usuari usuari, String email, String password, String tipus, String nom, String cognom1, String cognom2, String telefon, String actiu, String carrer, String cp, String poblacio){
+    public static JSONObject crearUsuariResiduent(Usuari usuari, String email, String password, String tipus, String nom, String cognom1, String cognom2, String telefon, String actiu, String carrer, String cp, String poblacio){
         
         try{
             
@@ -505,7 +471,7 @@ public class Api {
             params.put("poblacio",poblacio);
             
             // Cridem a l'api per recuperar el json
-            String json = this.cridaApi(url, params);
+            String json = Api.cridaApi(url, params);
             
             // Llegim el Json.
             if(!json.equals("")){
@@ -541,7 +507,7 @@ public class Api {
      * @param tipusAdherit (String) : tipus adherit
      * @return JSONArray: json amb el llistat d'usuaris.
      */
-    public JSONObject crearUsuariAdherit(Usuari usuari, String email, String password, String tipus, String nom, String cognom1, String cognom2, String telefon, String actiu, String carrer, String cp, String poblacio, String nomAdherit, String horaris, String tipusAdherit){
+    public static JSONObject crearUsuariAdherit(Usuari usuari, String email, String password, String tipus, String nom, String cognom1, String cognom2, String telefon, String actiu, String carrer, String cp, String poblacio, String nomAdherit, String horaris, String tipusAdherit){
         
         try{
             
@@ -568,7 +534,7 @@ public class Api {
             params.put("tipus_adherit",tipusAdherit);
             
             // Cridem a l'api per recuperar el json
-            String json = this.cridaApi(url, params);
+            String json = Api.cridaApi(url, params);
             
             // Llegim el Json.
             if(!json.equals("")){
@@ -591,7 +557,7 @@ public class Api {
      * @param id (int) : id l'usuari
      * @return JSONObject: json amb el llistat d'usuaris.
      */
-    public JSONObject consultaUsuari(Usuari usuari,int id){
+    public static JSONObject consultaUsuari(Usuari usuari,int id){
         
         try{
             
@@ -605,7 +571,7 @@ public class Api {
             params.put("id",id);
             
             // Cridem a l'api per recuperar el json
-            String json = this.cridaApi(url, params);
+            String json = Api.cridaApi(url, params);
             
             // Llegim el Json.
             if(!json.equals("")){
@@ -627,7 +593,7 @@ public class Api {
      * @param id (int) : id l'usuari
      * @return JSONArray: json amb el llistat d'usuaris.
      */
-    public JSONObject eliminarUsuari(Usuari usuari,int id){
+    public static JSONObject eliminarUsuari(Usuari usuari,int id){
         
         try{
             
@@ -641,7 +607,7 @@ public class Api {
             params.put("id",id);
             
             // Cridem a l'api per recuperar el json
-            String json = this.cridaApi(url, params);
+            String json = Api.cridaApi(url, params);
             
             // Llegim el Json.
             if(!json.equals("")){
@@ -673,7 +639,7 @@ public class Api {
      * @param actiu (String) : usuari actiu
      * @return JSONArray: json amb el resultat de l'operació.
      */
-    public JSONObject modificarUsuariAdministrador(Usuari usuari, String id, String email, String password, String tipus, String nom, String cognom1, String cognom2, String telefon, String actiu){
+    public static JSONObject modificarUsuariAdministrador(Usuari usuari, String id, String email, String password, String tipus, String nom, String cognom1, String cognom2, String telefon, String actiu){
         
         try{
             
@@ -695,7 +661,7 @@ public class Api {
             params.put("id",id);
             
             // Cridem a l'api per recuperar el json
-            String json = this.cridaApi(url, params);
+            String json = Api.cridaApi(url, params);
             
             // Llegim el Json.
             if(!json.equals("")){
@@ -727,7 +693,7 @@ public class Api {
      * @param actiu (String) : usuari actiu
      * @return JSONArray: json amb el resultat de l'operació.
      */
-    public JSONObject modificarUsuariTreballador(Usuari usuari, String id, String email, String password, String tipus, String nom, String cognom1, String cognom2, String telefon, String actiu){
+    public static JSONObject modificarUsuariTreballador(Usuari usuari, String id, String email, String password, String tipus, String nom, String cognom1, String cognom2, String telefon, String actiu){
         
         try{
             
@@ -749,7 +715,7 @@ public class Api {
             params.put("id",id);
             
             // Cridem a l'api per recuperar el json
-            String json = this.cridaApi(url, params);
+            String json = Api.cridaApi(url, params);
             
             // Llegim el Json.
             if(!json.equals("")){
@@ -783,7 +749,7 @@ public class Api {
      * @param poblacio (String) : codi de la població
      * @return JSONArray: json amb el resultat de l'operació.
      */
-    public JSONObject modificarUsuariResiduent(Usuari usuari, String id, String email, String password, String tipus, String nom, String cognom1, String cognom2, String telefon, String actiu, String carrer, String cp, String poblacio){
+    public static JSONObject modificarUsuariResiduent(Usuari usuari, String id, String email, String password, String tipus, String nom, String cognom1, String cognom2, String telefon, String actiu, String carrer, String cp, String poblacio){
         
         try{
             
@@ -808,7 +774,7 @@ public class Api {
             params.put("poblacio",poblacio);
             
             // Cridem a l'api per recuperar el json
-            String json = this.cridaApi(url, params);
+            String json = Api.cridaApi(url, params);
             
             // Llegim el Json.
             if(!json.equals("")){
@@ -846,7 +812,7 @@ public class Api {
      * @param horari (String) : horari adherit
      * @return JSONArray: json amb el resultat de l'operació.
      */
-    public JSONObject modificarUsuariAdherit(Usuari usuari, String id, String email, String password, String tipus, String nom, String cognom1, String cognom2, String telefon, String actiu, String carrer, String cp, String poblacio, String tipusAdherit, String nomAdherit, String horari){
+    public static JSONObject modificarUsuariAdherit(Usuari usuari, String id, String email, String password, String tipus, String nom, String cognom1, String cognom2, String telefon, String actiu, String carrer, String cp, String poblacio, String tipusAdherit, String nomAdherit, String horari){
         
         try{
             
@@ -874,7 +840,7 @@ public class Api {
             params.put("horari",horari);
             
             // Cridem a l'api per recuperar el json
-            String json = this.cridaApi(url, params);
+            String json = Api.cridaApi(url, params);
             
             // Llegim el Json.
             if(!json.equals("")){
@@ -890,6 +856,28 @@ public class Api {
         }
         
     }
-       
+    
+    public static JSONObject altaResidu(Usuari usuari, String nom, String descripcio, File imatge, String actiu) throws IOException{
+        
+        try{
+            EnviamentPostMultipart multipart = new EnviamentPostMultipart("http://169.254.142.250/residueix/api/residus/alta/index.php");
+            
+            multipart.addHeaderField("User-Agent", "CodeJava");
+            multipart.addHeaderField("Test-Header", "Header-Value");
+            multipart.afegirCamp("nom", nom);
+            multipart.afegirCamp("descripcio", descripcio);
+            multipart.afegirArxiu("imatge", imatge);
+            multipart.afegirCamp("actiu", actiu);
+            List<String> response = multipart.finish();
+            
+           return new JSONObject(response.toString());
+           
+        } catch (IOException ex){
+            return new JSONObject("{\"codi_error\":\"excepcio\",\"error\":\"Error en execució al enviar el formulari.\"}");
+        }
+        
+    }
+        
+          
     
 }
