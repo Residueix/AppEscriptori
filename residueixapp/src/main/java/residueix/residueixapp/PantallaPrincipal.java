@@ -59,6 +59,7 @@ public class PantallaPrincipal extends javax.swing.JFrame {
         panelBar = new javax.swing.JPanel();
         labelUsuari = new javax.swing.JLabel();
         panelOpcions = new javax.swing.JPanel();
+        buttonLlistatResidus = new javax.swing.JButton();
         buttonLlistatUsuaris = new javax.swing.JButton();
         buttonLogOut = new javax.swing.JButton();
         buttonPerfil = new javax.swing.JButton();
@@ -106,11 +107,30 @@ public class PantallaPrincipal extends javax.swing.JFrame {
         panelOpcions.setOpaque(false);
         panelOpcions.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        buttonLlistatResidus.setBackground(new java.awt.Color(51, 102, 255));
+        buttonLlistatResidus.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
+        buttonLlistatResidus.setForeground(new java.awt.Color(255, 255, 255));
+        buttonLlistatResidus.setText("Llistat residus");
+        buttonLlistatResidus.setToolTipText("Llistat residus");
+        buttonLlistatResidus.setAutoscrolls(true);
+        buttonLlistatResidus.setBorderPainted(false);
+        buttonLlistatResidus.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        buttonLlistatResidus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonLlistatResidusActionPerformed(evt);
+            }
+        });
+        if(usuari.getTipus() == 2){
+            panelOpcions.add(buttonLlistatResidus, new org.netbeans.lib.awtextra.AbsoluteConstraints(25,80,150,30));
+        }else{
+            panelOpcions.add(buttonLlistatResidus, new org.netbeans.lib.awtextra.AbsoluteConstraints(25, 130, 150, 30));
+        }
+
         buttonLlistatUsuaris.setBackground(new java.awt.Color(51, 102, 255));
         buttonLlistatUsuaris.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
         buttonLlistatUsuaris.setForeground(new java.awt.Color(255, 255, 255));
         buttonLlistatUsuaris.setText("Llistat usuaris");
-        buttonLlistatUsuaris.setToolTipText("Perfil");
+        buttonLlistatUsuaris.setToolTipText("Llistat usuaris");
         buttonLlistatUsuaris.setAutoscrolls(true);
         buttonLlistatUsuaris.setBorderPainted(false);
         buttonLlistatUsuaris.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -120,6 +140,9 @@ public class PantallaPrincipal extends javax.swing.JFrame {
             }
         });
         panelOpcions.add(buttonLlistatUsuaris, new org.netbeans.lib.awtextra.AbsoluteConstraints(25, 80, 150, 30));
+        if(usuari.getTipus() == 2){
+            buttonLlistatUsuaris.setVisible(false);
+        }
 
         buttonLogOut.setBackground(new java.awt.Color(153, 0, 0));
         buttonLogOut.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
@@ -167,14 +190,6 @@ public class PantallaPrincipal extends javax.swing.JFrame {
     private void gestioUsuari(){
         // Posem el nom de l'usuari a la part superior
         labelUsuari.setText( usuari.getNom() + " " + usuari.getCognom1() + " " + usuari.getCognom2() );   
-        // Tractament de permisos per mostrar opcions disponibles.
-        switch(usuari.getTipus()){
-            case 1 -> { 
-            }
-            case 2 -> {
-                buttonLlistatUsuaris.setVisible(false);
-            }
-        }
     }
     
     /**
@@ -237,6 +252,16 @@ public class PantallaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonPerfilActionPerformed
 
     /**
+     * Mètode utilitzat quan es prem el botó de perfil
+     * @param evt (ActionEvent) : Pulsar el botó.
+     */
+    private void buttonLlistatResidusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonLlistatResidusActionPerformed
+        PantallaLlistatResidus pantallaLlistatResidus = new PantallaLlistatResidus(usuari);
+        pantallaLlistatResidus.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_buttonLlistatResidusActionPerformed
+
+    /**
      * Mètode principal de la classe.
      * @param args arguments de la linia de comandament
      */
@@ -276,6 +301,10 @@ public class PantallaPrincipal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    /**
+    * Botó per accedir al llistat de residus
+    */
+    private javax.swing.JButton buttonLlistatResidus;
     /**
     * Botó per accedir al llistat d'usuaris
     */
