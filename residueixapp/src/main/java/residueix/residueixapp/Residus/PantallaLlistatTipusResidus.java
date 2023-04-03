@@ -4,24 +4,21 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import residueix.residueixapp.PantallaAdvertencia;
-import residueix.residueixapp.PantallaAltaUsuari;
-import residueix.residueixapp.PantallaBaixaUsuari;
-import residueix.residueixapp.PantallaModificarUsuari;
 import residueix.residueixapp.PantallaPrincipal;
 import residueix.residueixapp.models.Usuari;
 import residueix.residueixapp.utils.Api;
+import residueix.residueixapp.utils.RenderitzatsImatges;
+import residueix.residueixapp.utils.RenderitzatsTaules;
 import residueix.residueixapp.utils.Utils;
 
 /**
- * Classe per obrir la pantalla principal de l'aplicació.
+ * Classe per obrir la pantalla del llistat de tipus de residu
  * @author Daniel Garcia Ruiz
- * @version 24/03/2023
+ * @version 30/03/2023
  */
 public class PantallaLlistatTipusResidus extends javax.swing.JFrame {
     
@@ -42,11 +39,10 @@ public class PantallaLlistatTipusResidus extends javax.swing.JFrame {
 
 
     /**
-     * Crea una nova instància de la classe PantallaPrincipal.
+     * Crea una nova instància de la classe PantallaTipusResidus.
      * @param usuari: Usuari loginat a l'aplicació.
      */
     public PantallaLlistatTipusResidus(Usuari usuari) {
-
         // Assignació de l'usuari
         this.usuari = usuari;
         // Inicialització dels components
@@ -55,10 +51,8 @@ public class PantallaLlistatTipusResidus extends javax.swing.JFrame {
         centrarPantalla();
         // Accions en funcio de l'usuari
         gestioUsuari();        
-        // Disseny elements
-        estilFormulari();
         // Llistat d'usuaris - omplir la taula
-        omplirTaula(0,0);
+        omplirTaula();
     }
 
      /**
@@ -74,10 +68,8 @@ public class PantallaLlistatTipusResidus extends javax.swing.JFrame {
         labelUsuari = new javax.swing.JLabel();
         panelTitol = new javax.swing.JPanel();
         labelTitol = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTableUsuaris = new javax.swing.JTable();
-        comboBoxTipus = new javax.swing.JComboBox<>();
-        comboBoxActiu = new javax.swing.JComboBox<>();
+        scrollPaneTipusResidu = new javax.swing.JScrollPane();
+        jTableTipusResidu = new javax.swing.JTable();
         panelOpcions = new javax.swing.JPanel();
         buttonTornarResidus = new javax.swing.JButton();
         buttonTornarPrincipal = new javax.swing.JButton();
@@ -85,7 +77,6 @@ public class PantallaLlistatTipusResidus extends javax.swing.JFrame {
         buttonLogOut = new javax.swing.JButton();
         buttonModificacio = new javax.swing.JButton();
         buttonBaixa = new javax.swing.JButton();
-        buttonPerfil2 = new javax.swing.JButton();
         labelPrincipal = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -134,28 +125,28 @@ public class PantallaLlistatTipusResidus extends javax.swing.JFrame {
 
         panelContingut.add(panelTitol, new org.netbeans.lib.awtextra.AbsoluteConstraints(2, 51, 800, 50));
 
-        jScrollPane1.setBackground(new java.awt.Color(255, 255, 255));
-        jScrollPane1.setBorder(null);
-        jScrollPane1.setOpaque(false);
+        scrollPaneTipusResidu.setBackground(new java.awt.Color(255, 255, 255));
+        scrollPaneTipusResidu.setBorder(null);
+        scrollPaneTipusResidu.setOpaque(false);
 
-        jTableUsuaris.setAutoCreateRowSorter(true);
-        jTableUsuaris.setFont(new java.awt.Font("Sansation", 0, 12)); // NOI18N
-        jTableUsuaris.setModel(new javax.swing.table.DefaultTableModel(
+        jTableTipusResidu.setAutoCreateRowSorter(true);
+        jTableTipusResidu.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
+        jTableTipusResidu.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "Id", "Email", "Tipus", "Nom", "Cognom1", "Cognom2", "Actiu"
+                "Id", "Nom", "Imatge"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+                false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -166,39 +157,16 @@ public class PantallaLlistatTipusResidus extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jTableUsuaris.setToolTipText("Llistat d'usuaris");
-        jTableUsuaris.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jTableUsuaris.setOpaque(false);
-        jTableUsuaris.setRowHeight(28);
-        jTableUsuaris.setRowMargin(5);
-        jTableUsuaris.setShowGrid(false);
-        jScrollPane1.setViewportView(jTableUsuaris);
+        jTableTipusResidu.setToolTipText("Llistat de tipus de residus");
+        jTableTipusResidu.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jTableTipusResidu.setRowHeight(28);
+        jTableTipusResidu.setRowMargin(5);
+        jTableTipusResidu.setSelectionBackground(new java.awt.Color(204, 204, 204));
+        jTableTipusResidu.setShowGrid(true);
+        jTableTipusResidu.setShowVerticalLines(false);
+        scrollPaneTipusResidu.setViewportView(jTableTipusResidu);
 
-        panelContingut.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(22, 250, 700, 470));
-
-        comboBoxTipus.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
-        comboBoxTipus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tots els tipus d'usuaris", "Tipus 1 - Administradors", "Tipus 2 - Treballadors", "Tipus 3 - Residuents", "Tipus 4 - Adherits" }));
-        comboBoxTipus.setToolTipText("Filtrar per tipus d'usuari");
-        comboBoxTipus.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        comboBoxTipus.setPreferredSize(new java.awt.Dimension(200, 30));
-        comboBoxTipus.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                comboBoxTipusActionPerformed(evt);
-            }
-        });
-        panelContingut.add(comboBoxTipus, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 210, -1, -1));
-
-        comboBoxActiu.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
-        comboBoxActiu.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tots actius i baixes", "Només Actius", "Només Baixes" }));
-        comboBoxActiu.setToolTipText("Filtrar per usauris actius/baixa");
-        comboBoxActiu.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        comboBoxActiu.setPreferredSize(new java.awt.Dimension(200, 30));
-        comboBoxActiu.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                comboBoxActiuActionPerformed(evt);
-            }
-        });
-        panelContingut.add(comboBoxActiu, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 210, -1, -1));
+        panelContingut.add(scrollPaneTipusResidu, new org.netbeans.lib.awtextra.AbsoluteConstraints(22, 250, 700, 470));
 
         panelPrincipal.add(panelContingut, new org.netbeans.lib.awtextra.AbsoluteConstraints(2, 2, 798, 746));
 
@@ -208,7 +176,7 @@ public class PantallaLlistatTipusResidus extends javax.swing.JFrame {
 
         buttonTornarResidus.setBackground(new java.awt.Color(255, 204, 0));
         buttonTornarResidus.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
-        buttonTornarResidus.setText("Tornar residus");
+        buttonTornarResidus.setText("Llistat residus");
         buttonTornarResidus.setToolTipText("Tornar a la pantalla de residus");
         buttonTornarResidus.setBorderPainted(false);
         buttonTornarResidus.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -221,7 +189,7 @@ public class PantallaLlistatTipusResidus extends javax.swing.JFrame {
 
         buttonTornarPrincipal.setBackground(new java.awt.Color(255, 204, 0));
         buttonTornarPrincipal.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
-        buttonTornarPrincipal.setText("Tornar principal");
+        buttonTornarPrincipal.setText("Pantalla principal");
         buttonTornarPrincipal.setToolTipText("Tornar a la pantalla principal");
         buttonTornarPrincipal.setBorderPainted(false);
         buttonTornarPrincipal.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -244,12 +212,12 @@ public class PantallaLlistatTipusResidus extends javax.swing.JFrame {
                 buttonAltaActionPerformed(evt);
             }
         });
-        panelOpcions.add(buttonAlta, new org.netbeans.lib.awtextra.AbsoluteConstraints(25, 70, 150, 30));
+        panelOpcions.add(buttonAlta, new org.netbeans.lib.awtextra.AbsoluteConstraints(25, 30, 150, 30));
 
         buttonLogOut.setBackground(new java.awt.Color(153, 0, 0));
         buttonLogOut.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
         buttonLogOut.setForeground(new java.awt.Color(255, 255, 255));
-        buttonLogOut.setText("Logout");
+        buttonLogOut.setText("Sortir");
         buttonLogOut.setToolTipText("Sortir de l'aplicació");
         buttonLogOut.setBorderPainted(false);
         buttonLogOut.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -272,7 +240,7 @@ public class PantallaLlistatTipusResidus extends javax.swing.JFrame {
                 buttonModificacioActionPerformed(evt);
             }
         });
-        panelOpcions.add(buttonModificacio, new org.netbeans.lib.awtextra.AbsoluteConstraints(25, 110, 150, 30));
+        panelOpcions.add(buttonModificacio, new org.netbeans.lib.awtextra.AbsoluteConstraints(25, 70, 150, 30));
 
         buttonBaixa.setBackground(new java.awt.Color(51, 102, 255));
         buttonBaixa.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
@@ -286,16 +254,7 @@ public class PantallaLlistatTipusResidus extends javax.swing.JFrame {
                 buttonBaixaActionPerformed(evt);
             }
         });
-        panelOpcions.add(buttonBaixa, new org.netbeans.lib.awtextra.AbsoluteConstraints(25, 150, 150, 30));
-
-        buttonPerfil2.setBackground(new java.awt.Color(51, 102, 255));
-        buttonPerfil2.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
-        buttonPerfil2.setForeground(new java.awt.Color(255, 255, 255));
-        buttonPerfil2.setText("Perfil");
-        buttonPerfil2.setToolTipText("Perfil");
-        buttonPerfil2.setBorderPainted(false);
-        buttonPerfil2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        panelOpcions.add(buttonPerfil2, new org.netbeans.lib.awtextra.AbsoluteConstraints(25, 30, 150, 30));
+        panelOpcions.add(buttonBaixa, new org.netbeans.lib.awtextra.AbsoluteConstraints(25, 110, 150, 30));
 
         panelPrincipal.add(panelOpcions, new org.netbeans.lib.awtextra.AbsoluteConstraints(798, 2, 200, 746));
 
@@ -308,14 +267,6 @@ public class PantallaLlistatTipusResidus extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    /**
-     * Mètode per donar estil a elements del formulari.
-     */
-    private void estilFormulari(){
-        comboBoxTipus.setBackground(new Color(255,255,255,255));
-        comboBoxActiu.setBackground(new Color(255,255,255,255));
-    }
     
     /**
      * Mètode per gestionar accions en funció de l'usuari
@@ -323,13 +274,6 @@ public class PantallaLlistatTipusResidus extends javax.swing.JFrame {
     private void gestioUsuari(){
         // Posem el nom de l'usuari a la part superior
         labelUsuari.setText( usuari.getNom() + " " + usuari.getCognom1() + " " + usuari.getCognom2() );   
-        // Tractament de permisos per mostrar opcions disponibles.
-        switch(usuari.getTipus()){
-            case 1 -> { 
-            }
-            case 2 -> {
-            }
-        }
     }
     
     /**
@@ -339,61 +283,57 @@ public class PantallaLlistatTipusResidus extends javax.swing.JFrame {
         // Centrar pantalla.
         Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
         setLocation(((pantalla.width)-this.getWidth())/2,((pantalla.height)-this.getHeight())/2);
-    }
+    }           
     
     /**
      * Mètode per omplir la taula amb les dades dels usuaris.
-     * @param llistatUsuaris (JSONArray) json amb el llistat d'usuaris.
      */
-    private void omplirTaula(int tipus, int actiu){
-        JSONObject jsonObject = (JSONObject) Api.llistatUsuaris(usuari,tipus,actiu);
+    private void omplirTaula(){
         
-        if(!jsonObject.isEmpty()){
-            if(jsonObject.get("codi_error").toString().equals("0")) {
-                // Definició del model
-                DefaultTableModel model = new DefaultTableModel();
-                model.addColumn("id");
-                model.addColumn("Email");
-                model.addColumn("Tipus");
-                model.addColumn("Nom");
-                model.addColumn("Cognom1");
-                model.addColumn("Cognom2");
-                model.addColumn("Actiu");
-                // Bucle per omplir la taula
-                JSONArray jsonArray = new JSONArray(jsonObject.getJSONArray("llistat"));
-                for(int i = 0; i < jsonArray.length(); i++){
-                    JSONObject jsonUsuari = jsonArray.getJSONObject(i);
-                    Object []obj = new Object[7];
-                    obj[0] = jsonUsuari.get("id").toString();
-                    obj[1] = jsonUsuari.get("email").toString();
-                    obj[2] = jsonUsuari.get("tipus").toString();
-                    obj[3] = jsonUsuari.get("nom").toString();
-                    obj[4] = jsonUsuari.get("cognom1").toString();
-                    obj[5] = jsonUsuari.get("cognom2").toString();
-                    obj[6] = jsonUsuari.get("actiu").toString();
-                    model.addRow(obj);
-                }
-                // Personalització de la taula
-                jTableUsuaris.setModel(model);   
-                jTableUsuaris.getTableHeader().setPreferredSize(new java.awt.Dimension(40,40));
-                jTableUsuaris.getTableHeader().setBackground(new Color(51,102,255));
-                jTableUsuaris.getTableHeader().setForeground(new Color(255,255,255));
-                jTableUsuaris.getColumnModel().getColumn(0).setMaxWidth(50);
-                jTableUsuaris.getColumnModel().getColumn(2).setMaxWidth(50);
-                jTableUsuaris.getColumnModel().getColumn(6).setMaxWidth(50);
-                jTableUsuaris.setRowSelectionAllowed(true);
-                jTableUsuaris.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-                DefaultTableCellRenderer renderTaula = new DefaultTableCellRenderer();
-                renderTaula.setHorizontalAlignment(SwingConstants.CENTER);
-                jTableUsuaris.getColumnModel().getColumn(1).setCellRenderer(renderTaula);
-            }else{
-                // Mostrem l'error que ens està enviant.
-                PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(jsonObject.get("codi_error").toString() + " - " + jsonObject.get("error").toString());
-                pantallaAdvertencia.setVisible(true);
+        // Petició a l'Api llistat tipus residu
+        JSONObject jsonLlistatTipusResidu = (JSONObject) Api.llistatTipusResidu(usuari);
+        
+        // Afegim el model a la taula
+        DefaultTableModel model = new DefaultTableModel(){
+             @Override 
+             public boolean isCellEditable(int row, int column){
+                 return false;
+             }
+        };
+        model.addColumn("Id");
+        model.addColumn("Nom");
+        model.addColumn("Imatge");
+        jTableTipusResidu.setRowSelectionAllowed(true);
+        jTableTipusResidu.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        jTableTipusResidu.setModel(model);
+        jTableTipusResidu.setRowHeight(80);
+        jTableTipusResidu.getTableHeader().setPreferredSize(new java.awt.Dimension(40,40));
+        jTableTipusResidu.getTableHeader().setBackground(new Color(51,102,255));
+        jTableTipusResidu.getTableHeader().setForeground(new Color(255,255,255));
+        jTableTipusResidu.getColumnModel().getColumn(0).setCellRenderer(RenderitzatsTaules.centrat());
+        jTableTipusResidu.getColumnModel().getColumn(0).setMaxWidth(50);
+        jTableTipusResidu.getColumnModel().getColumn(0).setMinWidth(50);
+        jTableTipusResidu.getColumnModel().getColumn(1).setCellRenderer(RenderitzatsTaules.centrat());
+        jTableTipusResidu.getColumnModel().getColumn(2).setCellRenderer(new RenderitzatsImatges());
+        jTableTipusResidu.getColumnModel().getColumn(2).setMaxWidth(150);
+        jTableTipusResidu.getColumnModel().getColumn(2).setMinWidth(150);
+        
+        // Comprovem la resposta de l'api i omplim la taula amb les dades
+        if(jsonLlistatTipusResidu.get("codi_error").toString().equals("0")) {
+            // Agafem les dades del camp llistat
+            JSONArray arrayLlistatTipusResidu = new JSONArray(jsonLlistatTipusResidu.getJSONArray("llistat"));
+            // Recorrem l'array per ficar-ho a la taula
+            for(int i = 0; i < arrayLlistatTipusResidu.length(); i++){
+                JSONObject jsonTipus = arrayLlistatTipusResidu.getJSONObject(i);
+                model.addRow( new Object[]{
+                    jsonTipus.get("id").toString(),
+                    jsonTipus.get("nom").toString(),
+                    RenderitzatsTaules.cellaImatge(jsonTipus.getString("imatge"),1)
+                });
             }
         }else{
-            // Mostrem que hi ha hagut un error al sistema
-            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(Utils.error(3));
+            // Missatge error
+            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(jsonLlistatTipusResidu.get("codi_error").toString() + " - " + jsonLlistatTipusResidu.get("error").toString());
             pantallaAdvertencia.setVisible(true);
         }
         
@@ -404,6 +344,7 @@ public class PantallaLlistatTipusResidus extends javax.swing.JFrame {
      * @param evt MouseEvent: event de deixar pulsat el botó del ratolí.
      */
     private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
+        // Assignem Coordenades del ratolí
         xMouse = evt.getX();
         yMouse = evt.getY();
     }//GEN-LAST:event_formMousePressed
@@ -413,6 +354,7 @@ public class PantallaLlistatTipusResidus extends javax.swing.JFrame {
      * @param evt MouseEvent: event quan arroseguem amb el ratolí.
      */
     private void formMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseDragged
+        // Capturem  x i y i assignem la nova localització
         int x = evt.getXOnScreen();
         int y = evt.getYOnScreen();
         setLocation(x-xMouse, y-yMouse);
@@ -423,9 +365,10 @@ public class PantallaLlistatTipusResidus extends javax.swing.JFrame {
      * @param evt ActionEvent: Pulsar el botó.
      */
     private void buttonTornarPrincipalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonTornarPrincipalActionPerformed
-         PantallaPrincipal pantallaPrincipal = new PantallaPrincipal(usuari);
-         pantallaPrincipal.setVisible(true);
-         this.dispose();
+        // Obre la pantalla principal
+        PantallaPrincipal pantallaPrincipal = new PantallaPrincipal(usuari);
+        pantallaPrincipal.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_buttonTornarPrincipalActionPerformed
 
     /**
@@ -439,20 +382,13 @@ public class PantallaLlistatTipusResidus extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonLogOutActionPerformed
 
     /**
-     * Mètode utilitzat quan es canvia de selecció al combo de filtratge.
-     * @param evt (AcionEvent) : pulsar el botó.
-     */
-    private void comboBoxTipusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboBoxTipusActionPerformed
-        omplirTaula(comboBoxTipus.getSelectedIndex(),comboBoxActiu.getSelectedIndex());
-    }//GEN-LAST:event_comboBoxTipusActionPerformed
-
-    /**
-     * Mètode utilitzat quan es prem el botó d'alta s'usuari.
+     * Mètode utilitzat quan es prem el botó d'alta tipus residu.
      * @param evt ActionEvent: Pulsar el botó.
      */
     private void buttonAltaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAltaActionPerformed
-        PantallaAltaUsuari pantallaAltaUsuari = new PantallaAltaUsuari(usuari);
-        pantallaAltaUsuari.setVisible(true);
+        // Obrim la pantalla d'alta tipus residu
+        PantallaAltaTipusResidu pantallaAltaTipusResidu = new PantallaAltaTipusResidu(usuari);
+        pantallaAltaTipusResidu.setVisible(true);
         this.dispose();
                 
     }//GEN-LAST:event_buttonAltaActionPerformed
@@ -463,27 +399,21 @@ public class PantallaLlistatTipusResidus extends javax.swing.JFrame {
      */
     private void buttonBaixaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonBaixaActionPerformed
         // Mirem si tenim seleccionat fila del llistat 
-        int filaSeleccionada = jTableUsuaris.getSelectedRow();
+        int filaSeleccionada = jTableTipusResidu.getSelectedRow();
         if(filaSeleccionada != -1){
-            DefaultTableModel model = (DefaultTableModel) jTableUsuaris.getModel();
-            int idUsuari = Integer.parseInt(model.getValueAt(filaSeleccionada, 0).toString());
-            PantallaBaixaUsuari pantallaBaixaUsuari = new PantallaBaixaUsuari(usuari,idUsuari);
-            pantallaBaixaUsuari.setVisible(true);
+            // Agafem el id seleccionat
+            int idTipusResidu = Integer.parseInt(jTableTipusResidu.getModel().getValueAt(filaSeleccionada, 0).toString());
+            // Obrim pantalla baixa tipus residu
+            PantallaBaixaTipusResidu pantallaBaixaTipusResidu = new PantallaBaixaTipusResidu(usuari,idTipusResidu);
+            pantallaBaixaTipusResidu.setVisible(true);
             this.dispose();
         }else{
-            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia("Has de seleccionar una fila de la taula d'usuaris.");
+            // Missatge error (no seleccionada)
+            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(Utils.error(14));
             pantallaAdvertencia.setVisible(true);
         }
         
     }//GEN-LAST:event_buttonBaixaActionPerformed
-
-    /**
-     * Mètode utilitzat quan es canvia de selecció al combo de filtratge per actiu/baixa
-     * @param evt (AcionEvent) : pulsar el botó.
-     */
-    private void comboBoxActiuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboBoxActiuActionPerformed
-        omplirTaula(comboBoxTipus.getSelectedIndex(),comboBoxActiu.getSelectedIndex());
-    }//GEN-LAST:event_comboBoxActiuActionPerformed
 
     /**
      * Métode utilitzat quan es prem el botó de modificar usuari.
@@ -491,20 +421,21 @@ public class PantallaLlistatTipusResidus extends javax.swing.JFrame {
      */
     private void buttonModificacioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonModificacioActionPerformed
         // Mirem si tenim seleccionat fila del llistat 
-        int filaSeleccionada = jTableUsuaris.getSelectedRow();
+        int filaSeleccionada = jTableTipusResidu.getSelectedRow();
         if(filaSeleccionada != -1){
-            DefaultTableModel model = (DefaultTableModel) jTableUsuaris.getModel();
-            int idUsuari = Integer.parseInt(model.getValueAt(filaSeleccionada, 0).toString());
-            PantallaModificarUsuari pantallaModificarUsuari = new PantallaModificarUsuari(usuari,idUsuari);
-            pantallaModificarUsuari.setVisible(true);
+            // Afafem el id seleccionat
+            int idTipusResidu = Integer.parseInt(jTableTipusResidu.getModel().getValueAt(filaSeleccionada, 0).toString());
+            PantallaModificarTipusResidu pantallaModificacioTipusResidu = new PantallaModificarTipusResidu(usuari,idTipusResidu);
+            pantallaModificacioTipusResidu.setVisible(true);
             this.dispose();
         }else{
-            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(Utils.error(8));
+            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(Utils.error(14));
             pantallaAdvertencia.setVisible(true);
         }
     }//GEN-LAST:event_buttonModificacioActionPerformed
 
     private void buttonTornarResidusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonTornarResidusActionPerformed
+        // Obrir pantalla llistat residus
         PantallaLlistatResidus pantallaLlistatResidus = new PantallaLlistatResidus(usuari);
         pantallaLlistatResidus.setVisible(true);
         this.dispose();
@@ -582,10 +513,6 @@ public class PantallaLlistatTipusResidus extends javax.swing.JFrame {
     */
     private javax.swing.JButton buttonModificacio;
     /**
-    * Botó per accedir al perfil de l'usuari.
-    */
-    private javax.swing.JButton buttonPerfil2;
-    /**
     * Botó per tornar a la pantalla principal.
     */
     private javax.swing.JButton buttonTornarPrincipal;
@@ -594,21 +521,9 @@ public class PantallaLlistatTipusResidus extends javax.swing.JFrame {
     */
     private javax.swing.JButton buttonTornarResidus;
     /**
-    * Combo box amb diferents opcions per filtrar el llistat d'usauris
-    */
-    private javax.swing.JComboBox<String> comboBoxActiu;
-    /**
-    * Combo box amb diferents opcions per filtrar el llistat d'usauris
-    */
-    private javax.swing.JComboBox<String> comboBoxTipus;
-    /**
-    * Scroll pane per contenir el jtable
-    */
-    private javax.swing.JScrollPane jScrollPane1;
-    /**
     * Taula per contenir als usuaris
     */
-    private javax.swing.JTable jTableUsuaris;
+    private javax.swing.JTable jTableTipusResidu;
     /**
     * Label per contenir el logo de l'aplicació.
     */
@@ -641,5 +556,9 @@ public class PantallaLlistatTipusResidus extends javax.swing.JFrame {
     * Panel per contenir el títol de la pantalla
     */
     private javax.swing.JPanel panelTitol;
+    /**
+    * Scroll pane per contenir el jtable
+    */
+    private javax.swing.JScrollPane scrollPaneTipusResidu;
     // End of variables declaration//GEN-END:variables
 }

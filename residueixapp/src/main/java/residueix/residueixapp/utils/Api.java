@@ -10,6 +10,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +55,9 @@ public class Api {
             
             // Cridem l'api per recuperar el json
             String json = Api.cridaApi(url,params);
-                      
+
+            System.out.println(json);
+            
             // Llegim el Json.
             if(!json.equals("")){
                 JSONObject jsonO = new JSONObject(json);
@@ -611,7 +617,6 @@ public class Api {
             
             // Llegim el Json.
             if(!json.equals("")){
-                System.out.print(json);
                 JSONObject jsonO = new JSONObject(json);
                 return jsonO;
             }else{
@@ -857,27 +862,213 @@ public class Api {
         
     }
     
-    public static JSONObject altaResidu(Usuari usuari, String nom, String descripcio, File imatge, String actiu) throws IOException{
+    public static JSONObject altaResidu(Usuari usuari,String tipus, String nom, String descripcio, String valor, File imatge, String actiu) throws IOException{
         
         try{
             EnviamentPostMultipart multipart = new EnviamentPostMultipart("http://169.254.142.250/residueix/api/residus/alta/index.php");
             
             multipart.addHeaderField("User-Agent", "CodeJava");
             multipart.addHeaderField("Test-Header", "Header-Value");
+            multipart.afegirCamp("id_usuari", String.valueOf(usuari.getId()));
+            multipart.afegirCamp("permis", String.valueOf(usuari.getTipus()));
+            multipart.afegirCamp("token", usuari.getToken());
             multipart.afegirCamp("nom", nom);
+            multipart.afegirCamp("tipus", tipus);
             multipart.afegirCamp("descripcio", descripcio);
-            multipart.afegirArxiu("imatge", imatge);
+            multipart.afegirCamp("valor", valor);
             multipart.afegirCamp("actiu", actiu);
+            multipart.afegirArxiu("imatge", imatge);
+            
             List<String> response = multipart.finish();
             
-           return new JSONObject(response.toString());
+           System.out.println("-"+response.toString()+"-");
+            
+           return new JSONObject(response.get(0));
            
         } catch (IOException ex){
             return new JSONObject("{\"codi_error\":\"excepcio\",\"error\":\"Error en execució al enviar el formulari.\"}");
         }
         
     }
+    
+    public static JSONObject modificacioResidu(Usuari usuari,int idResidu, String tipus, String nom, String descripcio, String valor, File imatge, String actiu) throws IOException{
         
+        try{
+            EnviamentPostMultipart multipart = new EnviamentPostMultipart("http://169.254.142.250/residueix/api/residus/modificacio/index.php");
+            
+            multipart.addHeaderField("User-Agent", "CodeJava");
+            multipart.addHeaderField("Test-Header", "Header-Value");
+            multipart.afegirCamp("id_usuari", String.valueOf(usuari.getId()));
+            multipart.afegirCamp("permis", String.valueOf(usuari.getTipus()));
+            multipart.afegirCamp("token", usuari.getToken());
+            multipart.afegirCamp("id", String.valueOf(idResidu));
+            multipart.afegirCamp("nom", nom);
+            multipart.afegirCamp("tipus", tipus);
+            multipart.afegirCamp("descripcio", descripcio);
+            multipart.afegirCamp("valor", valor);
+            multipart.afegirCamp("actiu", actiu);
+            if(imatge != null){
+                multipart.afegirArxiu("imatge", imatge);
+            }
+            
+            List<String> response = multipart.finish();
+            
+           System.out.println("-"+response.toString()+"-");
+            
+           return new JSONObject(response.get(0));
+           
+        } catch (IOException ex){
+            return new JSONObject("{\"codi_error\":\"excepcio_api_modificacioResidu\",\"error\":\"Error en execució al enviar el formulari.\"}");
+        }
+        
+    }
+    
+    public static JSONObject altaTipusResidu(Usuari usuari, String nom, File imatge){
+        try{
+        
+            // Instaciem la classe per enviar formularis multipart i configurem camps
+            EnviamentPostMultipart multipart = new EnviamentPostMultipart("http://169.254.142.250/residueix/api/residus/tipus/alta/index.php");
+            multipart.addHeaderField("User-Agent", "CodeJava");
+            multipart.addHeaderField("Test-Header", "Header-Value");
+            multipart.afegirCamp("id_usuari", String.valueOf(usuari.getId()));
+            multipart.afegirCamp("permis", String.valueOf(usuari.getTipus()));
+            multipart.afegirCamp("token", usuari.getToken());
+            multipart.afegirCamp("nom", nom);
+            multipart.afegirArxiu("imatge", imatge);
+            List<String> response = multipart.finish();
+            System.out.println("-"+response.toString()+"-");           
+            return new JSONObject(response.get(0));
+           
+        } catch (IOException ex){
+            return new JSONObject("{\"codi_error\":\"excepcio\",\"error\":\"Error en execució al enviar el formulari.\"}");
+        } 
+    }
+    
+    public static JSONObject llistatTipusResidu(Usuari usuari){
+        try{
+          
+           // Instanciem la classe per enviar formularis x-www-form-urlencoded i configurem els camps
+           EnviamentPostUrlEncoded urlencoded = new EnviamentPostUrlEncoded("http://169.254.142.250/residueix/api/residus/tipus/llistat/index.php");
+           urlencoded.afegirCamp("id_usuari", String.valueOf(usuari.getId()));
+           urlencoded.afegirCamp("permis", String.valueOf(usuari.getTipus()));
+           urlencoded.afegirCamp("token", usuari.getToken());
+           
+           return urlencoded.resposta();
+            
+        } catch (IOException ex){
+            return new JSONObject("{\"codi_error\":\"excepcio_api_llistatTipusResidu\",\"error\":\"Error en execució al enviar el formulari.\"}");    
+        }
+    }
+    
+    public static JSONObject consultaTipusResidu(Usuari usuari, int idTipusResidu){
+        try{
+          
+           // Instanciem la classe per enviar formularis x-www-form-urlencoded i configurem els camps
+           EnviamentPostUrlEncoded urlencoded = new EnviamentPostUrlEncoded("http://169.254.142.250/residueix/api/residus/tipus/consulta/index.php");
+           urlencoded.afegirCamp("id_usuari", String.valueOf(usuari.getId()));
+           urlencoded.afegirCamp("permis", String.valueOf(usuari.getTipus()));
+           urlencoded.afegirCamp("token", usuari.getToken());
+           urlencoded.afegirCamp("id", String.valueOf(idTipusResidu));
+           
+           
+           return urlencoded.resposta();
+            
+        } catch (IOException ex){
+            return new JSONObject("{\"codi_error\":\"excepcio_api_consultaTipusResidu\",\"error\":\"Error en execució al enviar el formulari.\"}");    
+        }
+    }
+
+    public static JSONObject consultaResidu(Usuari usuari, int idResidu){
+        try{
+           // Instanciem la classe per enviar formularis x-www-form-urlencoded i configurem els camps
+           EnviamentPostUrlEncoded urlencoded = new EnviamentPostUrlEncoded("http://169.254.142.250/residueix/api/residus/consulta/index.php");
+           urlencoded.afegirCamp("id_usuari", String.valueOf(usuari.getId()));
+           urlencoded.afegirCamp("permis", String.valueOf(usuari.getTipus()));
+           urlencoded.afegirCamp("token", usuari.getToken());
+           urlencoded.afegirCamp("id", String.valueOf(idResidu));
+           return urlencoded.resposta();
+        } catch (IOException ex){
+            return new JSONObject("{\"codi_error\":\"excepcio_api_consultaResidu\",\"error\":\"Error en execució al enviar el formulari.\"}");    
+        }
+    }
+    
+    public static JSONObject baixaTipusResidu(Usuari usuari, int idTipusResidu){
+        try{
+          
+           // Instanciem la classe per enviar formularis x-www-form-urlencoded i configurem els camps
+           EnviamentPostUrlEncoded urlencoded = new EnviamentPostUrlEncoded("http://169.254.142.250/residueix/api/residus/tipus/baixa/index.php");
+           urlencoded.afegirCamp("id_usuari", String.valueOf(usuari.getId()));
+           urlencoded.afegirCamp("permis", String.valueOf(usuari.getTipus()));
+           urlencoded.afegirCamp("token", usuari.getToken());
+           urlencoded.afegirCamp("id", String.valueOf(idTipusResidu));
+           
+           return urlencoded.resposta();
+            
+        } catch (IOException ex){
+            return new JSONObject("{\"codi_error\":\"excepcio_api_baixaTipusResidu\",\"error\":\"Error en execució al enviar la petició.\"}");    
+        }
+    }
+    
+        public static JSONObject baixaResidu(Usuari usuari, int idTipusResidu){
+        try{
+          
+           // Instanciem la classe per enviar formularis x-www-form-urlencoded i configurem els camps
+           EnviamentPostUrlEncoded urlencoded = new EnviamentPostUrlEncoded("http://169.254.142.250/residueix/api/residus/baixa/index.php");
+           urlencoded.afegirCamp("id_usuari", String.valueOf(usuari.getId()));
+           urlencoded.afegirCamp("permis", String.valueOf(usuari.getTipus()));
+           urlencoded.afegirCamp("token", usuari.getToken());
+           urlencoded.afegirCamp("id", String.valueOf(idTipusResidu));
+           
+           return urlencoded.resposta();
+            
+        } catch (IOException ex){
+            return new JSONObject("{\"codi_error\":\"excepcio_api_baixaResidu\",\"error\":\"Error en execució al enviar la petició.\"}");    
+        }
+    }
+    
+    
+       
+    public static JSONObject modificacioTipuResidu(Usuari usuari, String id, String nom, File imatge){
+         try{
+            
+            // Instaciem la classe per enviar formularis multipart i configurem camps
+            EnviamentPostMultipart multipart = new EnviamentPostMultipart("http://169.254.142.250/residueix/api/residus/tipus/modificacio/index.php");
+            multipart.addHeaderField("User-Agent", "CodeJava");
+            multipart.addHeaderField("Test-Header", "Header-Value");
+            multipart.afegirCamp("id_usuari", String.valueOf(usuari.getId()));
+            multipart.afegirCamp("permis", String.valueOf(usuari.getTipus()));
+            multipart.afegirCamp("token", usuari.getToken());            
+            multipart.afegirCamp("id", id);
+            multipart.afegirCamp("nom", nom);
+            if(imatge != null){
+                multipart.afegirArxiu("imatge", imatge);
+            }
+            List<String> response = multipart.finish();
+            
+            System.out.println(response.toString());
+            
+            return new JSONObject(response.get(0));
+           
+        } catch (IOException ex){
+            return new JSONObject("{\"codi_error\":\"excepcio_api_modificacioTipusResidu\",\"error\":\"Error en execució al enviar el formulari.\"}");
+        }       
+    }
+        
+    public static JSONObject llistatResidus(Usuari usuari){
+        try{
+          
+           // Instanciem la classe per enviar formularis x-www-form-urlencoded i configurem els camps
+           EnviamentPostUrlEncoded urlencoded = new EnviamentPostUrlEncoded("http://169.254.142.250/residueix/api/residus/llistat/index.php");
+           urlencoded.afegirCamp("id_usuari", String.valueOf(usuari.getId()));
+           urlencoded.afegirCamp("permis", String.valueOf(usuari.getTipus()));
+           urlencoded.afegirCamp("token", usuari.getToken());
+           
+           return urlencoded.resposta();
+            
+        } catch (IOException ex){
+            return new JSONObject("{\"codi_error\":\"excepcio_api_llistatResidus\",\"error\":\"Error en execució al enviar la petició.\"}");    
+        }
+    }    
           
     
 }

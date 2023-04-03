@@ -1,20 +1,14 @@
 package residueix.residueixapp.Residus;
 
 import residueix.residueixapp.*;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import residueix.residueixapp.models.Usuari;
 import residueix.residueixapp.utils.Api;
@@ -22,12 +16,11 @@ import residueix.residueixapp.utils.Utils;
 import residueix.residueixapp.utils.SelectorImatge;
 
 /**
- * Classe per obrir la pantalla per donar d'alta un usuari
+ * Classe per obrir la pantalla per donar d'alta un tipus de residu
  * @author Daniel Garcia Ruiz
  * @version 24/03/2023
  */
-public class PantallaAltaResidu extends javax.swing.JFrame {
-    
+public class PantallaModificarTipusResidu extends javax.swing.JFrame { 
     
     // Atributs
     /**
@@ -43,32 +36,35 @@ public class PantallaAltaResidu extends javax.swing.JFrame {
      */
     private int yMouse;  
     /**
-     * Llistat de tipus d'usuari.
-     */
-    private ArrayList<String[]> llistatTipus = new ArrayList<String[]>();
-    /**
      * Imatge del residu.
      */
     private File imatge;
+    /**
+     * Tipus de residu id
+     */
+    private static int idTipusResidu;    
     
     /**
      * Crea una nova instància de la classe PantallaPrincipal.
-     * @param usuari: Usuari loginat a l'aplicació.
+     * @param usuari (Usuari) loginat a l'aplicació.
+     * @param idTipusResidu (int) id tipus residu
      */
-    public PantallaAltaResidu(Usuari usuari) {
-        // Assignació de l'usuari
+    public PantallaModificarTipusResidu(Usuari usuari, int idTipusResidu) {
+        // Assignació de l'usuari i el tipus de residu
         this.usuari = usuari;
+        this.idTipusResidu = idTipusResidu;
+        this.imatge = null;
         // Inicialització dels components
         initComponents();
         // Centrem pantalla
         centrarPantalla();
         // Accions en funcio de l'usuari
         gestioUsuari();
-        // Càrrega inicial del formulari.
-        carregaFormulari();
+        // Accions per carregar la info del tipus de producte
+        carregarFormulari();        
     }
 
-     /**
+    /**
      * Mètode critad per el constructor per inicialitzar el formulari.
      */
     @SuppressWarnings("unchecked")
@@ -82,24 +78,18 @@ public class PantallaAltaResidu extends javax.swing.JFrame {
         panelTitol = new javax.swing.JPanel();
         labelTitol = new javax.swing.JLabel();
         labelPathImatge = new javax.swing.JLabel();
-        labelTipus = new javax.swing.JLabel();
-        labelValor = new javax.swing.JLabel();
-        labelActiu = new javax.swing.JLabel();
-        checkBoxActiu = new javax.swing.JCheckBox();
-        labelDescripcio = new javax.swing.JLabel();
-        comboBoxTipusResidu = new javax.swing.JComboBox<>();
         buttonSeleccionarImatge = new javax.swing.JButton();
-        buttonAlta = new javax.swing.JButton();
-        textFieldValor = new javax.swing.JTextField();
+        buttonModificacio = new javax.swing.JButton();
         labelImatge = new javax.swing.JLabel();
-        scrollPaneDescripcio = new javax.swing.JScrollPane();
-        textAreaDescripcio = new javax.swing.JTextArea();
         labelNom = new javax.swing.JLabel();
         textFieldNom = new javax.swing.JTextField();
         labelImatgeSeleccionada = new javax.swing.JLabel();
+        labelId = new javax.swing.JLabel();
         panelOpcions = new javax.swing.JPanel();
         buttonLogOut = new javax.swing.JButton();
-        buttonTornar = new javax.swing.JButton();
+        buttonTornarLlistatResisdus = new javax.swing.JButton();
+        buttonTornarPantallaPrincipal = new javax.swing.JButton();
+        buttonTornarLlistatTipusResidus = new javax.swing.JButton();
         labelPrincipal = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -142,50 +132,15 @@ public class PantallaAltaResidu extends javax.swing.JFrame {
         panelTitol.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         labelTitol.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
-        labelTitol.setText("Alta Residu");
-        labelTitol.setToolTipText("");
+        labelTitol.setText("Modificació tipus residu");
+        labelTitol.setToolTipText("Modificació tipus residu");
         panelTitol.add(labelTitol, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 600, 30));
 
         panelContingut.add(panelTitol, new org.netbeans.lib.awtextra.AbsoluteConstraints(2, 51, 800, 50));
 
         labelPathImatge.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
         labelPathImatge.setToolTipText("Imatge del residu");
-        panelContingut.add(labelPathImatge, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 480, 450, 30));
-
-        labelTipus.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
-        labelTipus.setText("Tipus");
-        panelContingut.add(labelTipus, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 160, 100, 30));
-
-        labelValor.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
-        labelValor.setText("Valor");
-        labelValor.setToolTipText("Valor del residu");
-        panelContingut.add(labelValor, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 440, 100, 30));
-
-        labelActiu.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
-        labelActiu.setText("Actiu");
-        labelActiu.setToolTipText("");
-        panelContingut.add(labelActiu, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 210, 50, 30));
-
-        checkBoxActiu.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
-        checkBoxActiu.setToolTipText("Actiu");
-        checkBoxActiu.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        panelContingut.add(checkBoxActiu, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 210, 20, 30));
-
-        labelDescripcio.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
-        labelDescripcio.setText("Descripció");
-        labelDescripcio.setToolTipText("Descripció del residu");
-        panelContingut.add(labelDescripcio, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 210, 100, 30));
-
-        comboBoxTipusResidu.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
-        comboBoxTipusResidu.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tria tipus residu" }));
-        comboBoxTipusResidu.setToolTipText("Tipus Residu");
-        comboBoxTipusResidu.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        comboBoxTipusResidu.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                comboBoxTipusResiduActionPerformed(evt);
-            }
-        });
-        panelContingut.add(comboBoxTipusResidu, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 160, 150, 30));
+        panelContingut.add(labelPathImatge, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 210, 450, 30));
 
         buttonSeleccionarImatge.setBackground(new java.awt.Color(51, 102, 255));
         buttonSeleccionarImatge.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
@@ -199,47 +154,26 @@ public class PantallaAltaResidu extends javax.swing.JFrame {
                 buttonSeleccionarImatgeActionPerformed(evt);
             }
         });
-        panelContingut.add(buttonSeleccionarImatge, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 490, 150, 30));
+        panelContingut.add(buttonSeleccionarImatge, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 210, 150, 30));
 
-        buttonAlta.setBackground(new java.awt.Color(51, 204, 0));
-        buttonAlta.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
-        buttonAlta.setForeground(new java.awt.Color(255, 255, 255));
-        buttonAlta.setText("Donar d'Alta");
-        buttonAlta.setToolTipText("Donar d'alta residu");
-        buttonAlta.setBorderPainted(false);
-        buttonAlta.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        buttonAlta.addActionListener(new java.awt.event.ActionListener() {
+        buttonModificacio.setBackground(new java.awt.Color(51, 204, 0));
+        buttonModificacio.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
+        buttonModificacio.setForeground(new java.awt.Color(255, 255, 255));
+        buttonModificacio.setText("Modificar");
+        buttonModificacio.setToolTipText("Modificar tipus residu");
+        buttonModificacio.setBorderPainted(false);
+        buttonModificacio.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        buttonModificacio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonAltaActionPerformed(evt);
+                buttonModificacioActionPerformed(evt);
             }
         });
-        panelContingut.add(buttonAlta, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 690, 150, 30));
-
-        textFieldValor.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
-        textFieldValor.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        textFieldValor.setToolTipText("Email");
-        textFieldValor.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        textFieldValor.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                textFieldValorKeyTyped(evt);
-            }
-        });
-        panelContingut.add(textFieldValor, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 440, 150, 30));
+        panelContingut.add(buttonModificacio, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 690, 150, 30));
 
         labelImatge.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
         labelImatge.setText("Imatge");
         labelImatge.setToolTipText("Imatge del residu");
-        panelContingut.add(labelImatge, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 490, 100, 30));
-
-        scrollPaneDescripcio.setBackground(new java.awt.Color(255, 255, 255));
-        scrollPaneDescripcio.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-
-        textAreaDescripcio.setColumns(20);
-        textAreaDescripcio.setRows(5);
-        textAreaDescripcio.setToolTipText("Descriptió del residu");
-        scrollPaneDescripcio.setViewportView(textAreaDescripcio);
-
-        panelContingut.add(scrollPaneDescripcio, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 220, 530, 200));
+        panelContingut.add(labelImatge, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 210, 100, 30));
 
         labelNom.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
         labelNom.setText("Nom");
@@ -250,15 +184,11 @@ public class PantallaAltaResidu extends javax.swing.JFrame {
         textFieldNom.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         textFieldNom.setToolTipText("Email");
         textFieldNom.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        textFieldNom.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                textFieldNomKeyTyped(evt);
-            }
-        });
-        panelContingut.add(textFieldNom, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 160, 350, 30));
+        panelContingut.add(textFieldNom, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 160, 620, 30));
 
         labelImatgeSeleccionada.setToolTipText("Imatge seleccionada");
-        panelContingut.add(labelImatgeSeleccionada, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 490, 120, 120));
+        panelContingut.add(labelImatgeSeleccionada, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 260, 150, 140));
+        panelContingut.add(labelId, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 110, -1, -1));
 
         panelPrincipal.add(panelContingut, new org.netbeans.lib.awtextra.AbsoluteConstraints(2, 2, 798, 746));
 
@@ -280,18 +210,44 @@ public class PantallaAltaResidu extends javax.swing.JFrame {
         });
         panelOpcions.add(buttonLogOut, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 700, 150, 30));
 
-        buttonTornar.setBackground(new java.awt.Color(255, 204, 0));
-        buttonTornar.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
-        buttonTornar.setText("Llistat residus");
-        buttonTornar.setToolTipText("Tornar al llistat d'usuaris");
-        buttonTornar.setBorderPainted(false);
-        buttonTornar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        buttonTornar.addActionListener(new java.awt.event.ActionListener() {
+        buttonTornarLlistatResisdus.setBackground(new java.awt.Color(255, 204, 0));
+        buttonTornarLlistatResisdus.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
+        buttonTornarLlistatResisdus.setText("Llistat residus");
+        buttonTornarLlistatResisdus.setToolTipText("Tornar al llistat de residus");
+        buttonTornarLlistatResisdus.setBorderPainted(false);
+        buttonTornarLlistatResisdus.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        buttonTornarLlistatResisdus.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonTornarActionPerformed(evt);
+                buttonTornarLlistatResisdusActionPerformed(evt);
             }
         });
-        panelOpcions.add(buttonTornar, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 660, 150, 30));
+        panelOpcions.add(buttonTornarLlistatResisdus, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 580, 150, 30));
+
+        buttonTornarPantallaPrincipal.setBackground(new java.awt.Color(255, 204, 0));
+        buttonTornarPantallaPrincipal.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
+        buttonTornarPantallaPrincipal.setText("Pantalla principal");
+        buttonTornarPantallaPrincipal.setToolTipText("Tornar pantalla principal");
+        buttonTornarPantallaPrincipal.setBorderPainted(false);
+        buttonTornarPantallaPrincipal.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        buttonTornarPantallaPrincipal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonTornarPantallaPrincipalActionPerformed(evt);
+            }
+        });
+        panelOpcions.add(buttonTornarPantallaPrincipal, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 660, 150, 30));
+
+        buttonTornarLlistatTipusResidus.setBackground(new java.awt.Color(255, 204, 0));
+        buttonTornarLlistatTipusResidus.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
+        buttonTornarLlistatTipusResidus.setText("Ll. tipus residu");
+        buttonTornarLlistatTipusResidus.setToolTipText("Tornar al llistat de tipus de residu");
+        buttonTornarLlistatTipusResidus.setBorderPainted(false);
+        buttonTornarLlistatTipusResidus.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        buttonTornarLlistatTipusResidus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonTornarLlistatTipusResidusActionPerformed(evt);
+            }
+        });
+        panelOpcions.add(buttonTornarLlistatTipusResidus, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 620, 150, 30));
 
         panelPrincipal.add(panelOpcions, new org.netbeans.lib.awtextra.AbsoluteConstraints(798, 2, 200, 746));
 
@@ -304,39 +260,33 @@ public class PantallaAltaResidu extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    
+
     /**
-     * Mètode per carregar dades necesàries del formulari
+     * Mètode per carregar les dades del formulari
      */
-    private void carregaFormulari(){
-       
-        String problemes = "no";
+    private void carregarFormulari(){
         
-        // Json array amb els tipus d'usuari per al combobox
-        JSONObject jsonTipusResidu = Api.llistatTipusResidu(usuari);
+        // Fem la petició a  l'api per les dades del tipus de residu.
+        JSONObject tipusResidu = Api.consultaTipusResidu(usuari,idTipusResidu);
         
-        if(!jsonTipusResidu.isEmpty()){
-            if(jsonTipusResidu.get("codi_error").toString().equals("0")){
-                JSONArray llistatTipusUsuaris = jsonTipusResidu.getJSONArray("llistat");
-                if(!llistatTipusUsuaris.isEmpty()){
-                    for(int i = 0; i < llistatTipusUsuaris.length(); i++){
-                        JSONObject jsonTipus = llistatTipusUsuaris.getJSONObject(i);
-                        comboBoxTipusResidu.addItem(jsonTipus.get("nom").toString());
-                        llistatTipus.add(new String[]{jsonTipus.get("id").toString(),jsonTipus.get("nom").toString()});
-                    }
-                }else{
-                    problemes += "Hi ha problemes amb el llistat de tipus d'usuari. ";
-                }
-            }else{
-                problemes += "Hi ha problemes amb els tipus d'usuari:  " + jsonTipusResidu.get("codi_error").toString() + " - " + jsonTipusResidu.get("error").toString() ;
-            }
+        // Comprovem si el retornat es correcte 
+        if(tipusResidu.getString("codi_error").equals("0")){
+            // Omplim les dades dels elements del formulari amb la informació del json
+            labelId.setVisible(false);
+            labelId.setText(String.valueOf(idTipusResidu));
+            textFieldNom.setText(tipusResidu.getString("nom"));
+            labelPathImatge.setText(tipusResidu.getString("imatge"));
+            // Carreguem la imatge
+            ImageIcon imatgeTipusResidu = Utils.carregaImatge(1,tipusResidu.getString("imatge"));
+            labelImatgeSeleccionada.setIcon(imatgeTipusResidu);
+             
         }else{
-            problemes += "Hi ha problemes amb els tipus d'usuari. ";
+            // Missatge d'error.
+            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia("Error: " + tipusResidu.getString("codi_erro") + " - " + tipusResidu.getString("error"));
+            pantallaAdvertencia.setVisible(true);
         }
-        comboBoxTipusResidu.setBackground(new Color(255,255,255,255));
         
-       
-    }
+    }    
     
     /**
      * Mètode per gestionar accions en funció de l'usuari
@@ -344,7 +294,7 @@ public class PantallaAltaResidu extends javax.swing.JFrame {
     private void gestioUsuari(){
         // Posem el nom de l'usuari a la part superior
         labelUsuari.setText( usuari.getNom() + " " + usuari.getCognom1() + " " + usuari.getCognom2() );   
-    }
+    }    
     
     /**
      * Mètode per centrar la pantalla
@@ -356,24 +306,11 @@ public class PantallaAltaResidu extends javax.swing.JFrame {
     }
     
     /**
-     * Mètode per resetejar el formulari
-     */
-    private void resetFormulari(){
-        comboBoxTipusResidu.setSelectedIndex(0);
-        checkBoxActiu.setSelected(false);
-        textFieldNom.setText("");
-        textAreaDescripcio.setText("");
-        textFieldValor.setText("");
-        labelPathImatge.setText("");
-        labelImatgeSeleccionada.setIcon(null);
-        imatge.delete();
-    }
-    
-    /**
      * Mètode per capturar la x i y del mouse quan el deixem pulsat sobre el frame principal.
      * @param evt MouseEvent: event de deixar pulsat el botó del ratolí.
      */
     private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
+        // Guardem x i y del ratolí
         xMouse = evt.getX();
         yMouse = evt.getY();
     }//GEN-LAST:event_formMousePressed
@@ -383,6 +320,7 @@ public class PantallaAltaResidu extends javax.swing.JFrame {
      * @param evt MouseEvent: event quan arroseguem amb el ratolí.
      */
     private void formMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseDragged
+        // Asignem la nova posició a la finestra
         int x = evt.getXOnScreen();
         int y = evt.getYOnScreen();
         setLocation(x-xMouse, y-yMouse);
@@ -392,12 +330,11 @@ public class PantallaAltaResidu extends javax.swing.JFrame {
      * Mètode utilitzat quan es prem el botó de donar d'alta un residu
      * @param evt ActionEvent: Pulsar el botó.
      */
-    private void buttonAltaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAltaActionPerformed
+    private void buttonModificacioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonModificacioActionPerformed
          
         // Variables de control
         boolean enviament = true;
         String missatge = "Error: - ";
-        String id_tipus = "0";
         
         // Comprovem les dades del nom
         if(!Utils.validarText(textFieldNom.getText(),3,255)){
@@ -405,66 +342,37 @@ public class PantallaAltaResidu extends javax.swing.JFrame {
             missatge += "El nom ha de tenir com a mínim 3 i com a màxim 255 caràcters.";
         }
         
-        // Comprovem les dades de la descripció
-        if(!Utils.validarText(textAreaDescripcio.getText(),10,1024)){
-            enviament = false;
-            missatge += "La descripció ha de contemir com a mínim  10 i com a màxim 1024 caràcters.";
-        }
-        
-        // Comprovem el selector de tipus
-        if(!Utils.validarSelector(comboBoxTipusResidu.getSelectedIndex())){
-            enviament = false;
-            missatge += "Ha de seleccionar un tipus de residu.";
-        }else{
-            String tipus = comboBoxTipusResidu.getSelectedItem().toString();
-            for (String[] e : llistatTipus) {
-                    if (e[1].equals(tipus)) {
-                        id_tipus = e[0];
-                    break;
-                    }
-                }
-        }
-        
-        // Comprovem el valor
-        if(!Utils.validarDecimal(textFieldValor.getText())){
-            enviament = false;
-            missatge += "No hi ha un valor vàlid.";
-        }
-        
         // Comprovem la imatge
         if(!Utils.validarText(labelPathImatge.getText(),8,255)){
-            if(imatge == null){
-                enviament = false;
-                missatge += "No hi ha una imatge vàlida seleccionada.";
-            }else{
+            if(imatge != null){
                 if(!imatge.isFile()){
                     enviament = false;
                     missatge += "No hi ha una imatge vàlida seleccionada.";
                 }
             }
         }
-        
+         
         // Si no hi ha problemes enviem, si no mostrem errors
         if(enviament){
-            try {
-                JSONObject jsonRetorn = Api.altaResidu(usuari, id_tipus, textFieldNom.getText(), textAreaDescripcio.getText(), textFieldValor.getText(), imatge, Utils.validarCheckbox(checkBoxActiu.isSelected()));
-                if(jsonRetorn.getString("codi_error").equals("0")){
-                    PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(jsonRetorn.get("descripcio").toString());
-                    pantallaAdvertencia.setVisible(true);
-                    resetFormulari();
-                }else{
-                    PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(jsonRetorn.get("codi_error").toString() + " - " +jsonRetorn.get("error").toString());
-                    pantallaAdvertencia.setVisible(true);
-                }
-            } catch (IOException ex) {
-                Logger.getLogger(PantallaAltaResidu.class.getName()).log(Level.SEVERE, null, ex);
+            // Fem la petició a l'api per modificar el tipus de residu
+            JSONObject jsonModificacioTipusResidu = Api.modificacioTipuResidu(usuari, labelId.getText(), textFieldNom.getText(), imatge);
+            
+            if(jsonModificacioTipusResidu.getString("codi_error").equals("0")){
+                // Missatge ok
+                PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(jsonModificacioTipusResidu.getString("descripcio"));
+                pantallaAdvertencia.setVisible(true);                
+            }else{
+                // Missatge error
+                PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia("Error: " + jsonModificacioTipusResidu.getString("codi_error") + " - " + jsonModificacioTipusResidu.getString("error") );
+                pantallaAdvertencia.setVisible(true);                
             }
         }else{
+            // Missatge error
              PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(missatge);
              pantallaAdvertencia.setVisible(true);
          }
          
-    }//GEN-LAST:event_buttonAltaActionPerformed
+    }//GEN-LAST:event_buttonModificacioActionPerformed
     
     /**
      * Mètode utilitzat quan es prem el botó de logout per tancar la sessió.
@@ -477,24 +385,15 @@ public class PantallaAltaResidu extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonLogOutActionPerformed
 
     /**
-     * Mètode utilitzat quan es prem el botó de Tornar per tornar al llistat d'usuaris
+     * Mètode utilitzat quan es prem el botó de Tornar a la pantalla principal
      * @param evt (ActionEvent) : event al pulsar el botó.
      */
-    private void buttonTornarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonTornarActionPerformed
-        PantallaLlistatResidus pantallaLlistatResidus = new PantallaLlistatResidus(usuari);
-        pantallaLlistatResidus.setVisible(true);
+    private void buttonTornarPantallaPrincipalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonTornarPantallaPrincipalActionPerformed
+        // Obrir pantalla principal
+        PantallaPrincipal pantallaPrincipal = new PantallaPrincipal(usuari);
+        pantallaPrincipal.setVisible(true);
         this.dispose();
-    }//GEN-LAST:event_buttonTornarActionPerformed
-    
-    /**
-     * Mètode utilitzat quan es canvia d'item al combobox de tipus d'usuari
-     * @param evt 
-     */
-    private void comboBoxTipusResiduActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboBoxTipusResiduActionPerformed
-        
-    }//GEN-LAST:event_comboBoxTipusResiduActionPerformed
-    
-   
+    }//GEN-LAST:event_buttonTornarPantallaPrincipalActionPerformed
    
     /** 
      * Mètode utilitzar quan es vol seleccionar una imatge
@@ -505,11 +404,11 @@ public class PantallaAltaResidu extends javax.swing.JFrame {
         // Per controlar el resultat
         int resultat;
         
+        // Iniciem el selector d'imatges
+        SelectorImatge selector =  new SelectorImatge();
+        
         // Determinem les extensions permitides
         FileNameExtensionFilter format = new FileNameExtensionFilter("JPG,PNG y GIF", "jpg","png","gif");
-        
-        // Instanciem el selector
-        SelectorImatge selector = new SelectorImatge();
         
         // Asignem el format al selector
         selector.selectorImatge.setFileFilter(format);
@@ -521,7 +420,7 @@ public class PantallaAltaResidu extends javax.swing.JFrame {
         if(JFileChooser.APPROVE_OPTION == resultat){
             
             // Triem la imatge que s'ha seleccionat i la guardem en l'atribut imatge.
-            imatge = SelectorImatge.selectorImatge.getSelectedFile();
+            imatge = selector.selectorImatge.getSelectedFile();
             
             // Posem la ruta en el label.
             labelPathImatge.setText(imatge.getAbsolutePath());
@@ -540,25 +439,28 @@ public class PantallaAltaResidu extends javax.swing.JFrame {
         
     }//GEN-LAST:event_buttonSeleccionarImatgeActionPerformed
 
-    private void textFieldNomKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textFieldNomKeyTyped
-        // TODO add your handling code here:
-    }//GEN-LAST:event_textFieldNomKeyTyped
+    /**
+     * Mètode utilitzat quan es prem el botó de tornar al llistat de residus
+     * @param evt (ActionEvent) : pulsar el botó.
+     */
+    private void buttonTornarLlistatResisdusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonTornarLlistatResisdusActionPerformed
+        // Obrir pantalla llistat residus
+        PantallaLlistatResidus pantallaLlistatResidus = new PantallaLlistatResidus(usuari);
+        pantallaLlistatResidus.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_buttonTornarLlistatResisdusActionPerformed
 
     /**
-     * Mètode per validar el que es posa al textfield de valor
-     * @param evt (KeyEvent) pulsar el teclat.
+     * Mètode utilitzat quan es prem el botó de tornar al llistat de tipus de residus
+     * @param evt (ActionEvent) : pulsar el botó.
      */
-    private void textFieldValorKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textFieldValorKeyTyped
-        if(textFieldValor.getText().length() >= 15){
-            evt.consume();
-        }else{
-            int key = evt.getKeyChar();
-            boolean num = (((key >=48) && (key <= 57)) || (key == 46));
-            if(!num){ evt.consume(); }
-        }
-    }//GEN-LAST:event_textFieldValorKeyTyped
-
-   
+    private void buttonTornarLlistatTipusResidusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonTornarLlistatTipusResidusActionPerformed
+        // Obrir pantalla llistat tipus residu
+        PantallaLlistatTipusResidus pantallaLlistatTipusResidus = new PantallaLlistatTipusResidus(usuari);
+        pantallaLlistatTipusResidus.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_buttonTornarLlistatTipusResidusActionPerformed
+  
     /**
      * Mètode principal de la classe.
      * @param args arguments de la linia de comandament
@@ -577,14 +479,126 @@ public class PantallaAltaResidu extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(PantallaAltaResidu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PantallaModificarTipusResidu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(PantallaAltaResidu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PantallaModificarTipusResidu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(PantallaAltaResidu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PantallaModificarTipusResidu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(PantallaAltaResidu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PantallaModificarTipusResidu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -605,7 +619,7 @@ public class PantallaAltaResidu extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new PantallaAltaResidu(usuari).setVisible(true);
+                new PantallaModificarTipusResidu(usuari,idTipusResidu).setVisible(true);
             }
         });
         
@@ -615,13 +629,13 @@ public class PantallaAltaResidu extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     /**
-    * Botó per donar d'alta l'usuari
-    */
-    private javax.swing.JButton buttonAlta;
-    /**
     * Botó per desloginar-se i sortir de l'aplicació.
     */
     private javax.swing.JButton buttonLogOut;
+    /**
+    * Botó per donar d'alta l'usuari
+    */
+    private javax.swing.JButton buttonModificacio;
     /**
     * Botó per seleccionar imatge
     */
@@ -629,23 +643,16 @@ public class PantallaAltaResidu extends javax.swing.JFrame {
     /**
     * Botó per tornar a la pantalla principal.
     */
-    private javax.swing.JButton buttonTornar;
+    private javax.swing.JButton buttonTornarLlistatResisdus;
     /**
-    * Checkbox actiu
+    * Botó per tornar a la pantalla principal.
     */
-    private javax.swing.JCheckBox checkBoxActiu;
+    private javax.swing.JButton buttonTornarLlistatTipusResidus;
     /**
-    * Combo box tipus residu
+    * Botó per tornar a la pantalla principal.
     */
-    private javax.swing.JComboBox<String> comboBoxTipusResidu;
-    /**
-    * Label actiu
-    */
-    private javax.swing.JLabel labelActiu;
-    /**
-    * label descripció
-    */
-    private javax.swing.JLabel labelDescripcio;
+    private javax.swing.JButton buttonTornarPantallaPrincipal;
+    private javax.swing.JLabel labelId;
     /**
     * label imatge
     */
@@ -667,10 +674,6 @@ public class PantallaAltaResidu extends javax.swing.JFrame {
     */
     private javax.swing.JLabel labelPrincipal;
     /**
-    * Label tipus residu
-    */
-    private javax.swing.JLabel labelTipus;
-    /**
     * Label per el títol de la pantalla.
     */
     private javax.swing.JLabel labelTitol;
@@ -678,10 +681,6 @@ public class PantallaAltaResidu extends javax.swing.JFrame {
     * Label per tenir les dades de l'usuari loginat
     */
     private javax.swing.JLabel labelUsuari;
-    /**
-    * label valor
-    */
-    private javax.swing.JLabel labelValor;
     /**
     * Panel per contenir la informació de l'usuari loginat
     */
@@ -702,18 +701,9 @@ public class PantallaAltaResidu extends javax.swing.JFrame {
     * Panel per contenir el títol de la pantalla
     */
     private javax.swing.JPanel panelTitol;
-    private javax.swing.JScrollPane scrollPaneDescripcio;
-    /**
-    * Test area per la descripció del residu
-    */
-    private javax.swing.JTextArea textAreaDescripcio;
     /**
     * Text Field nom residu
     */
     private javax.swing.JTextField textFieldNom;
-    /**
-    * Text Field valor residu
-    */
-    private javax.swing.JTextField textFieldValor;
     // End of variables declaration//GEN-END:variables
 }

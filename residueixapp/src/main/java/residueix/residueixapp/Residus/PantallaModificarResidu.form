@@ -140,7 +140,7 @@
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Sansation" size="14" style="1"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="Alta Residu"/>
+                    <Property name="text" type="java.lang.String" value="Modificar Residu"/>
                     <Property name="toolTipText" type="java.lang.String" value=""/>
                   </Properties>
                   <AuxValues>
@@ -318,7 +318,7 @@
                 </Constraint>
               </Constraints>
             </Component>
-            <Component class="javax.swing.JButton" name="buttonAlta">
+            <Component class="javax.swing.JButton" name="buttonModificar">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="0" green="cc" red="33" type="rgb"/>
@@ -329,15 +329,15 @@
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="ff" green="ff" red="ff" type="rgb"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Donar d&apos;Alta"/>
-                <Property name="toolTipText" type="java.lang.String" value="Donar d&apos;alta residu"/>
+                <Property name="text" type="java.lang.String" value="Modificar Residu"/>
+                <Property name="toolTipText" type="java.lang.String" value="Modificar Residu"/>
                 <Property name="borderPainted" type="boolean" value="false"/>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                   <Color id="Hand Cursor"/>
                 </Property>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonAltaActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonModificarActionPerformed"/>
               </Events>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_DeclarationPre" type="java.lang.String" value="/**&#xa; * Bot&#xf3; per donar d&apos;alta l&apos;usuari&#xa; */"/>
@@ -476,6 +476,16 @@
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
                   <AbsoluteConstraints x="620" y="490" width="120" height="120"/>
+                </Constraint>
+              </Constraints>
+            </Component>
+            <Component class="javax.swing.JLabel" name="labelId">
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_DeclarationPre" type="java.lang.String" value="/**&#xa; * Label que cont&#xe9; id residu&#xa; */"/>
+              </AuxValues>
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
+                  <AbsoluteConstraints x="20" y="110" width="-1" height="-1"/>
                 </Constraint>
               </Constraints>
             </Component>

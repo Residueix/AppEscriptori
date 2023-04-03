@@ -1,16 +1,20 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package residueix.residueixapp.utils;
 
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.imageio.ImageIO;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 
 /**
  *  Classe amb utiitats per poder utilitzar durant el codi.
  * @author Daniel Garcia Ruiz
- * @version 26/03/2023
+ * @version 03/04/2023
  */
 public class Utils {
     
@@ -18,6 +22,42 @@ public class Utils {
     * Constructor - Crea una nova instància de la classe Utils
     */
     public Utils(){}
+
+    /**
+     * Mètode per validar els checbox i pasar-ho a text
+     * @param estat (boolean) estat del checkbox
+     * @return 1/0 en format String
+     */
+    public static String validarCheckbox(boolean estat){
+        if(estat){
+            return "1";
+        }else{
+            return "0";
+        }
+    }
+ 
+    /**
+     * Mètode per validar el format del decimal
+     * @param valor (String) decimal a comprovar.
+     * @return true/false
+     */
+    public static boolean validarDecimal(String valor){
+        try{
+            Double.valueOf(valor);
+            return true;
+        } catch (NumberFormatException nfe){
+            return false;
+        }
+    }
+    
+    /**
+     * Mètode per validar el selector
+     * @param index (int) Index seleccionat
+     * @return true/false
+     */
+    public static boolean validarSelector(int index){
+        return index != 0;
+    }
     
     /**
      * Mètode per obenir un missatge d'error
@@ -40,6 +80,7 @@ public class Utils {
             case 11 -> { return "Correu enviat! comprovi-ho i canvii la paraula clau el més aviat possible."; }
             case 12 -> { return "S'ha modificat el perfil"; }
             case 13 -> { return "Format d'email incorrecte."; }
+            case 14 -> { return "Has de seleccionar una fila de la taula de tipus de residu."; }
             default -> { return ""; }
         }
     }
@@ -66,27 +107,59 @@ public class Utils {
     public static boolean validarText(String text,int minCaracters, int maxCaracters){
         return (text.length()>minCaracters) && (text.length()<=maxCaracters);
     }
+   
     
     /**
-     * Mètode per validar el selector
-     * @param index (int) Index seleccionat
-     * @return true/false
+     * Mètode per recuperar imatges del servidor
+     * @param seccio (int) secció de l'aplicació per determinar la url on està la imatge
+     * @param imatge (String) nom de la imatge
+     * @return ImageIcon amb la imatge o null
      */
-    public static boolean validarSelector(int index){
-        return index != 0;
-    }
-    
-    /**
-     * Mètode per validar els checbox i pasar-ho a text
-     * @param estat (boolean) estat del checkbox
-     * @return 1/0 en format String
-     */
-    public static String validarCheckbox(boolean estat){
-        if(estat){
-            return "1";
-        }else{
-            return "0";
+    public static ImageIcon carregaImatge(int seccio,String imatge){
+        String url1 = "";
+        try {
+            
+            // En funció de la secció determinem la url on està la imatge
+            switch(seccio){
+                case 1 -> { url1 = "http://169.254.142.250/residueix/img/residus/tipus/" + imatge;}
+                case 2 -> { url1 = "http://169.254.142.250/residueix/img/residus/" + imatge;}
+            }
+            
+            // Creem la url 
+            URL url = new URL(url1);
+            
+            // Fem un buffered amb el retorn de la imatge
+            BufferedImage imagen = ImageIO.read(url);
+            
+            // Comprovem que sigui correcte
+            if(imagen!=null){
+                // Retornem el ImageIcon<
+                ImageIcon icono = new ImageIcon(imagen);
+                Icon ico = new ImageIcon(icono.getImage().getScaledInstance(75, 75, Image.SCALE_DEFAULT));
+                return (ImageIcon) ico;
+            }else{
+                return null;
+            }
+        } catch (MalformedURLException ex) {
+            // Excepció url mal formada
+            return null;
+        } catch (IOException ex) {
+            // Excepció entrada/sortida dades
+            return null;
         }
     }
     
 }
+
+
+    
+    
+  
+    
+
+    
+
+    
+
+
+

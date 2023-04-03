@@ -11,6 +11,10 @@ import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +49,6 @@ public class EnviamentPostMultipart {
         httpConn.setDoInput(true);
         httpConn.setRequestProperty("Content-Type","multipart/form-data; boundary=" + boundary);
         httpConn.setRequestProperty("User-Agent", "CodeJava Agent");
-        httpConn.setRequestProperty("Test", "Bonjour");
         outputStream = httpConn.getOutputStream();
         writer = new PrintWriter(new OutputStreamWriter(outputStream, "UTF-8"),true);
         
@@ -68,19 +71,18 @@ public class EnviamentPostMultipart {
     /**
      * Mètode per afegeix l'arxiu seleccionat a l'enviament
      * @param nom (String)
-     * @param arxiu (File)
+     * @param arxiuRebut (File)
      * @throws IOException
      */
-    public void afegirArxiu(String nom, File arxiu)
-            throws IOException {
-        String fileName = arxiu.getName();
+    public void afegirArxiu(String nom, File arxiuRebut) throws IOException {
+        String arxiu = arxiuRebut.getName();
         writer.append("--" + boundary).append(SALT_LINIA);
-        writer.append("Content-Disposition: form-data; name=\"" + nom + "\"; filename=\"" + nom + "\"").append(SALT_LINIA);
+        writer.append("Content-Disposition: form-data; name=\"" + nom + "\"; filename=\"" + arxiu + "\"").append(SALT_LINIA);
         writer.append( "Content-Type: " + URLConnection.guessContentTypeFromName(nom)).append(SALT_LINIA);
         writer.append("Content-Transfer-Encoding: binary").append(SALT_LINIA);
         writer.append(SALT_LINIA);
         writer.flush();
-        FileInputStream inputStream = new FileInputStream(arxiu);
+        FileInputStream inputStream = new FileInputStream(arxiuRebut);
         byte[] buffer = new byte[4096];
         int bytesRead = -1;
         while ((bytesRead = inputStream.read(buffer)) != -1) {
