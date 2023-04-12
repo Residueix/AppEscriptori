@@ -30,7 +30,7 @@ public class EnviamentPostUrlEncoded {
     /**
      * Constructor per inicialitzar un nou HTTP POST amb el x-www-form-urlencoded
      * @param urlApi (String) : url de l'api
-     * @throws IOException
+     * @throws IOException Excepció d'entrar o sortida de fluxe de dades.
      */
     public EnviamentPostUrlEncoded(String urlApi) throws IOException {
         // Asignem la url i els paràmetres

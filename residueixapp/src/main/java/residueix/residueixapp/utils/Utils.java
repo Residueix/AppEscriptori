@@ -12,12 +12,12 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 /**
- *  Classe amb utiitats per poder utilitzar durant el codi.
+ * Classe amb utiitats per poder utilitzar durant el codi.
  * @author Daniel Garcia Ruiz
  * @version 03/04/2023
  */
 public class Utils {
-    
+   
     /**
     * Constructor - Crea una nova instància de la classe Utils
     */
@@ -51,6 +51,29 @@ public class Utils {
     }
     
     /**
+     * Mètode per validar el format del Codi postal
+     * @param valor (String) codi postal a comprobar.
+     * @return true/false
+     */
+    public static boolean validarCP(String valor){
+        
+        // Comprovem que el codi tingui exactament 5 caràcters.
+        if (valor.length() != 5) { return false; }
+        
+        // Comprovem que tots els caràcters siguin digits
+        for (int i = 0; i < valor.length(); i++) { if (!Character.isDigit(valor.charAt(i))) { return false; } }
+
+        // Convertim el cp a integer
+        int cp = Integer.parseInt(valor);
+
+        // Comprovem que el cp (integuer) sigui vàlid en el rang.
+        if (cp < 0 || cp > 52999) { return false; }
+           
+        // Si hem passat totes les validacions retornem true.
+        return true;
+    }
+    
+    /**
      * Mètode per validar el selector
      * @param index (int) Index seleccionat
      * @return true/false
@@ -81,6 +104,7 @@ public class Utils {
             case 12 -> { return "S'ha modificat el perfil"; }
             case 13 -> { return "Format d'email incorrecte."; }
             case 14 -> { return "Has de seleccionar una fila de la taula de tipus de residu."; }
+            case 15 -> { return "Has de seleccionar una fila de la taula de punts de recollida."; }
             default -> { return ""; }
         }
     }
@@ -117,12 +141,18 @@ public class Utils {
      */
     public static ImageIcon carregaImatge(int seccio,String imatge){
         String url1 = "";
+        int width = 75;
+        int height = 75;
         try {
             
             // En funció de la secció determinem la url on està la imatge
             switch(seccio){
                 case 1 -> { url1 = "http://169.254.142.250/residueix/img/residus/tipus/" + imatge;}
                 case 2 -> { url1 = "http://169.254.142.250/residueix/img/residus/" + imatge;}
+                case 3 -> {
+                    url1 = "http://169.254.142.250/residueix/img/punts/" + imatge;
+                    width=200;  height=120;
+                }
             }
             
             // Creem la url 
@@ -135,7 +165,7 @@ public class Utils {
             if(imagen!=null){
                 // Retornem el ImageIcon<
                 ImageIcon icono = new ImageIcon(imagen);
-                Icon ico = new ImageIcon(icono.getImage().getScaledInstance(75, 75, Image.SCALE_DEFAULT));
+                Icon ico = new ImageIcon(icono.getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT));
                 return (ImageIcon) ico;
             }else{
                 return null;

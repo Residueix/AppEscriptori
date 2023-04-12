@@ -13,6 +13,11 @@ import javax.swing.table.DefaultTableCellRenderer;
 public class RenderitzatsImatges extends DefaultTableCellRenderer {
     
     /**
+     * Constructor RenderitzatsImatges per defecte.
+     */
+    public RenderitzatsImatges(){}
+    
+    /**
      * Mètode sobreescrit per retornar el component de tableCellRenderer
      * @param table jtable
      * @param value objecte que conté

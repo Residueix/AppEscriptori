@@ -1,5 +1,6 @@
 package residueix.residueixapp.utils;
 
+// Imports
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,10 +12,6 @@ import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +31,7 @@ public class EnviamentPostMultipart {
     /**
      * Constructor per inicialitzar un nou HTTP POST amb el multipart/form-data
      * @param url (String) : url de l'api
-     * @throws IOException
+     * @throws IOException Excepció d'entrar o sortida de fluxe de dades.
      */
     public EnviamentPostMultipart(String url) throws IOException {
         
@@ -72,7 +69,7 @@ public class EnviamentPostMultipart {
      * Mètode per afegeix l'arxiu seleccionat a l'enviament
      * @param nom (String)
      * @param arxiuRebut (File)
-     * @throws IOException
+     * @throws IOException Excepció d'entrar o sortida de fluxe de dades.
      */
     public void afegirArxiu(String nom, File arxiuRebut) throws IOException {
         String arxiu = arxiuRebut.getName();
@@ -106,8 +103,8 @@ public class EnviamentPostMultipart {
      
     /**
      * Mètode que fa la sol·licitud i rep la resposta del servidor.
-     * @return List<String> amb la resposta del servidora
-     * @throws IOException
+     * @return List(String) amb la resposta del servidora
+     * @throws IOException Excepció d'entrar o sortida de fluxe de dades.
      */
     public List<String> finish() throws IOException {
         

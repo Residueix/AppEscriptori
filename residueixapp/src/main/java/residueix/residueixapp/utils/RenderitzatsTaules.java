@@ -1,19 +1,17 @@
 package residueix.residueixapp.utils;
 
+// Imports
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
-import residueix.residueixapp.Residus.PantallaLlistatTipusResidus;
 
 /**
  * Classe per el renderitzat de les taules JTable
@@ -21,6 +19,11 @@ import residueix.residueixapp.Residus.PantallaLlistatTipusResidus;
  * @version 29/03/2023
  */
 public class RenderitzatsTaules {
+    
+    /**
+     * Contructor per defecte
+     */
+    public RenderitzatsTaules(){}
     
     /**
      * Mètode per definir la cella com centrada.
@@ -37,7 +40,7 @@ public class RenderitzatsTaules {
      * Mètode per afegir la imatge a la cella que es vol renderitzar
      * @param imatge nom de la imatge
      * @param seccio codi de la secció on es vol utilitzar (per determinar la ruta)
-     * @return 
+     * @return JLabel que conté la imatge renderitzada.
      */
     public static JLabel cellaImatge(String imatge, int seccio){
         String url1 = "";
@@ -45,6 +48,7 @@ public class RenderitzatsTaules {
             switch(seccio){
                 case 1 -> { url1 = "http://169.254.142.250/residueix/img/residus/tipus/" + imatge;}
                 case 2 -> { url1 = "http://169.254.142.250/residueix/img/residus/" + imatge;}
+                case 3 -> { url1 = "http://169.254.142.250/residueix/img/punts/" + imatge;}
             }
             
             URL url = new URL(url1);
