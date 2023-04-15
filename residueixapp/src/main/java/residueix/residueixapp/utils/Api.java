@@ -542,33 +542,17 @@ public class Api {
      * @return JSONObject: json amb el llistat d'usuaris.
      */
     public static JSONObject consultaUsuari(Usuari usuari,int id){
-        
         try{
-            
-            URL url = new URL("http://169.254.142.250/residueix/api/usuaris/consulta/index.php");
-            Map<String,Object> params = new LinkedHashMap<>();
-            
-            // Paràmetres
-            params.put("id_usuari", String.valueOf(usuari.getId()));
-            params.put("token", usuari.getToken());
-            params.put("permis", String.valueOf(usuari.getTipus()));
-            params.put("id",id);
-            
-            // Cridem a l'api per recuperar el json
-            String json = Api.cridaApi(url, params);
-            
-            // Llegim el Json.
-            if(!json.equals("")){
-                JSONObject jsonO = new JSONObject(json);
-                return jsonO;
-            }else{
-                return new JSONObject();
-            }
-            
-        } catch (IOException e){
-            System.out.println("Error excepció: " + e.getMessage());
-            return new JSONObject();
-        }
+           // Instanciem la classe per enviar formularis x-www-form-urlencoded i configurem els camps
+           EnviamentPostUrlEncoded urlencoded = new EnviamentPostUrlEncoded("http://169.254.142.250/residueix/api/usuaris/consulta/index.php");
+           urlencoded.afegirCamp("id_usuari", String.valueOf(usuari.getId()));
+           urlencoded.afegirCamp("permis", String.valueOf(usuari.getTipus()));
+           urlencoded.afegirCamp("token", usuari.getToken());
+           urlencoded.afegirCamp("id", String.valueOf(id));
+           return urlencoded.resposta();
+        } catch (IOException ex){
+            return new JSONObject("{\"codi_error\":\"excepcio_api_consultaUsuari\",\"error\":\"Error en execució al enviar la petició.\"}");    
+        }  
     }
         
      /**
