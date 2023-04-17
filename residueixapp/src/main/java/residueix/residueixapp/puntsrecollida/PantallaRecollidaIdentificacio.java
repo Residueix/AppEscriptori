@@ -1,25 +1,18 @@
 package residueix.residueixapp.puntsrecollida;
 
-import residueix.residueixapp.residus.*;
+// imports
 import residueix.residueixapp.principal.PantallaPrincipal;
 import residueix.residueixapp.principal.PantallaAdvertencia;
 import java.awt.Dimension;
-import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.File;
 import java.util.ArrayList;
 import javax.swing.DefaultListModel;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import residueix.residueixapp.models.Usuari;
 import residueix.residueixapp.utils.Api;
 import residueix.residueixapp.utils.RenderitzatsJList;
-import residueix.residueixapp.utils.Utils;
-import residueix.residueixapp.utils.SelectorImatge;
 
 /**
  * Classe per obrir la pantalla per donar d'alta un tipus de residu

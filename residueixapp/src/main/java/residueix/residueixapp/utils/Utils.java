@@ -105,6 +105,7 @@ public class Utils {
             case 13 -> { return "Format d'email incorrecte."; }
             case 14 -> { return "Has de seleccionar una fila de la taula de tipus de residu."; }
             case 15 -> { return "Has de seleccionar una fila de la taula de punts de recollida."; }
+            case 16 -> { return "Has de seleccionar una fila de la taula carretó per eliminar el residu."; }
             default -> { return ""; }
         }
     }

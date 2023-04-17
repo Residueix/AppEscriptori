@@ -1214,6 +1214,20 @@ public class Api {
         }     
     }
     
+    public static JSONObject recollida(Usuari usuari, String carreto){
+     try{
+           // Instanciem la classe per enviar formularis x-www-form-urlencoded i configurem els camps
+           EnviamentPostUrlEncoded urlencoded = new EnviamentPostUrlEncoded("http://169.254.142.250/residueix/api/puntsrecollida/recollida/index.php");
+           urlencoded.afegirCamp("id_usuari", String.valueOf(usuari.getId()));
+           urlencoded.afegirCamp("permis", String.valueOf(usuari.getTipus()));
+           urlencoded.afegirCamp("token", usuari.getToken());
+           urlencoded.afegirCamp("recollida", String.valueOf(carreto));
+           return urlencoded.resposta();
+        } catch (IOException ex){
+            return new JSONObject("{\"codi_error\":\"excepcio_api_enviamentCarreto\",\"error\":\"Error en execució al enviar la petició.\"}");    
+        }       
+    }
+    
     
     
 }

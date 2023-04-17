@@ -1,15 +1,21 @@
 package residueix.residueixapp.puntsrecollida;
 
+import java.awt.Color;
 import residueix.residueixapp.principal.PantallaPrincipal;
 import residueix.residueixapp.principal.PantallaAdvertencia;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import residueix.residueixapp.models.Usuari;
 import residueix.residueixapp.utils.Api;
+import residueix.residueixapp.utils.RenderitzatsTaules;
+import residueix.residueixapp.utils.Utils;
 
 /**
  * Classe per obrir la pantalla per donar d'alta un tipus de residu
@@ -44,6 +50,10 @@ public class PantallaRecollida extends javax.swing.JFrame {
      */
     private ArrayList<String[]> llistatTipusResidus = new ArrayList<String[]>();
     /**
+     * Llistat del residus que ha donat el residuent.
+     */
+    private ArrayList<String[]> carreto = new ArrayList<String[]>();
+    /**
      * id usuari recollida
      */
     private static String idUsuariRecollida;
@@ -55,6 +65,14 @@ public class PantallaRecollida extends javax.swing.JFrame {
      * Control de problemes
      */
     private String problemes;
+    /**
+     * Model del jtable
+     */
+    private DefaultTableModel model;
+    /**
+     * Total Carreto
+     */
+    private double totalCarreto;
     
     /**
      * Crea una nova instància de la classe PantallaPrincipal.
@@ -80,8 +98,11 @@ public class PantallaRecollida extends javax.swing.JFrame {
         carregarTipuResidus();
         // Carregar el combo de residus
         carregarResidus("0");
+        // Carrega model jtable
+        carregarModel();
     }
-     /**
+    
+    /**
      * Mètode critad per el constructor per inicialitzar el formulari.
      */
     @SuppressWarnings("unchecked")
@@ -94,7 +115,6 @@ public class PantallaRecollida extends javax.swing.JFrame {
         labelUsuari = new javax.swing.JLabel();
         panelTitol = new javax.swing.JPanel();
         labelTitol = new javax.swing.JLabel();
-        buttonRecollir = new javax.swing.JButton();
         labelTotal = new javax.swing.JLabel();
         labelTotalTitol = new javax.swing.JLabel();
         labelCarreto = new javax.swing.JLabel();
@@ -102,10 +122,13 @@ public class PantallaRecollida extends javax.swing.JFrame {
         comboBoxResidus = new javax.swing.JComboBox<>();
         textFieldQuantitat = new javax.swing.JTextField();
         labelQuantitat = new javax.swing.JLabel();
-        labelNom1 = new javax.swing.JLabel();
-        labelNom2 = new javax.swing.JLabel();
+        labelTipusResidus = new javax.swing.JLabel();
+        buttonTreure = new javax.swing.JButton();
+        buttonAfegir = new javax.swing.JButton();
+        labelResidus = new javax.swing.JLabel();
         scrollPaneTipusResidu = new javax.swing.JScrollPane();
-        jTableCarretó = new javax.swing.JTable();
+        jTableCarreto = new javax.swing.JTable();
+        buttonValidarRecollida = new javax.swing.JButton();
         panelOpcions = new javax.swing.JPanel();
         buttonLogOut = new javax.swing.JButton();
         buttonTornarPantallaPrincipal1 = new javax.swing.JButton();
@@ -157,35 +180,21 @@ public class PantallaRecollida extends javax.swing.JFrame {
 
         panelContingut.add(panelTitol, new org.netbeans.lib.awtextra.AbsoluteConstraints(2, 51, 800, 50));
 
-        buttonRecollir.setBackground(new java.awt.Color(51, 204, 0));
-        buttonRecollir.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
-        buttonRecollir.setForeground(new java.awt.Color(255, 255, 255));
-        buttonRecollir.setText("Recollir");
-        buttonRecollir.setToolTipText("Recollir");
-        buttonRecollir.setBorderPainted(false);
-        buttonRecollir.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        buttonRecollir.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonRecollirActionPerformed(evt);
-            }
-        });
-        panelContingut.add(buttonRecollir, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 690, 150, 30));
-
         labelTotal.setFont(new java.awt.Font("Sansation", 1, 18)); // NOI18N
         labelTotal.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelTotal.setToolTipText("Total");
-        panelContingut.add(labelTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 620, 120, 30));
+        panelContingut.add(labelTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 640, 120, 30));
 
         labelTotalTitol.setFont(new java.awt.Font("Sansation", 1, 18)); // NOI18N
         labelTotalTitol.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         labelTotalTitol.setText("Total");
         labelTotalTitol.setToolTipText("Total");
-        panelContingut.add(labelTotalTitol, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 620, 200, 30));
+        panelContingut.add(labelTotalTitol, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 640, 200, 30));
 
         labelCarreto.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
         labelCarreto.setText("Carretó de residus");
         labelCarreto.setToolTipText("Carretó de residus");
-        panelContingut.add(labelCarreto, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 210, 200, 30));
+        panelContingut.add(labelCarreto, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 250, 200, 30));
 
         comboBoxTipus.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
         comboBoxTipus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tots" }));
@@ -223,23 +232,51 @@ public class PantallaRecollida extends javax.swing.JFrame {
         labelQuantitat.setToolTipText("Quantitat (unitats o pes)");
         panelContingut.add(labelQuantitat, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 120, 200, 30));
 
-        labelNom1.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
-        labelNom1.setText("Tipus de residus");
-        labelNom1.setToolTipText("Tipus de residus");
-        panelContingut.add(labelNom1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 120, 200, 30));
+        labelTipusResidus.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
+        labelTipusResidus.setText("Tipus de residus");
+        labelTipusResidus.setToolTipText("Tipus de residus");
+        panelContingut.add(labelTipusResidus, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 120, 200, 30));
 
-        labelNom2.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
-        labelNom2.setText("Residus");
-        labelNom2.setToolTipText("Residus");
-        panelContingut.add(labelNom2, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 120, 200, 30));
+        buttonTreure.setBackground(new java.awt.Color(51, 102, 255));
+        buttonTreure.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
+        buttonTreure.setForeground(new java.awt.Color(255, 255, 255));
+        buttonTreure.setText("Treure residu");
+        buttonTreure.setToolTipText("Treure residu");
+        buttonTreure.setBorderPainted(false);
+        buttonTreure.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        buttonTreure.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonTreureActionPerformed(evt);
+            }
+        });
+        panelContingut.add(buttonTreure, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 640, 200, 30));
+
+        buttonAfegir.setBackground(new java.awt.Color(51, 102, 255));
+        buttonAfegir.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
+        buttonAfegir.setForeground(new java.awt.Color(255, 255, 255));
+        buttonAfegir.setText("Afegir residu");
+        buttonAfegir.setToolTipText("Afegir residu");
+        buttonAfegir.setBorderPainted(false);
+        buttonAfegir.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        buttonAfegir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonAfegirActionPerformed(evt);
+            }
+        });
+        panelContingut.add(buttonAfegir, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 210, 200, 30));
+
+        labelResidus.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
+        labelResidus.setText("Residus");
+        labelResidus.setToolTipText("Residus");
+        panelContingut.add(labelResidus, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 120, 200, 30));
 
         scrollPaneTipusResidu.setBackground(new java.awt.Color(255, 255, 255));
         scrollPaneTipusResidu.setBorder(null);
         scrollPaneTipusResidu.setOpaque(false);
 
-        jTableCarretó.setAutoCreateRowSorter(true);
-        jTableCarretó.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
-        jTableCarretó.setModel(new javax.swing.table.DefaultTableModel(
+        jTableCarreto.setAutoCreateRowSorter(true);
+        jTableCarreto.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
+        jTableCarreto.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
                 {},
@@ -250,16 +287,30 @@ public class PantallaRecollida extends javax.swing.JFrame {
 
             }
         ));
-        jTableCarretó.setToolTipText("Llistat punts de recollda");
-        jTableCarretó.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jTableCarretó.setRowHeight(28);
-        jTableCarretó.setRowMargin(5);
-        jTableCarretó.setSelectionBackground(new java.awt.Color(204, 204, 204));
-        jTableCarretó.setShowGrid(true);
-        jTableCarretó.setShowVerticalLines(false);
-        scrollPaneTipusResidu.setViewportView(jTableCarretó);
+        jTableCarreto.setToolTipText("Llistat punts de recollda");
+        jTableCarreto.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jTableCarreto.setRowHeight(28);
+        jTableCarreto.setRowMargin(5);
+        jTableCarreto.setSelectionBackground(new java.awt.Color(204, 204, 204));
+        jTableCarreto.setShowGrid(true);
+        jTableCarreto.setShowVerticalLines(false);
+        scrollPaneTipusResidu.setViewportView(jTableCarreto);
 
-        panelContingut.add(scrollPaneTipusResidu, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 250, 700, 350));
+        panelContingut.add(scrollPaneTipusResidu, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 280, 700, 350));
+
+        buttonValidarRecollida.setBackground(new java.awt.Color(51, 204, 0));
+        buttonValidarRecollida.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
+        buttonValidarRecollida.setForeground(new java.awt.Color(255, 255, 255));
+        buttonValidarRecollida.setText("Validar recollida");
+        buttonValidarRecollida.setToolTipText("Validar recollida");
+        buttonValidarRecollida.setBorderPainted(false);
+        buttonValidarRecollida.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        buttonValidarRecollida.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonValidarRecollidaActionPerformed(evt);
+            }
+        });
+        panelContingut.add(buttonValidarRecollida, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 690, 150, 30));
 
         panelPrincipal.add(panelContingut, new org.netbeans.lib.awtextra.AbsoluteConstraints(2, 2, 798, 746));
 
@@ -306,7 +357,42 @@ public class PantallaRecollida extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     
+    /**
+     * Mètode per carregar el model del jtable.
+     */
+    private void carregarModel(){
+        // Afegim el model a la taula
+        model = new DefaultTableModel(){
+             @Override 
+             public boolean isCellEditable(int row, int column){
+                 return false;
+             }
+        };
+        model.addColumn("Id");
+        model.addColumn("Nom");
+        model.addColumn("Quantitat");
+        model.addColumn("Valor");
+        model.addColumn("Total");
+        jTableCarreto.setRowSelectionAllowed(true);
+        jTableCarreto.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        jTableCarreto.setModel(model);
+        jTableCarreto.setRowHeight(28);
+        jTableCarreto.getTableHeader().setPreferredSize(new java.awt.Dimension(40,40));
+        jTableCarreto.getTableHeader().setBackground(new Color(51,102,255));
+        jTableCarreto.getTableHeader().setForeground(new Color(255,255,255));
+        jTableCarreto.getColumnModel().getColumn(0).setCellRenderer(RenderitzatsTaules.centrat());
+        jTableCarreto.getColumnModel().getColumn(0).setMaxWidth(50);
+        jTableCarreto.getColumnModel().getColumn(0).setMinWidth(50);
+        jTableCarreto.getColumnModel().getColumn(1).setCellRenderer(RenderitzatsTaules.centrat());
+        jTableCarreto.getColumnModel().getColumn(2).setCellRenderer(RenderitzatsTaules.centrat());
+        jTableCarreto.getColumnModel().getColumn(3).setCellRenderer(RenderitzatsTaules.centrat());
+        jTableCarreto.getColumnModel().getColumn(4).setCellRenderer(RenderitzatsTaules.centrat());
+        
+    }
     
+    /**
+     * Mètode per carregar les arrays de tipus de residus i residus.
+     */
     private void carregarArrays(){
          JSONObject jsonTipus = Api.llistatTipusResidu(usuari);
          if(jsonTipus.getString("codi_error").equals("0")){
@@ -330,7 +416,7 @@ public class PantallaRecollida extends javax.swing.JFrame {
             // Recorrem l'array per ficar-ho a la taula
             for(int i = 0; i < arrayResidus.length(); i++){
                 JSONObject jsonResidu = arrayResidus.getJSONObject(i);
-                llistatResidus.add(new String[]{jsonResidu.get("id").toString(),jsonResidu.get("nom").toString()});
+                llistatResidus.add(new String[]{jsonResidu.getString("id_residu"),jsonResidu.getString("nom_residu"),jsonResidu.getString("id_tipus_residu"),jsonResidu.getString("valor_residu")});
             }
         }else{
             // Error en la crida a l'api
@@ -347,6 +433,9 @@ public class PantallaRecollida extends javax.swing.JFrame {
         
         // Resetejem el combo
         comboBoxTipus.removeAllItems();
+        
+        // Afegim sempre el tots
+        comboBoxTipus.addItem("Tots");
         
         // Omplim el combo
         for(int i = 0; i < llistatTipusResidus.size(); i++){
@@ -369,7 +458,7 @@ public class PantallaRecollida extends javax.swing.JFrame {
             if(idTipus.equals("0")){
                 comboBoxResidus.addItem(llistatResidus.get(i)[1]);
             }else{
-                if(llistatResidus.get(i)[0].equals(idTipus)){
+                if(llistatResidus.get(i)[2].equals(idTipus)){
                     comboBoxResidus.addItem(llistatResidus.get(i)[1]);   
                 }
             }
@@ -413,7 +502,6 @@ public class PantallaRecollida extends javax.swing.JFrame {
         int y = evt.getYOnScreen();
         setLocation(x-xMouse, y-yMouse);
     }//GEN-LAST:event_formMouseDragged
-
    
     /**
      * Mètode utilitzat quan es prem el botó de logout per tancar la sessió.
@@ -440,30 +528,71 @@ public class PantallaRecollida extends javax.swing.JFrame {
      * Mètode utilitzat quan es prem el botó de recollir
      * @param evt (ActionEvent) : event al pulsar el botó. 
      */
-    private void buttonRecollirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRecollirActionPerformed
+    private void buttonValidarRecollidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonValidarRecollidaActionPerformed
         
+        // Enviem les dades del carreto en format json a l'api
+        DecimalFormat df = new DecimalFormat("#.####");
+        String json = "{";
+        json += "\"usuari\":\""+ idUsuariRecollida +"\",";
+        json += "\"punt\":\""+ idPuntRecollida +"\",";
+        json += "\"total\":\""+ df.format(totalCarreto) +"\",";
+        json += "\"llistat\":[";
+        int cont = 0;
+        for(String[] e : carreto){
+            if(cont!=0){ json += ","; }
+            json += "{";
+            json += "\"id_residu\":\""+ e[0] +"\",";
+            json += "\"quantitat\":\""+ df.format(Double.parseDouble(e[1])) +"\",";
+            json += "\"valor\":\""+ df.format(Double.parseDouble(e[2])) +"\"";
+            json += "}";
+            cont++;
+        }
+        json += "]}";
+        
+        System.out.println(json);
+        
+        // Enviem a l'api
+        JSONObject enviamentCarreto = Api.recollida(usuari, json);
+        if(enviamentCarreto.getString("codi_error").equals("0")){
+            // Correcte, mostrem missatge
+            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(enviamentCarreto.get("descripcio").toString());
+            pantallaAdvertencia.setVisible(true);  
+            // Resetejem
+            model.setRowCount(0);
+            totalCarreto = 0;
+            labelTotal.setText(String.valueOf(totalCarreto));
+            carreto.clear();
+            carregarTipuResidus();
+            carregarResidus("0");
+            textFieldQuantitat.setText("");
+            
+        }else{
+            // Error en la crida a l'api
+            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(enviamentCarreto.get("codi_error").toString() + " - " +enviamentCarreto.get("error").toString());
+            pantallaAdvertencia.setVisible(true);
+        }
 
-    }//GEN-LAST:event_buttonRecollirActionPerformed
+    }//GEN-LAST:event_buttonValidarRecollidaActionPerformed
 
     /**
      * Mètode quan es selecciona un item del combo tipus residus
      * @param evt (ActionEvent) seleccionar un item del combo
      */ 
     private void comboBoxTipusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboBoxTipusActionPerformed
-        if(comboBoxTipus.getSelectedIndex() == 0){
-            // tots
-            carregarResidus("0");
-        }else{
-            String[] ee = null;
-            for (String[] e : llistatResidus) {
-                if (e[0].equals(identificadorBuscado)) {
-                    ee = e;
-                     break;
-                 }
+        
+        // Seleccionem el id tipus seleccionat
+        if(comboBoxTipus.getSelectedItem()!= null){
+            String tipus = comboBoxTipus.getSelectedItem().toString();
+            String codi = "0";
+            for(String[] e : llistatTipusResidus){
+                if(e[1].equals(tipus)){
+                    codi = e[0];
+                    break;
+                }
             }
-            // Específic
-            carregarResidus(ee);
             
+            // Ja tenim el codi (o 0 si no s'ha trobat) i carreguem el combo de residus.
+            carregarResidus(codi);  
         }
 
     }//GEN-LAST:event_comboBoxTipusActionPerformed
@@ -482,8 +611,115 @@ public class PantallaRecollida extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_textFieldQuantitatKeyTyped
 
-  
- 
+    /**
+     * Mètode quan es pulsa el botó de afegir residu al carretó
+     * @param evt (ActionEvent) pulsar el botó.
+     */
+    private void buttonAfegirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAfegirActionPerformed
+        
+        // Comprovem que el residu seleccionat i la quantitat son correctes per poder afegir-ho.
+        boolean afegir = true;
+        String residuSeleccionat = comboBoxResidus.getSelectedItem().toString();
+        String quantitatSeleccionada = textFieldQuantitat.getText();
+        String valor = "0";
+        String codi = "0";
+        double total = 0;
+        
+        for(String[] e : llistatResidus){
+            if(e[1].equals(residuSeleccionat)){
+                codi = e[0];
+                valor = e[3];
+                break;
+            }
+         }
+        
+        // Comprovem residu
+        if(codi.equals("0")){
+            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia("No i ha un residu seleccionat o no és vàlid.");
+            pantallaAdvertencia.setVisible(true);
+            afegir = false;
+        }
+        
+        // Comprovem quantitat
+        if(!Utils.validarDecimal(quantitatSeleccionada)){
+            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia("La quantitat informada no és correcta o no és un número vàlid.");
+            pantallaAdvertencia.setVisible(true);
+            afegir = false;
+        }
+        
+        // Fem el total
+        try{    
+            total = Double.parseDouble(quantitatSeleccionada) * Double.parseDouble(valor);
+        } catch(NumberFormatException ex){
+            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia("El valor total del residu a posar és erroni.");
+            pantallaAdvertencia.setVisible(true);
+            afegir = false;
+        }
+        
+        // Si tot és correcte afegim al llistat.
+        if(afegir){
+            DecimalFormat df = new DecimalFormat("#.####");
+            // Afegim el producte al llistat.
+            carreto.add(new String[]{codi,quantitatSeleccionada,valor});
+            model.addRow(new Object[]{codi,residuSeleccionat,quantitatSeleccionada,valor,df.format(total)});
+            totalCarreto += total;
+            labelTotal.setText(String.valueOf(df.format(totalCarreto)));
+            textFieldQuantitat.setText("");
+        }
+        
+        /*
+        for(String[] e : carreto){
+            System.out.println(e[0] + " - " + e[1]);
+        }
+        */
+        
+    }//GEN-LAST:event_buttonAfegirActionPerformed
+
+    /**
+     * Mètode quan es pulsa el botó de treure residu del carretó
+     * @param evt (ActionEvent) pulsar el botó.
+     */
+    private void buttonTreureActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonTreureActionPerformed
+        // Mirem si tenim seleccionat fila del llistat 
+        int filaSeleccionada = jTableCarreto.getSelectedRow();
+        if(filaSeleccionada != -1){
+            
+            // Agafem el nom del residu i la quantitat de la fila seleccionada per elimarla de la llista carreto
+            String idResidu = jTableCarreto.getModel().getValueAt(filaSeleccionada, 0).toString();
+            String quantitatResidu = jTableCarreto.getModel().getValueAt(filaSeleccionada, 2).toString();
+            
+            // Agafem el valor total de la columna i el restem al total
+            totalCarreto -= Double.parseDouble(jTableCarreto.getModel().getValueAt(filaSeleccionada, 4).toString().replace(",", "."));
+           
+            // Pintem el label
+             DecimalFormat df = new DecimalFormat("#.####");
+            labelTotal.setText(String.valueOf(df.format(totalCarreto)));
+            
+            // Treiem l'item de la llista carretó
+            for(int i=0; i<carreto.size(); i++) {
+                
+                System.out.println(carreto.get(i)[0]);
+                System.out.println(idResidu);
+                System.out.println(carreto.get(i)[1]);
+                System.out.println(quantitatResidu);
+                
+               if(carreto.get(i)[0].equals(idResidu) && carreto.get(i)[1].equals(quantitatResidu)){
+                    carreto.remove(i);
+                    break;
+                } 
+            }
+            
+            // Eliminem del jtable
+            model.removeRow(filaSeleccionada);
+            model.fireTableDataChanged();
+            
+            
+        }else{
+            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(Utils.error(16));
+            pantallaAdvertencia.setVisible(true);
+        }
+    }//GEN-LAST:event_buttonTreureActionPerformed
+
     /**
      * Mètode principal de la classe.
      * @param args arguments de la linia de comandament
@@ -652,17 +888,25 @@ public class PantallaRecollida extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     /**
+    * Botó per afegir residu al carretó
+    */
+    private javax.swing.JButton buttonAfegir;
+    /**
     * Botó per desloginar-se i sortir de l'aplicació.
     */
     private javax.swing.JButton buttonLogOut;
     /**
-    * Botó per recollir
-    */
-    private javax.swing.JButton buttonRecollir;
-    /**
     * Botó per tornar a la pantalla principal.
     */
     private javax.swing.JButton buttonTornarPantallaPrincipal1;
+    /**
+    * Botó per treure residu del carretó.
+    */
+    private javax.swing.JButton buttonTreure;
+    /**
+    * Botó per recollir
+    */
+    private javax.swing.JButton buttonValidarRecollida;
     /**
     * Combo box residus
     */
@@ -674,19 +918,11 @@ public class PantallaRecollida extends javax.swing.JFrame {
     /**
     * Taula per contenir els residus del carretó
     */
-    private javax.swing.JTable jTableCarretó;
+    private javax.swing.JTable jTableCarreto;
     /**
     * label carretó residus
     */
     private javax.swing.JLabel labelCarreto;
-    /**
-    * label tipus residus
-    */
-    private javax.swing.JLabel labelNom1;
-    /**
-    * label residus
-    */
-    private javax.swing.JLabel labelNom2;
     /**
     * Label per contenir el logo de l'aplicació.
     */
@@ -695,6 +931,14 @@ public class PantallaRecollida extends javax.swing.JFrame {
     * label quantitat
     */
     private javax.swing.JLabel labelQuantitat;
+    /**
+    * label residus
+    */
+    private javax.swing.JLabel labelResidus;
+    /**
+    * label tipus residus
+    */
+    private javax.swing.JLabel labelTipusResidus;
     /**
     * Label per el títol de la pantalla.
     */
