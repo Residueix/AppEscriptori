@@ -1,5 +1,6 @@
 package residueix.residueixapp.puntsrecollida;
 
+// imports
 import java.awt.Color;
 import residueix.residueixapp.principal.PantallaPrincipal;
 import residueix.residueixapp.principal.PantallaAdvertencia;
@@ -20,7 +21,7 @@ import residueix.residueixapp.utils.Utils;
 /**
  * Classe per obrir la pantalla per donar d'alta un tipus de residu
  * @author Daniel Garcia Ruiz
- * @version 24/03/2023
+ * @version 18/04/2023
  */
 public class PantallaRecollida extends javax.swing.JFrame { 
     
@@ -130,6 +131,7 @@ public class PantallaRecollida extends javax.swing.JFrame {
         jTableCarreto = new javax.swing.JTable();
         buttonValidarRecollida = new javax.swing.JButton();
         panelOpcions = new javax.swing.JPanel();
+        buttonAltra = new javax.swing.JButton();
         buttonLogOut = new javax.swing.JButton();
         buttonTornarPantallaPrincipal1 = new javax.swing.JButton();
         labelPrincipal = new javax.swing.JLabel();
@@ -301,8 +303,8 @@ public class PantallaRecollida extends javax.swing.JFrame {
         buttonValidarRecollida.setBackground(new java.awt.Color(51, 204, 0));
         buttonValidarRecollida.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
         buttonValidarRecollida.setForeground(new java.awt.Color(255, 255, 255));
-        buttonValidarRecollida.setText("Validar recollida");
-        buttonValidarRecollida.setToolTipText("Validar recollida");
+        buttonValidarRecollida.setText("Validar recollida i pagar saldo");
+        buttonValidarRecollida.setToolTipText("Validar recollida i pagar saldo");
         buttonValidarRecollida.setBorderPainted(false);
         buttonValidarRecollida.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         buttonValidarRecollida.addActionListener(new java.awt.event.ActionListener() {
@@ -310,13 +312,27 @@ public class PantallaRecollida extends javax.swing.JFrame {
                 buttonValidarRecollidaActionPerformed(evt);
             }
         });
-        panelContingut.add(buttonValidarRecollida, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 690, 150, 30));
+        panelContingut.add(buttonValidarRecollida, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 690, 260, 30));
 
         panelPrincipal.add(panelContingut, new org.netbeans.lib.awtextra.AbsoluteConstraints(2, 2, 798, 746));
 
         panelOpcions.setBackground(new java.awt.Color(255, 255, 255));
         panelOpcions.setOpaque(false);
         panelOpcions.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        buttonAltra.setBackground(new java.awt.Color(255, 204, 0));
+        buttonAltra.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
+        buttonAltra.setText("Altra recollida");
+        buttonAltra.setToolTipText("Altra recollida");
+        buttonAltra.setActionCommand("Altra recollida");
+        buttonAltra.setBorderPainted(false);
+        buttonAltra.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        buttonAltra.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonAltraActionPerformed(evt);
+            }
+        });
+        panelOpcions.add(buttonAltra, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 620, 150, 30));
 
         buttonLogOut.setBackground(new java.awt.Color(153, 0, 0));
         buttonLogOut.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
@@ -549,14 +565,9 @@ public class PantallaRecollida extends javax.swing.JFrame {
         }
         json += "]}";
         
-        System.out.println(json);
-        
         // Enviem a l'api
         JSONObject enviamentCarreto = Api.recollida(usuari, json);
         if(enviamentCarreto.getString("codi_error").equals("0")){
-            // Correcte, mostrem missatge
-            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(enviamentCarreto.get("descripcio").toString());
-            pantallaAdvertencia.setVisible(true);  
             // Resetejem
             model.setRowCount(0);
             totalCarreto = 0;
@@ -565,7 +576,9 @@ public class PantallaRecollida extends javax.swing.JFrame {
             carregarTipuResidus();
             carregarResidus("0");
             textFieldQuantitat.setText("");
-            
+            // Correcte, mostrem missatge
+            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(enviamentCarreto.get("descripcio").toString());
+            pantallaAdvertencia.setVisible(true);
         }else{
             // Error en la crida a l'api
             PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(enviamentCarreto.get("codi_error").toString() + " - " +enviamentCarreto.get("error").toString());
@@ -667,11 +680,6 @@ public class PantallaRecollida extends javax.swing.JFrame {
             textFieldQuantitat.setText("");
         }
         
-        /*
-        for(String[] e : carreto){
-            System.out.println(e[0] + " - " + e[1]);
-        }
-        */
         
     }//GEN-LAST:event_buttonAfegirActionPerformed
 
@@ -698,11 +706,6 @@ public class PantallaRecollida extends javax.swing.JFrame {
             // Treiem l'item de la llista carretó
             for(int i=0; i<carreto.size(); i++) {
                 
-                System.out.println(carreto.get(i)[0]);
-                System.out.println(idResidu);
-                System.out.println(carreto.get(i)[1]);
-                System.out.println(quantitatResidu);
-                
                if(carreto.get(i)[0].equals(idResidu) && carreto.get(i)[1].equals(quantitatResidu)){
                     carreto.remove(i);
                     break;
@@ -719,6 +722,16 @@ public class PantallaRecollida extends javax.swing.JFrame {
             pantallaAdvertencia.setVisible(true);
         }
     }//GEN-LAST:event_buttonTreureActionPerformed
+
+    /**
+     * Mètode utilitzat quan es pulsa el botó d'altra recollida
+     * @param evt (ActionEvent) pulsar botó
+     */
+    private void buttonAltraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAltraActionPerformed
+        PantallaRecollidaIdentificacio pantallaRecollidaIdentificacio = new PantallaRecollidaIdentificacio(usuari);
+        pantallaRecollidaIdentificacio.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_buttonAltraActionPerformed
 
     /**
      * Mètode principal de la classe.
@@ -891,6 +904,10 @@ public class PantallaRecollida extends javax.swing.JFrame {
     * Botó per afegir residu al carretó
     */
     private javax.swing.JButton buttonAfegir;
+    /**
+    * Botó per tornar a la pantalla principal.
+    */
+    private javax.swing.JButton buttonAltra;
     /**
     * Botó per desloginar-se i sortir de l'aplicació.
     */

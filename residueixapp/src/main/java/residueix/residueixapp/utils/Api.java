@@ -33,6 +33,9 @@ public class Api {
     */
     public Api(){}
     
+    // Mètodes Accés
+    // ------------------------------------------------------------------------
+    
     /**
      * Mètode per fer el login de l'usari.
      * @param email : email/nom usari
@@ -40,34 +43,15 @@ public class Api {
      * @return JSONObject: json amb les dades del login o l'error, o buit si hi ha excepció.
      */
     public static JSONObject login(String email, String password){
-        
         try{
-            
-            URL url = new URL("http://169.254.142.250/residueix/api/login/index.php");
-            Map<String,Object> params = new LinkedHashMap<>();
-            
-            // Paràmetres
-            params.put("usuari", email);
-            params.put("password", password);
-            
-            // Cridem l'api per recuperar el json
-            String json = Api.cridaApi(url,params);
-
-            System.out.println(json);
-            
-            // Llegim el Json.
-            if(!json.equals("")){
-                JSONObject jsonO = new JSONObject(json);
-                return jsonO;
-            }else{
-                return new JSONObject();
-            }
-            
-        } catch (IOException e){
-            System.out.println("Error excepció:" + e.getMessage());
-            return new JSONObject();
-        }
-        
+           // Instanciem la classe per enviar formularis x-www-form-urlencoded i configurem els camps
+           EnviamentPostUrlEncoded urlencoded = new EnviamentPostUrlEncoded("http://169.254.142.250/residueix/api/login/index.php");
+           urlencoded.afegirCamp("usuari", email);
+           urlencoded.afegirCamp("password", password);
+           return urlencoded.resposta();
+        } catch (IOException ex){
+            return new JSONObject("{\"codi_error\":\"excepcio_api_login\",\"error\":\"Error en execució al enviar la petició.\"}");    
+        }   
     }
     
     /**
@@ -170,6 +154,40 @@ public class Api {
         }
         
     }
+    
+    // Mètodes Generals
+    // ------------------------------------------------------------------------
+    
+    /**
+     * Mètode per recuperar el llistat de poblacions
+     * @return JSONArray: json amb el llistat d'usuaris.
+    */
+    public static JSONObject llistatPoblacions(){
+        try{
+           // Instanciem la classe per enviar formularis x-www-form-urlencoded i configurem els camps
+           EnviamentPostUrlEncoded urlencoded = new EnviamentPostUrlEncoded("http://169.254.142.250/residueix/api/global/poblacions/index.php");
+           urlencoded.afegirCamp("token", Api.token);
+           return urlencoded.resposta();
+        } catch (IOException ex){
+            return new JSONObject("{\"codi_error\":\"excepcio_api_llistatPoblacions\",\"error\":\"Error en execució al enviar el formulari.\"}");    
+        }        
+    }
+    
+    public static JSONObject eliminarRegistre(String seccio, String id){
+        try{
+           // Instanciem la classe per enviar formularis x-www-form-urlencoded i configurem els camps
+           EnviamentPostUrlEncoded urlencoded = new EnviamentPostUrlEncoded("http://169.254.142.250/residueix/api/global/eliminar/index.php");
+           urlencoded.afegirCamp("token", Api.token);
+           urlencoded.afegirCamp("seccio", seccio);
+           urlencoded.afegirCamp("id", id);
+           return urlencoded.resposta();
+        } catch (IOException ex){
+            return new JSONObject("{\"codi_error\":\"excepcio_api_eliminar\",\"error\":\"Error en execució al enviar el formulari.\"}");    
+        }      
+    }
+    
+    // Mètodes Usuaris
+    // ------------------------------------------------------------------------
     
     /**
      * Mètode per recuperar el llistat d'usaris
@@ -296,21 +314,6 @@ public class Api {
             return new JSONObject();
         }
         
-    }
-    
-    /**
-     * Mètode per recuperar el llistat de poblacions
-     * @return JSONArray: json amb el llistat d'usuaris.
-     */
-    public static JSONObject llistatPoblacions(){
-        try{
-           // Instanciem la classe per enviar formularis x-www-form-urlencoded i configurem els camps
-           EnviamentPostUrlEncoded urlencoded = new EnviamentPostUrlEncoded("http://169.254.142.250/residueix/api/global/poblacions/index.php");
-           urlencoded.afegirCamp("token", Api.token);
-           return urlencoded.resposta();
-        } catch (IOException ex){
-            return new JSONObject("{\"codi_error\":\"excepcio_api_llistatPoblacions\",\"error\":\"Error en execució al enviar el formulari.\"}");    
-        }        
     }
     
     /**
@@ -821,6 +824,9 @@ public class Api {
         }
         
     }
+  
+    // Mètodes Residus
+    // ------------------------------------------------------------------------
     
     /**
      * Mètode per donar d'alta un residu.
@@ -922,7 +928,7 @@ public class Api {
             System.out.println("-"+response.toString()+"-");           
             return new JSONObject(response.get(0));
         } catch (IOException ex){
-            return new JSONObject("{\"codi_error\":\"excepcio\",\"error\":\"Error en execució al enviar el formulari.\"}");
+            return new JSONObject("{\"codi_error\":\"excepcio\",\"error\":\""+ex.getMessage()+"\"}");
         } 
     }
     
@@ -1070,7 +1076,10 @@ public class Api {
             return new JSONObject("{\"codi_error\":\"excepcio_api_llistatResidus\",\"error\":\"Error en execució al enviar la petició.\"}");    
         }
     }    
-     
+    
+    // Mètodes Punts de recollida
+    // ------------------------------------------------------------------------
+    
     /**
      * Mètode per recuperar el llistat de punts de recollida
      * @param token (string) token públic

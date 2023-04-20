@@ -1,28 +1,18 @@
 package residueix.residueixapp.residus;
 
 import residueix.residueixapp.principal.PantallaAdvertencia;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Image;
 import java.awt.Toolkit;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import residueix.residueixapp.models.Usuari;
 import residueix.residueixapp.utils.Api;
 import residueix.residueixapp.utils.Utils;
-import residueix.residueixapp.utils.SelectorImatge;
 
 /**
  * Classe per obrir la pantalla per donar de baixa un Residu
  * @author Daniel Garcia Ruiz
- * @version 03/04/2023
+ * @version 19/04/2023
  */
 public class PantallaBaixaResidu extends javax.swing.JFrame {
     

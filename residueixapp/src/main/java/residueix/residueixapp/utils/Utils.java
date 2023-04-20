@@ -3,13 +3,16 @@ package residueix.residueixapp.utils;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import org.apache.commons.io.IOUtils;
 
 /**
  * Classe amb utiitats per poder utilitzar durant el codi.
@@ -79,7 +82,7 @@ public class Utils {
      * @return true/false
      */
     public static boolean validarSelector(int index){
-        return index != 0;
+        return index > 0;
     }
     
     /**
@@ -130,7 +133,7 @@ public class Utils {
      * @return true/false
      */
     public static boolean validarText(String text,int minCaracters, int maxCaracters){
-        return (text.length()>minCaracters) && (text.length()<=maxCaracters);
+        return (text.length()>=minCaracters) && (text.length()<=maxCaracters);
     }
    
     
@@ -150,7 +153,7 @@ public class Utils {
             switch(seccio){
                 case 1 -> { url1 = "http://169.254.142.250/residueix/img/residus/tipus/" + imatge;}
                 case 2 -> { url1 = "http://169.254.142.250/residueix/img/residus/" + imatge;}
-                case 3 -> {
+                case 3 -> { 
                     url1 = "http://169.254.142.250/residueix/img/punts/" + imatge;
                     width=200;  height=120;
                 }
@@ -164,13 +167,16 @@ public class Utils {
             
             // Comprovem que sigui correcte
             if(imagen!=null){
-                // Retornem el ImageIcon<
-                ImageIcon icono = new ImageIcon(imagen);
-                Icon ico = new ImageIcon(icono.getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT));
-                return (ImageIcon) ico;
+                // Retornem el ImageIcon
+                ImageIcon icono = new ImageIcon(imagen,imatge);
+                //Icon ico = new ImageIcon(icono.getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT));
+                //return (ImageIcon) ico;
+                return new ImageIcon(icono.getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT));
+                
             }else{
                 return null;
             }
+            
         } catch (MalformedURLException ex) {
             // Excepció url mal formada
             return null;

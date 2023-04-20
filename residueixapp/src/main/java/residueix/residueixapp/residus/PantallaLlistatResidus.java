@@ -1,17 +1,14 @@
 package residueix.residueixapp.residus;
 
+// Imports
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import residueix.residueixapp.principal.PantallaAdvertencia;
-import residueix.residueixapp.usuaris.PantallaBaixaUsuari;
-import residueix.residueixapp.usuaris.PantallaModificarUsuari;
 import residueix.residueixapp.principal.PantallaPrincipal;
 import residueix.residueixapp.models.Usuari;
 import residueix.residueixapp.utils.Api;
@@ -22,7 +19,7 @@ import residueix.residueixapp.utils.Utils;
 /**
  * Classe per obrir la pantalla principal de l'aplicació.
  * @author Daniel Garcia Ruiz
- * @version 24/03/2023
+ * @version 19/04/2023
  */
 public class PantallaLlistatResidus extends javax.swing.JFrame {
     

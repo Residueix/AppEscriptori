@@ -1,15 +1,13 @@
 package residueix.residueixapp.residus;
 
+//Imports
 import residueix.residueixapp.principal.PantallaAdvertencia;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -24,7 +22,7 @@ import residueix.residueixapp.utils.SelectorImatge;
 /**
  * Classe per obrir la pantalla per donar d'alta un usuari
  * @author Daniel Garcia Ruiz
- * @version 24/03/2023
+ * @version 19/04/2023
  */
 public class PantallaAltaResidu extends javax.swing.JFrame {
     

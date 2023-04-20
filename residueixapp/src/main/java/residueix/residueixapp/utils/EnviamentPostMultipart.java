@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Classe que proporciona una capa d'abstracció per enviar http post amb multipart
  * @author Daniel Garcia Ruiz
- * @version 26/03/2023
+ * @version 19/04/2023
  */
 public class EnviamentPostMultipart {
     
@@ -72,23 +72,25 @@ public class EnviamentPostMultipart {
      * @throws IOException Excepció d'entrar o sortida de fluxe de dades.
      */
     public void afegirArxiu(String nom, File arxiuRebut) throws IOException {
-        String arxiu = arxiuRebut.getName();
-        writer.append("--" + boundary).append(SALT_LINIA);
-        writer.append("Content-Disposition: form-data; name=\"" + nom + "\"; filename=\"" + arxiu + "\"").append(SALT_LINIA);
-        writer.append( "Content-Type: " + URLConnection.guessContentTypeFromName(nom)).append(SALT_LINIA);
-        writer.append("Content-Transfer-Encoding: binary").append(SALT_LINIA);
-        writer.append(SALT_LINIA);
-        writer.flush();
-        FileInputStream inputStream = new FileInputStream(arxiuRebut);
-        byte[] buffer = new byte[4096];
-        int bytesRead = -1;
-        while ((bytesRead = inputStream.read(buffer)) != -1) {
-            outputStream.write(buffer, 0, bytesRead);
+        if(arxiuRebut != null){
+            String arxiu = arxiuRebut.getName();
+            writer.append("--" + boundary).append(SALT_LINIA);
+            writer.append("Content-Disposition: form-data; name=\"" + nom + "\"; filename=\"" + arxiu + "\"").append(SALT_LINIA);
+            writer.append( "Content-Type: " + URLConnection.guessContentTypeFromName(nom)).append(SALT_LINIA);
+            writer.append("Content-Transfer-Encoding: binary").append(SALT_LINIA);
+            writer.append(SALT_LINIA);
+            writer.flush();
+            FileInputStream inputStream = new FileInputStream(arxiuRebut);
+            byte[] buffer = new byte[4096];
+            int bytesRead = -1;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+            outputStream.flush();
+            inputStream.close();
+            writer.append(SALT_LINIA);
+            writer.flush();   
         }
-        outputStream.flush();
-        inputStream.close();
-        writer.append(SALT_LINIA);
-        writer.flush();    
     }
  
     /**
