@@ -34,9 +34,12 @@ public class TestLogin {
     @Test
     public void cridaApiLoginCorrectaAdmin(){
         JSONObject json = Api.login("danisvh@gmail.com", "danisvh1");
-        String esp = "0";
-        String res = json.getString("codi_error");
+        String esp = "1";
+        String res = json.getString("tipus");
+        String esp2 = "0";
+        String res2 = json.getString("codi_error");
         assertEquals(esp,res);
+        assertEquals(esp2,res2);
     }
     
     /**
@@ -45,9 +48,12 @@ public class TestLogin {
     @Test
     public void cridaApiLoginCorrectaTreballador(){
         JSONObject json = Api.login("treballador@residueix.com", "treballador");
-        String esp = "0";
-        String res = json.getString("codi_error");
+        String esp = "2";
+        String res = json.getString("tipus");
+        String esp2 = "0";
+        String res2 = json.getString("codi_error");
         assertEquals(esp,res);
+        assertEquals(esp2,res2);
     }
     
     /**

@@ -12,13 +12,18 @@ import javax.swing.JList;
  */
 public class RenderitzatsJList extends DefaultListCellRenderer {
     
+    /**
+     * Constructor buit.
+     */
+    public RenderitzatsJList(){}
+    
    /**
     * SobreEscriptura del mètode getListCellRendererComponent per personalitzar-ho
-    * @param list
-    * @param value
-    * @param index
-    * @param isSelected
-    * @param cellHasFocus
+    * @param list el Jlist renderitzat
+    * @param value el valor del objecte
+    * @param index el índex del objecte
+    * @param isSelected si està seleccionat l'objecte
+    * @param cellHasFocus si la cella té el focus
     * @return Component amb els nous estils
     */
     @Override

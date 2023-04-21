@@ -56,6 +56,7 @@ public class PantallaBaixaPuntRecollida extends javax.swing.JFrame {
     /**
      * Crea una nova instància de la classe PantallaPrincipal.
      * @param usuari: Usuari loginat a l'aplicació.
+     * @param idPunt: id del punt de recollida.
      */
     public PantallaBaixaPuntRecollida(Usuari usuari, int idPunt) {
         // Assignació de l'usuari

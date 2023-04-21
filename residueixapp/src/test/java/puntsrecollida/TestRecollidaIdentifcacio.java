@@ -14,7 +14,7 @@ import residueix.residueixapp.utils.Api;
  * @author Daniel Garcia Ruiz
  * @version 19/04/2023
  */
-public class TestRecollidaIdentifciacio {
+public class TestRecollidaIdentifcacio {
     
     /**
      * Instància de la classe PantallaPrincipal
@@ -34,7 +34,7 @@ public class TestRecollidaIdentifciacio {
     @BeforeClass
     public static void beforeClass() throws InterruptedException{
         JSONObject jsonUser = Api.login("danisvh@gmail.com", "danisvh1");
-        TestRecollidaIdentifciacio.usuari = new Usuari(jsonUser.getInt("id"),jsonUser.getInt("tipus"),jsonUser.getString("tipus_nom"),jsonUser.getString("email"),jsonUser.getString("password"),jsonUser.getString("nom"),jsonUser.getString("cognom1"),jsonUser.getString("cognom2"),jsonUser.getString("telefon"),jsonUser.getString("token")); 
+        TestRecollidaIdentifcacio.usuari = new Usuari(jsonUser.getInt("id"),jsonUser.getInt("tipus"),jsonUser.getString("tipus_nom"),jsonUser.getString("email"),jsonUser.getString("password"),jsonUser.getString("nom"),jsonUser.getString("cognom1"),jsonUser.getString("cognom2"),jsonUser.getString("telefon"),jsonUser.getString("token")); 
         Thread.sleep(1000);
         plpr = new PantallaLlistatPuntsRecollida(usuari);
     }
@@ -51,5 +51,26 @@ public class TestRecollidaIdentifciacio {
         assertEquals(esp,res);
     }
     
+     /**
+     * Mètode consultaUsuari per comprovar que l'usuari és residuent
+     */
+    @Test
+    public void consultaUsuariCorrecte() {
+        JSONObject jsonObject = Api.consultaUsuari(usuari, 27);
+        String esp = "3";
+        String res = jsonObject.getString("tipus");
+        assertEquals(esp,res);
+    }
+    
+    /**
+     * Mètode consultaUsuari per comprovar que l'usuari no es residuent i llavors no pot gestionar els residus
+     */
+    @Test
+    public void consultaUsuariIncorrecte() {
+        JSONObject jsonObject = Api.consultaUsuari(usuari, 2);
+        String esp = "1";
+        String res = jsonObject.getString("tipus");
+        assertEquals(esp,res);
+    }
   
 }

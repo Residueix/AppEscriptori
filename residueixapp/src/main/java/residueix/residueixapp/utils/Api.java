@@ -1,25 +1,16 @@
 package residueix.residueixapp.utils;
 
 // Imports
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import org.json.JSONObject;
 import residueix.residueixapp.models.Usuari;
 
 /**
  * Classe d'utilitats per conectar amb l'API del servidor.
  * @author Daniel Garcia Ruiz
- * @version 24/03/2023
+ * @version 21/04/2023
  */
 public class Api {
     
@@ -59,100 +50,30 @@ public class Api {
      * @param usuari : usuari que fa la petició.
      */
     public static void logout(Usuari usuari){
-        try{
-            URL url = new URL("http://169.254.142.250/residueix/api/logout/index.php");
-            Map<String,Object> params = new LinkedHashMap<>();
-            
-            // Paràmetres
-            params.put("id", usuari.getId());
-            params.put("token", usuari.getToken());
-            
-            // Cridem l'api per recuperar el json
-            String json = Api.cridaApi(url, params);
-            
-            // Llegim el Json.
-            JSONObject jsonObject = new JSONObject(json);
-            
-        } catch (IOException e){
-            System.out.println("Error excepció:" + e.getMessage());
-        }
+       try{
+           // Instanciem la classe per enviar formularis x-www-form-urlencoded i configurem els camps
+           EnviamentPostUrlEncoded urlencoded = new EnviamentPostUrlEncoded("http://169.254.142.250/residueix/api/logout/index.php");
+           urlencoded.afegirCamp("id", String.valueOf(usuari.getId()));
+           urlencoded.afegirCamp("token", usuari.getToken());
+        } catch (IOException ex){
+            System.out.println("Error excepció:" + ex.getMessage());
+        } 
+    }
         
-    }
-    
-    /**
-     * Mètode per fer la crida a l'api
-     * @param url (URL) : Url de l'api.
-     * @param params (Map) : Mapeig clau-valor dels paràmetres a passar a l'api.
-     * @return json (String) : json amb el resultat de l'api.
-     * @throws UnsupportedEncodingException Si hi ha una excepció de codificació errònea.
-     * @throws IOException Si hi ha una excepció d'entrada o sortida
-     */
-    public static String cridaApi(URL url, Map<String,Object> params) throws UnsupportedEncodingException, IOException{
-        try{
-            StringBuilder postData = new StringBuilder();
-            
-            for(Map.Entry<String,Object> param : params.entrySet()){
-               if(postData.length() != 0){
-                   postData.append('&');
-               } 
-               postData.append(URLEncoder.encode(param.getKey(),"UTF-8"));
-               postData.append('=');
-               postData.append(URLEncoder.encode(String.valueOf(param.getValue()),"UTF-8"));
-            }
-            byte[] postBytes = postData.toString().getBytes("UTF-8");
-            
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            conn.setRequestProperty("Content-Length",String.valueOf(postBytes.length));
-            conn.setDoOutput(true);
-            conn.getOutputStream().write(postBytes);
-            
-            // Construim el JSON.
-            String json = "";
-            Reader in = new BufferedReader(new InputStreamReader(conn.getInputStream(),"UTF-8"));
-            for(int c = in.read(); c != -1; c = in.read()){ json += (char) c; } 
-            
-            return json;
-            
-        } catch (IOException e){
-            System.out.println("Error excepció: " + e.getMessage());
-            return "";
-        }
-    }
-    
     /**
      * Mètode per comprovar si existeix un correu/usuari
      * @param correu (String) : correu a cercar
      * @return JSONObject: json amb la resposta.
      */
     public static JSONObject existeixCorreu(String correu){
-        
         try{
-            
-            URL url = new URL("http://169.254.142.250/residueix/api/usuaris/existeix/index.php");
-            Map<String,Object> params = new LinkedHashMap<>();
-            
-            // Paràmetres 
-            params.put("email", correu);
-             
-            // Cridem a l'api per recuperar el json
-            String json = Api.cridaApi(url, params);
-            
-            
-            // Llegim el Json.
-            if(!json.equals("")){
-                JSONObject jsonO = new JSONObject(json);
-                return jsonO;
-            }else{
-                return new JSONObject();
-            }
-            
-        } catch (IOException e){
-            System.out.println("Error excepció: " + e.getMessage());
-            return new JSONObject();
-        }
-        
+           // Instanciem la classe per enviar formularis x-www-form-urlencoded i configurem els camps
+           EnviamentPostUrlEncoded urlencoded = new EnviamentPostUrlEncoded("http://169.254.142.250/residueix/api/usuaris/existeix/index.php");
+           urlencoded.afegirCamp("email", correu);
+           return urlencoded.resposta();
+        } catch (IOException ex){
+            return new JSONObject("{\"codi_error\":\"excepcio_api_existeixCorreu\",\"error\":\"Error en execució al enviar la petició.\"}");    
+        } 
     }
     
     // Mètodes Generals
@@ -173,6 +94,12 @@ public class Api {
         }        
     }
     
+    /**
+     * Mètode per eliminar registre de la base de dades completament (per les proves junit)
+     * @param seccio (String) secció de la que es vol eliminar el registre
+     * @param id (String) id que s vol eliminar
+     * @return JSONObject amb la resposta.
+     */
     public static JSONObject eliminarRegistre(String seccio, String id){
         try{
            // Instanciem la classe per enviar formularis x-www-form-urlencoded i configurem els camps
@@ -197,9 +124,7 @@ public class Api {
      * @return JSONArray json amb el llistat d'usuaris.
      */
     public static JSONObject llistatUsuaris(Usuari usuari,int comboTipus, int comboActiu){
-        
         try{
-            
             // Validem les opcions
             String filtreTipus; 
             String filtreActiu;
@@ -215,35 +140,17 @@ public class Api {
                 case 2 -> { filtreActiu = "0"; }
                 default ->{ filtreActiu = ""; }
             }
-            
-            
-            
-            URL url = new URL("http://169.254.142.250/residueix/api/usuaris/llistat/index.php");
-            Map<String,Object> params = new LinkedHashMap<>();
-            
-            // Paràmetres
-            params.put("id_usuari", String.valueOf(usuari.getId()));
-            params.put("token", usuari.getToken());
-            params.put("permis", String.valueOf(usuari.getTipus()));
-            params.put("tipus", filtreTipus);
-            params.put("actiu", filtreActiu);
-            
-            // Cridem a l'api per recuperar el json
-            String json = Api.cridaApi(url,params);
-            
-            // Llegim el Json.
-            if(!json.equals("")){
-                JSONObject jsonO = new JSONObject(json);
-                return jsonO;
-            }else{
-                return new JSONObject();
-            }
-            
-        } catch (IOException e){
-            System.out.println("Error excepció: " + e.getMessage());
-            return new JSONObject();
-        }
-        
+           // Instanciem la classe per enviar formularis x-www-form-urlencoded i configurem els camps
+           EnviamentPostUrlEncoded urlencoded = new EnviamentPostUrlEncoded("http://169.254.142.250/residueix/api/usuaris/llistat/index.php");
+           urlencoded.afegirCamp("id_usuari", String.valueOf(usuari.getId()));
+           urlencoded.afegirCamp("token", usuari.getToken());
+           urlencoded.afegirCamp("permis", String.valueOf(usuari.getTipus()));
+           urlencoded.afegirCamp("tipus", filtreTipus);
+           urlencoded.afegirCamp("actiu", filtreActiu);
+           return urlencoded.resposta();
+        } catch (IOException ex){
+            return new JSONObject("{\"codi_error\":\"excepcio_api_llistatUsuaris\",\"error\":\"Error en execució al enviar el formulari.\"}");    
+        } 
     }
     
     /**
@@ -252,33 +159,16 @@ public class Api {
      * @return JSONArray: json amb el llistat d'usuaris.
      */
     public static JSONObject llistatTipusUsuari(Usuari usuari){
-        
         try{
-            
-            URL url = new URL("http://169.254.142.250/residueix/api/usuaris/tipus/index.php");
-            Map<String,Object> params = new LinkedHashMap<>();
-            
-            // Paràmetres 
-            params.put("id_usuari", String.valueOf(usuari.getId()));
-            params.put("token", usuari.getToken());
-            params.put("permis", String.valueOf(usuari.getTipus()));
-             
-            // Cridem a l'api per recuperar el json
-            String json = Api.cridaApi(url, params);
-            
-            // Llegim el Json.
-            if(!json.equals("")){
-                JSONObject jsonO = new JSONObject(json);
-                return jsonO;
-            }else{
-                return new JSONObject();
-            }
-            
-        } catch (IOException e){
-            System.out.println("Error excepció: " + e.getMessage());
-            return new JSONObject();
-        }
-        
+           // Instanciem la classe per enviar formularis x-www-form-urlencoded i configurem els camps
+           EnviamentPostUrlEncoded urlencoded = new EnviamentPostUrlEncoded("http://169.254.142.250/residueix/api/usuaris/tipus/index.php");
+           urlencoded.afegirCamp("id_usuari", String.valueOf(usuari.getId()));
+           urlencoded.afegirCamp("token", usuari.getToken());
+           urlencoded.afegirCamp("permis", String.valueOf(usuari.getTipus()));
+           return urlencoded.resposta();
+        } catch (IOException ex){
+            return new JSONObject("{\"codi_error\":\"excepcio_api_llistatTipusUsuari\",\"error\":\"Error en execució al enviar el formulari.\"}");    
+        }          
     }
     
     /**
@@ -287,33 +177,16 @@ public class Api {
      * @return JSONArray: json amb el llistat de tipus d'adherits
      */
     public static JSONObject llistatTipusAdherit(Usuari usuari){
-        
         try{
-            
-            URL url = new URL("http://169.254.142.250/residueix/api/global/tipusadherit/index.php");
-            Map<String,Object> params = new LinkedHashMap<>();
-            
-            // Paràmetres
-            params.put("id_usuari", String.valueOf(usuari.getId()));
-            params.put("token", usuari.getToken());
-            params.put("permis", String.valueOf(usuari.getTipus()));
-            
-            // Cridem a l'api per recuperar el json
-            String json = Api.cridaApi(url, params);
-            
-            // Llegim el Json.
-            if(!json.equals("")){
-                JSONObject jsonO = new JSONObject(json);
-                return jsonO;
-            }else{
-                return new JSONObject();
-            }
-            
-        } catch (IOException e){
-            System.out.println("Error excepció: " + e.getMessage());
-            return new JSONObject();
-        }
-        
+           // Instanciem la classe per enviar formularis x-www-form-urlencoded i configurem els camps
+           EnviamentPostUrlEncoded urlencoded = new EnviamentPostUrlEncoded("http://169.254.142.250/residueix/api/global/tipusadherit/index.php");
+           urlencoded.afegirCamp("id_usuari", String.valueOf(usuari.getId()));
+           urlencoded.afegirCamp("token", usuari.getToken());
+           urlencoded.afegirCamp("permis", String.valueOf(usuari.getTipus()));
+           return urlencoded.resposta();
+        } catch (IOException ex){
+            return new JSONObject("{\"codi_error\":\"excepcio_api_llistatTipusAdherit\",\"error\":\"Error en execució al enviar el formulari.\"}");    
+        }        
     }
     
     /**
@@ -330,41 +203,24 @@ public class Api {
      * @return JSONArray: json amb el llistat d'usuaris.
      */
     public static JSONObject crearUsuariAdministrador(Usuari usuari, String email, String password, String tipus, String nom, String cognom1, String cognom2, String telefon, String actiu){
-        
         try{
-            
-            URL url = new URL("http://169.254.142.250/residueix/api/usuaris/alta/administrador/index.php");
-            Map<String,Object> params = new LinkedHashMap<>();
-            
-            // Paràmetres
-            params.put("id_usuari", String.valueOf(usuari.getId()));
-            params.put("token", usuari.getToken());
-            params.put("permis", String.valueOf(usuari.getTipus()));
-            params.put("email",email);
-            params.put("password",password);
-            params.put("tipus",tipus);
-            params.put("nom",nom);
-            params.put("cognom1",cognom1);
-            params.put("cognom2",cognom2);
-            params.put("telefon",telefon);
-            params.put("actiu",actiu);
-            
-            // Cridem a l'api per recuperar el json
-            String json = Api.cridaApi(url, params);
-            
-            // Llegim el Json.
-            if(!json.equals("")){
-                JSONObject jsonO = new JSONObject(json);
-                return jsonO;
-            }else{
-                return new JSONObject();
-            }
-            
-        } catch (IOException e){
-            System.out.println("Error excepció: " + e.getMessage());
-            return new JSONObject();
-        }
-        
+           // Instanciem la classe per enviar formularis x-www-form-urlencoded i configurem els camps
+           EnviamentPostUrlEncoded urlencoded = new EnviamentPostUrlEncoded("http://169.254.142.250/residueix/api/usuaris/alta/administrador/index.php");
+           urlencoded.afegirCamp("id_usuari", String.valueOf(usuari.getId()));
+           urlencoded.afegirCamp("token", usuari.getToken());
+           urlencoded.afegirCamp("permis", String.valueOf(usuari.getTipus()));
+           urlencoded.afegirCamp("email", email);
+           urlencoded.afegirCamp("password", password);
+           urlencoded.afegirCamp("tipus", tipus);
+           urlencoded.afegirCamp("nom", nom);
+           urlencoded.afegirCamp("cognom1", cognom1);
+           urlencoded.afegirCamp("cognom2", cognom2);
+           urlencoded.afegirCamp("telefon", telefon);
+           urlencoded.afegirCamp("actiu", actiu);
+           return urlencoded.resposta();
+        } catch (IOException ex){
+            return new JSONObject("{\"codi_error\":\"excepcio_api_crearUsuariAdministrador\",\"error\":\"Error en execució al enviar el formulari.\"}");    
+        }  
     }
     
     /**
@@ -381,41 +237,24 @@ public class Api {
      * @return JSONArray: json amb el llistat d'usuaris.
      */
     public static JSONObject crearUsuariTreballador(Usuari usuari, String email, String password, String tipus, String nom, String cognom1, String cognom2, String telefon, String actiu){
-        
         try{
-            
-            URL url = new URL("http://169.254.142.250/residueix/api/usuaris/alta/treballador/index.php");
-            Map<String,Object> params = new LinkedHashMap<>();
-            
-            // Paràmetres
-            params.put("id_usuari", String.valueOf(usuari.getId()));
-            params.put("token", usuari.getToken());
-            params.put("permis", String.valueOf(usuari.getTipus()));
-            params.put("email",email);
-            params.put("password",password);
-            params.put("tipus",tipus);
-            params.put("nom",nom);
-            params.put("cognom1",cognom1);
-            params.put("cognom2",cognom2);
-            params.put("telefon",telefon);
-            params.put("actiu",actiu);
-            
-            // Cridem a l'api per recuperar el json
-            String json = Api.cridaApi(url, params);
-            
-            // Llegim el Json.
-            if(!json.equals("")){
-                JSONObject jsonO = new JSONObject(json);
-                return jsonO;
-            }else{
-                return new JSONObject();
-            }
-            
-        } catch (IOException e){
-            System.out.println("Error excepció: " + e.getMessage());
-            return new JSONObject();
-        }
-        
+           // Instanciem la classe per enviar formularis x-www-form-urlencoded i configurem els camps
+           EnviamentPostUrlEncoded urlencoded = new EnviamentPostUrlEncoded("http://169.254.142.250/residueix/api/usuaris/alta/treballador/index.php");
+           urlencoded.afegirCamp("id_usuari", String.valueOf(usuari.getId()));
+           urlencoded.afegirCamp("token", usuari.getToken());
+           urlencoded.afegirCamp("permis", String.valueOf(usuari.getTipus()));
+           urlencoded.afegirCamp("email", email);
+           urlencoded.afegirCamp("password", password);
+           urlencoded.afegirCamp("tipus", tipus);
+           urlencoded.afegirCamp("nom", nom);
+           urlencoded.afegirCamp("cognom1", cognom1);
+           urlencoded.afegirCamp("cognom2", cognom2);
+           urlencoded.afegirCamp("telefon", telefon);
+           urlencoded.afegirCamp("actiu", actiu);
+           return urlencoded.resposta();
+        } catch (IOException ex){
+            return new JSONObject("{\"codi_error\":\"excepcio_api_crearUsuariTreballador\",\"error\":\"Error en execució al enviar el formulari.\"}");    
+        } 
     }
     
     /**
@@ -435,44 +274,27 @@ public class Api {
      * @return JSONArray: json amb el llistat d'usuaris.
      */
     public static JSONObject crearUsuariResiduent(Usuari usuari, String email, String password, String tipus, String nom, String cognom1, String cognom2, String telefon, String actiu, String carrer, String cp, String poblacio){
-        
         try{
-            
-            URL url = new URL("http://169.254.142.250/residueix/api/usuaris/alta/residuent/index.php");
-            Map<String,Object> params = new LinkedHashMap<>();
-            
-            // Paràmetres
-            params.put("id_usuari", String.valueOf(usuari.getId()));
-            params.put("token", usuari.getToken());
-            params.put("permis", String.valueOf(usuari.getTipus()));
-            params.put("email",email);
-            params.put("password",password);
-            params.put("tipus",tipus);
-            params.put("nom",nom);
-            params.put("cognom1",cognom1);
-            params.put("cognom2",cognom2);
-            params.put("telefon",telefon);
-            params.put("actiu",actiu);
-            params.put("carrer",carrer);
-            params.put("cp",cp);
-            params.put("poblacio",poblacio);
-            
-            // Cridem a l'api per recuperar el json
-            String json = Api.cridaApi(url, params);
-            
-            // Llegim el Json.
-            if(!json.equals("")){
-                JSONObject jsonO = new JSONObject(json);
-                return jsonO;
-            }else{
-                return new JSONObject();
-            }
-            
-        } catch (IOException e){
-            System.out.println("Error excepció: " + e.getMessage());
-            return new JSONObject();
-        }
-        
+           // Instanciem la classe per enviar formularis x-www-form-urlencoded i configurem els camps
+           EnviamentPostUrlEncoded urlencoded = new EnviamentPostUrlEncoded("http://169.254.142.250/residueix/api/usuaris/alta/residuent/index.php");
+           urlencoded.afegirCamp("id_usuari", String.valueOf(usuari.getId()));
+           urlencoded.afegirCamp("token", usuari.getToken());
+           urlencoded.afegirCamp("permis", String.valueOf(usuari.getTipus()));
+           urlencoded.afegirCamp("email", email);
+           urlencoded.afegirCamp("password", password);
+           urlencoded.afegirCamp("tipus", tipus);
+           urlencoded.afegirCamp("nom", nom);
+           urlencoded.afegirCamp("cognom1", cognom1);
+           urlencoded.afegirCamp("cognom2", cognom2);
+           urlencoded.afegirCamp("telefon", telefon);
+           urlencoded.afegirCamp("actiu", actiu);
+           urlencoded.afegirCamp("carrer", carrer);
+           urlencoded.afegirCamp("cp", cp);
+           urlencoded.afegirCamp("poblacio", poblacio);
+           return urlencoded.resposta();
+        } catch (IOException ex){
+            return new JSONObject("{\"codi_error\":\"excepcio_api_crearUsuariResiduent\",\"error\":\"Error en execució al enviar el formulari.\"}");    
+        } 
     }
 
     /**
@@ -495,47 +317,30 @@ public class Api {
      * @return JSONArray: json amb el llistat d'usuaris.
      */
     public static JSONObject crearUsuariAdherit(Usuari usuari, String email, String password, String tipus, String nom, String cognom1, String cognom2, String telefon, String actiu, String carrer, String cp, String poblacio, String nomAdherit, String horaris, String tipusAdherit){
-        
         try{
-            
-            URL url = new URL("http://169.254.142.250/residueix/api/usuaris/alta/adherit/index.php");
-            Map<String,Object> params = new LinkedHashMap<>();
-            
-            // Paràmetres
-            params.put("id_usuari", String.valueOf(usuari.getId()));
-            params.put("token", usuari.getToken());
-            params.put("permis", String.valueOf(usuari.getTipus()));
-            params.put("email",email);
-            params.put("password",password);
-            params.put("tipus",tipus);
-            params.put("nom",nom);
-            params.put("cognom1",cognom1);
-            params.put("cognom2",cognom2);
-            params.put("telefon",telefon);
-            params.put("actiu",actiu);
-            params.put("carrer",carrer);
-            params.put("cp",cp);
-            params.put("poblacio",poblacio);
-            params.put("nom_adherit",nomAdherit);
-            params.put("horari",horaris);
-            params.put("tipus_adherit",tipusAdherit);
-            
-            // Cridem a l'api per recuperar el json
-            String json = Api.cridaApi(url, params);
-            
-            // Llegim el Json.
-            if(!json.equals("")){
-                JSONObject jsonO = new JSONObject(json);
-                return jsonO;
-            }else{
-                return new JSONObject();
-            }
-            
-        } catch (IOException e){
-            System.out.println("Error excepció: " + e.getMessage());
-            return new JSONObject();
-        }
-        
+           // Instanciem la classe per enviar formularis x-www-form-urlencoded i configurem els camps
+           EnviamentPostUrlEncoded urlencoded = new EnviamentPostUrlEncoded("http://169.254.142.250/residueix/api/usuaris/alta/residuent/index.php");
+           urlencoded.afegirCamp("id_usuari", String.valueOf(usuari.getId()));
+           urlencoded.afegirCamp("token", usuari.getToken());
+           urlencoded.afegirCamp("permis", String.valueOf(usuari.getTipus()));
+           urlencoded.afegirCamp("email", email);
+           urlencoded.afegirCamp("password", password);
+           urlencoded.afegirCamp("tipus", tipus);
+           urlencoded.afegirCamp("nom", nom);
+           urlencoded.afegirCamp("cognom1", cognom1);
+           urlencoded.afegirCamp("cognom2", cognom2);
+           urlencoded.afegirCamp("telefon", telefon);
+           urlencoded.afegirCamp("actiu", actiu);
+           urlencoded.afegirCamp("carrer", carrer);
+           urlencoded.afegirCamp("cp", cp);
+           urlencoded.afegirCamp("poblacio", poblacio);
+           urlencoded.afegirCamp("nom_adherit", nomAdherit);
+           urlencoded.afegirCamp("horari", horaris);
+           urlencoded.afegirCamp("tipus_adherit", tipusAdherit);
+           return urlencoded.resposta();
+        } catch (IOException ex){
+            return new JSONObject("{\"codi_error\":\"excepcio_api_crearUsuariAdherit\",\"error\":\"Error en execució al enviar el formulari.\"}");    
+        } 
     }
     
     /**
@@ -549,13 +354,13 @@ public class Api {
            // Instanciem la classe per enviar formularis x-www-form-urlencoded i configurem els camps
            EnviamentPostUrlEncoded urlencoded = new EnviamentPostUrlEncoded("http://169.254.142.250/residueix/api/usuaris/consulta/index.php");
            urlencoded.afegirCamp("id_usuari", String.valueOf(usuari.getId()));
-           urlencoded.afegirCamp("permis", String.valueOf(usuari.getTipus()));
            urlencoded.afegirCamp("token", usuari.getToken());
+           urlencoded.afegirCamp("permis", String.valueOf(usuari.getTipus()));
            urlencoded.afegirCamp("id", String.valueOf(id));
            return urlencoded.resposta();
         } catch (IOException ex){
-            return new JSONObject("{\"codi_error\":\"excepcio_api_consultaUsuari\",\"error\":\"Error en execució al enviar la petició.\"}");    
-        }  
+            return new JSONObject("{\"codi_error\":\"excepcio_api_consultaUsuari\",\"error\":\"Error en execució al enviar el formulari.\"}");    
+        }
     }
         
      /**
@@ -565,34 +370,17 @@ public class Api {
      * @return JSONArray: json amb el llistat d'usuaris.
      */
     public static JSONObject eliminarUsuari(Usuari usuari,int id){
-        
         try{
-            
-            URL url = new URL("http://169.254.142.250/residueix/api/usuaris/baixa/index.php");
-            Map<String,Object> params = new LinkedHashMap<>();
-            
-            // Paràmetres
-            params.put("id_usuari", String.valueOf(usuari.getId()));
-            params.put("token", usuari.getToken());
-            params.put("permis", String.valueOf(usuari.getTipus()));
-            params.put("id",id);
-            
-            // Cridem a l'api per recuperar el json
-            String json = Api.cridaApi(url, params);
-            
-            // Llegim el Json.
-            if(!json.equals("")){
-                JSONObject jsonO = new JSONObject(json);
-                return jsonO;
-            }else{
-                return new JSONObject();
-            }
-            
-        } catch (IOException e){
-            System.out.println("Error excepció: " + e.getMessage());
-            return new JSONObject();
+           // Instanciem la classe per enviar formularis x-www-form-urlencoded i configurem els camps
+           EnviamentPostUrlEncoded urlencoded = new EnviamentPostUrlEncoded("http://169.254.142.250/residueix/api/usuaris/baixa/index.php");
+           urlencoded.afegirCamp("id_usuari", String.valueOf(usuari.getId()));
+           urlencoded.afegirCamp("token", usuari.getToken());
+           urlencoded.afegirCamp("permis", String.valueOf(usuari.getTipus()));
+           urlencoded.afegirCamp("id", String.valueOf(id));
+           return urlencoded.resposta();
+        } catch (IOException ex){
+            return new JSONObject("{\"codi_error\":\"excepcio_api_eliminarUsuari\",\"error\":\"Error en execució al enviar el formulari.\"}");    
         }
-        
     }
         
     /**
@@ -610,42 +398,26 @@ public class Api {
      * @return JSONArray: json amb el resultat de l'operació.
      */
     public static JSONObject modificarUsuariAdministrador(Usuari usuari, String id, String email, String password, String tipus, String nom, String cognom1, String cognom2, String telefon, String actiu){
-        
         try{
-            
-            URL url = new URL("http://169.254.142.250/residueix/api/usuaris/modificacio/administrador/index.php");
-            Map<String,Object> params = new LinkedHashMap<>();
-            
-            // Paràmetres
-            params.put("id_usuari", String.valueOf(usuari.getId()));
-            params.put("token", usuari.getToken());
-            params.put("permis", String.valueOf(usuari.getTipus()));
-            params.put("email",email);
-            params.put("password",password);
-            params.put("tipus",tipus);
-            params.put("nom",nom);
-            params.put("cognom1",cognom1);
-            params.put("cognom2",cognom2);
-            params.put("telefon",telefon);
-            params.put("actiu",actiu);
-            params.put("id",id);
-            
-            // Cridem a l'api per recuperar el json
-            String json = Api.cridaApi(url, params);
-            
-            // Llegim el Json.
-            if(!json.equals("")){
-                JSONObject jsonO = new JSONObject(json);
-                return jsonO;
-            }else{
-                return new JSONObject();
-            }
-            
-        } catch (IOException e){
-            System.out.println("Error excepció: " + e.getMessage());
-            return new JSONObject();
+           // Instanciem la classe per enviar formularis x-www-form-urlencoded i configurem els camps
+           EnviamentPostUrlEncoded urlencoded = new EnviamentPostUrlEncoded("http://169.254.142.250/residueix/api/usuaris/modificacio/administrador/index.php");
+           urlencoded.afegirCamp("id_usuari", String.valueOf(usuari.getId()));
+           urlencoded.afegirCamp("token", usuari.getToken());
+           urlencoded.afegirCamp("permis", String.valueOf(usuari.getTipus()));
+           urlencoded.afegirCamp("id", String.valueOf(id));
+           urlencoded.afegirCamp("email",email);
+           urlencoded.afegirCamp("password",password);
+           urlencoded.afegirCamp("tipus",tipus);
+           urlencoded.afegirCamp("nom",nom);
+           urlencoded.afegirCamp("cognom1",cognom1);
+           urlencoded.afegirCamp("cognom2",cognom2);
+           urlencoded.afegirCamp("telefon",telefon);
+           urlencoded.afegirCamp("actiu",actiu);
+           urlencoded.afegirCamp("id",id);
+           return urlencoded.resposta();
+        } catch (IOException ex){
+            return new JSONObject("{\"codi_error\":\"excepcio_api_modificarUsuariAdministrador\",\"error\":\"Error en execució al enviar el formulari.\"}");    
         }
-        
     }
        
     /**
@@ -663,42 +435,26 @@ public class Api {
      * @return JSONArray: json amb el resultat de l'operació.
      */
     public static JSONObject modificarUsuariTreballador(Usuari usuari, String id, String email, String password, String tipus, String nom, String cognom1, String cognom2, String telefon, String actiu){
-        
         try{
-            
-            URL url = new URL("http://169.254.142.250/residueix/api/usuaris/modificacio/treballador/index.php");
-            Map<String,Object> params = new LinkedHashMap<>();
-            
-            // Paràmetres
-            params.put("id_usuari", String.valueOf(usuari.getId()));
-            params.put("token", usuari.getToken());
-            params.put("permis", String.valueOf(usuari.getTipus()));
-            params.put("email",email);
-            params.put("password",password);
-            params.put("tipus",tipus);
-            params.put("nom",nom);
-            params.put("cognom1",cognom1);
-            params.put("cognom2",cognom2);
-            params.put("telefon",telefon);
-            params.put("actiu",actiu);
-            params.put("id",id);
-            
-            // Cridem a l'api per recuperar el json
-            String json = Api.cridaApi(url, params);
-            
-            // Llegim el Json.
-            if(!json.equals("")){
-                JSONObject jsonO = new JSONObject(json);
-                return jsonO;
-            }else{
-                return new JSONObject();
-            }
-            
-        } catch (IOException e){
-            System.out.println("Error excepció: " + e.getMessage());
-            return new JSONObject();
+           // Instanciem la classe per enviar formularis x-www-form-urlencoded i configurem els camps
+           EnviamentPostUrlEncoded urlencoded = new EnviamentPostUrlEncoded("http://169.254.142.250/residueix/api/usuaris/modificacio/treballador/index.php");
+           urlencoded.afegirCamp("id_usuari", String.valueOf(usuari.getId()));
+           urlencoded.afegirCamp("token", usuari.getToken());
+           urlencoded.afegirCamp("permis", String.valueOf(usuari.getTipus()));
+           urlencoded.afegirCamp("id", String.valueOf(id));
+           urlencoded.afegirCamp("email",email);
+           urlencoded.afegirCamp("password",password);
+           urlencoded.afegirCamp("tipus",tipus);
+           urlencoded.afegirCamp("nom",nom);
+           urlencoded.afegirCamp("cognom1",cognom1);
+           urlencoded.afegirCamp("cognom2",cognom2);
+           urlencoded.afegirCamp("telefon",telefon);
+           urlencoded.afegirCamp("actiu",actiu);
+           urlencoded.afegirCamp("id",id);
+           return urlencoded.resposta();
+        } catch (IOException ex){
+            return new JSONObject("{\"codi_error\":\"excepcio_api_modificarUsuariTreballador\",\"error\":\"Error en execució al enviar el formulari.\"}");    
         }
-        
     }
       
     /**
@@ -719,45 +475,29 @@ public class Api {
      * @return JSONArray: json amb el resultat de l'operació.
      */
     public static JSONObject modificarUsuariResiduent(Usuari usuari, String id, String email, String password, String tipus, String nom, String cognom1, String cognom2, String telefon, String actiu, String carrer, String cp, String poblacio){
-        
         try{
-            
-            URL url = new URL("http://169.254.142.250/residueix/api/usuaris/modificacio/residuent/index.php");
-            Map<String,Object> params = new LinkedHashMap<>();
-            
-            // Paràmetres
-            params.put("id_usuari", String.valueOf(usuari.getId()));
-            params.put("token", usuari.getToken());
-            params.put("permis", String.valueOf(usuari.getTipus()));
-            params.put("email",email);
-            params.put("password",password);
-            params.put("tipus",tipus);
-            params.put("nom",nom);
-            params.put("cognom1",cognom1);
-            params.put("cognom2",cognom2);
-            params.put("telefon",telefon);
-            params.put("actiu",actiu);
-            params.put("id",id);
-            params.put("carrer",carrer);
-            params.put("cp",cp);
-            params.put("poblacio",poblacio);
-            
-            // Cridem a l'api per recuperar el json
-            String json = Api.cridaApi(url, params);
-            
-            // Llegim el Json.
-            if(!json.equals("")){
-                JSONObject jsonO = new JSONObject(json);
-                return jsonO;
-            }else{
-                return new JSONObject();
-            }
-            
-        } catch (IOException e){
-            System.out.println("Error excepció: " + e.getMessage());
-            return new JSONObject();
+           // Instanciem la classe per enviar formularis x-www-form-urlencoded i configurem els camps
+           EnviamentPostUrlEncoded urlencoded = new EnviamentPostUrlEncoded("http://169.254.142.250/residueix/api/usuaris/modificacio/residuent/index.php");
+           urlencoded.afegirCamp("id_usuari", String.valueOf(usuari.getId()));
+           urlencoded.afegirCamp("token", usuari.getToken());
+           urlencoded.afegirCamp("permis", String.valueOf(usuari.getTipus()));
+           urlencoded.afegirCamp("id", String.valueOf(id));
+           urlencoded.afegirCamp("email",email);
+           urlencoded.afegirCamp("password",password);
+           urlencoded.afegirCamp("tipus",tipus);
+           urlencoded.afegirCamp("nom",nom);
+           urlencoded.afegirCamp("cognom1",cognom1);
+           urlencoded.afegirCamp("cognom2",cognom2);
+           urlencoded.afegirCamp("telefon",telefon);
+           urlencoded.afegirCamp("actiu",actiu);
+           urlencoded.afegirCamp("id",id);
+           urlencoded.afegirCamp("carrer",carrer);
+           urlencoded.afegirCamp("cp",cp);
+           urlencoded.afegirCamp("poblacio",poblacio);
+           return urlencoded.resposta();
+        } catch (IOException ex){
+            return new JSONObject("{\"codi_error\":\"excepcio_api_modificarUsuariResiduent\",\"error\":\"Error en execució al enviar el formulari.\"}");    
         }
-        
     }
     
     /**
@@ -781,48 +521,32 @@ public class Api {
      * @return JSONArray: json amb el resultat de l'operació.
      */
     public static JSONObject modificarUsuariAdherit(Usuari usuari, String id, String email, String password, String tipus, String nom, String cognom1, String cognom2, String telefon, String actiu, String carrer, String cp, String poblacio, String tipusAdherit, String nomAdherit, String horari){
-        
         try{
-            
-            URL url = new URL("http://169.254.142.250/residueix/api/usuaris/modificacio/adherit/index.php");
-            Map<String,Object> params = new LinkedHashMap<>();
-            
-            // Paràmetres
-            params.put("id_usuari", String.valueOf(usuari.getId()));
-            params.put("token", usuari.getToken());
-            params.put("permis", String.valueOf(usuari.getTipus()));
-            params.put("email",email);
-            params.put("password",password);
-            params.put("tipus",tipus);
-            params.put("nom",nom);
-            params.put("cognom1",cognom1);
-            params.put("cognom2",cognom2);
-            params.put("telefon",telefon);
-            params.put("actiu",actiu);
-            params.put("id",id);
-            params.put("carrer",carrer);
-            params.put("cp",cp);
-            params.put("poblacio",poblacio);
-            params.put("tipus_adherit",tipusAdherit);
-            params.put("nom_adherit",nomAdherit);
-            params.put("horari",horari);
-            
-            // Cridem a l'api per recuperar el json
-            String json = Api.cridaApi(url, params);
-            
-            // Llegim el Json.
-            if(!json.equals("")){
-                JSONObject jsonO = new JSONObject(json);
-                return jsonO;
-            }else{
-                return new JSONObject();
-            }
-            
-        } catch (IOException e){
-            System.out.println("Error excepció: " + e.getMessage());
-            return new JSONObject();
+           // Instanciem la classe per enviar formularis x-www-form-urlencoded i configurem els camps
+           EnviamentPostUrlEncoded urlencoded = new EnviamentPostUrlEncoded("http://169.254.142.250/residueix/api/usuaris/modificacio/adherit/index.php");
+           urlencoded.afegirCamp("id_usuari", String.valueOf(usuari.getId()));
+           urlencoded.afegirCamp("token", usuari.getToken());
+           urlencoded.afegirCamp("permis", String.valueOf(usuari.getTipus()));
+           urlencoded.afegirCamp("id", String.valueOf(id));
+           urlencoded.afegirCamp("email",email);
+           urlencoded.afegirCamp("password",password);
+           urlencoded.afegirCamp("tipus",tipus);
+           urlencoded.afegirCamp("nom",nom);
+           urlencoded.afegirCamp("cognom1",cognom1);
+           urlencoded.afegirCamp("cognom2",cognom2);
+           urlencoded.afegirCamp("telefon",telefon);
+           urlencoded.afegirCamp("actiu",actiu);
+           urlencoded.afegirCamp("id",id);
+           urlencoded.afegirCamp("carrer",carrer);
+           urlencoded.afegirCamp("cp",cp);
+           urlencoded.afegirCamp("poblacio",poblacio);
+           urlencoded.afegirCamp("tipus_adherit",tipusAdherit);
+           urlencoded.afegirCamp("nom_adherit",nomAdherit);
+           urlencoded.afegirCamp("horari",horari);
+           return urlencoded.resposta();
+        } catch (IOException ex){
+            return new JSONObject("{\"codi_error\":\"excepcio_api_modificarUsuariAdherit\",\"error\":\"Error en execució al enviar el formulari.\"}");    
         }
-        
     }
   
     // Mètodes Residus
@@ -1223,6 +947,12 @@ public class Api {
         }     
     }
     
+    /**
+     * Mètode per guardar la recollida d'un residuent per part d'un treballador.
+     * @param usuari (Usuari) usuari loginat
+     * @param carreto (String) json amb el carretó de la recollida.
+     * @return JSONObject amb la resposta
+     */
     public static JSONObject recollida(Usuari usuari, String carreto){
      try{
            // Instanciem la classe per enviar formularis x-www-form-urlencoded i configurem els camps
@@ -1236,7 +966,6 @@ public class Api {
             return new JSONObject("{\"codi_error\":\"excepcio_api_enviamentCarreto\",\"error\":\"Error en execució al enviar la petició.\"}");    
         }       
     }
-    
-    
+     
     
 }
