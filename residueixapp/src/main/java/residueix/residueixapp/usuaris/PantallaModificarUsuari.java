@@ -12,11 +12,12 @@ import residueix.residueixapp.principal.PantallaAdvertencia;
 import residueix.residueixapp.models.Usuari;
 import residueix.residueixapp.utils.Api;
 import residueix.residueixapp.utils.Utils;
+import residueix.residueixapp.utils.xifratParaulaClau;
 
 /**
  * Classe per obrir la pantalla per donar d'alta un usuari
  * @author Daniel Garcia Ruiz
- * @version 24/03/2023
+ * @version 02/05/2023
  */
 public class PantallaModificarUsuari extends javax.swing.JFrame {
     
@@ -892,12 +893,21 @@ public class PantallaModificarUsuari extends javax.swing.JFrame {
                 }
              }
          }
+        
+        String passwordXifrat = "";
+        // Ara que ja fem l'enviament de les dades a l'api per fer l'alta d'usuari gestionem el xifrat de la paraula clau
+        try {
+            passwordXifrat = xifratParaulaClau.encrypt(password);
+        } catch (Exception ex) {
+            // Si hi ha algun problema deixem el password com està.
+            missatge += " El xifratge de la paraula clau: " + ex.getMessage() + " - "; enviament = false;
+        }
          
         if(enviament){
             // Cridem l'api per donar d'alta usari 
             switch(tipus_nom){
                 case "Administrador" -> {  
-                    JSONObject jsonRetorn = Api.modificarUsuariAdministrador(usuari,id,email,password,tipus_id,nom,cognom1,cognom2,telefon,actiu);
+                    JSONObject jsonRetorn = Api.modificarUsuariAdministrador(usuari,id,email,passwordXifrat,tipus_id,nom,cognom1,cognom2,telefon,actiu);
                     if(!jsonRetorn.isEmpty()){
                         if(jsonRetorn.get("codi_error").toString().equals("0")){
                             PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(jsonRetorn.get("descripcio").toString());
@@ -915,7 +925,7 @@ public class PantallaModificarUsuari extends javax.swing.JFrame {
                 }
                 
                 case "Treballador" -> {
-                    JSONObject jsonRetorn = Api.modificarUsuariTreballador(usuari,id,email,password,tipus_id,nom,cognom1,cognom2,telefon,actiu);
+                    JSONObject jsonRetorn = Api.modificarUsuariTreballador(usuari,id,email,passwordXifrat,tipus_id,nom,cognom1,cognom2,telefon,actiu);
                     if(!jsonRetorn.isEmpty()){
                         if(jsonRetorn.get("codi_error").toString().equals("0")){
                             PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(jsonRetorn.get("descripcio").toString());
@@ -933,7 +943,7 @@ public class PantallaModificarUsuari extends javax.swing.JFrame {
                 }
                 
                 case "Residuent" -> {
-                    JSONObject jsonRetorn = Api.modificarUsuariResiduent(usuari,id,email,password,tipus_id,nom,cognom1,cognom2,telefon,actiu,carrer,cp,poblacio_id);
+                    JSONObject jsonRetorn = Api.modificarUsuariResiduent(usuari,id,email,passwordXifrat,tipus_id,nom,cognom1,cognom2,telefon,actiu,carrer,cp,poblacio_id);
                     if(!jsonRetorn.isEmpty()){
                         if(jsonRetorn.get("codi_error").toString().equals("0")){
                             PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(jsonRetorn.get("descripcio").toString());
@@ -951,7 +961,7 @@ public class PantallaModificarUsuari extends javax.swing.JFrame {
                 }
                 
                 case "Adherit" -> {
-                    JSONObject jsonRetorn = Api.modificarUsuariAdherit(usuari,id,email,password,tipus_id,nom,cognom1,cognom2,telefon,actiu,carrer,cp,poblacio_id,tipusAdherit_id,nomAdherit,horaris);
+                    JSONObject jsonRetorn = Api.modificarUsuariAdherit(usuari,id,email,passwordXifrat,tipus_id,nom,cognom1,cognom2,telefon,actiu,carrer,cp,poblacio_id,tipusAdherit_id,nomAdherit,horaris);
                     if(!jsonRetorn.isEmpty()){
                         if(jsonRetorn.get("codi_error").toString().equals("0")){
                             PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(jsonRetorn.get("descripcio").toString());

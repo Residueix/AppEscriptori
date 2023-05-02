@@ -425,7 +425,7 @@ public class PantallaLlistatResidus extends javax.swing.JFrame {
             this.dispose();
         }else{
             // Missatge error
-            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia("Has de seleccionar una fila de la taula de residus.");
+            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(Utils.error(17));
             pantallaAdvertencia.setVisible(true);
         }
         
@@ -446,7 +446,7 @@ public class PantallaLlistatResidus extends javax.swing.JFrame {
             this.dispose();
         }else{
             // Missatge error
-            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(Utils.error(8));
+            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(Utils.error(17));
             pantallaAdvertencia.setVisible(true);
         }
     }//GEN-LAST:event_buttonModificacioActionPerformed

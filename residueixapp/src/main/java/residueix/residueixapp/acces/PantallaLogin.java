@@ -8,12 +8,13 @@ import residueix.residueixapp.principal.PantallaPrincipal;
 import residueix.residueixapp.models.Usuari;
 import residueix.residueixapp.utils.Api;
 import residueix.residueixapp.utils.Utils;
+import residueix.residueixapp.utils.xifratParaulaClau;
 
 
 /**
  * Classe que representa la pantalla de Login de l'aplicació.
  * @author Daniel Garcia Ruiz
- * @version 24/03/2023
+ * @version 02/05/2023
 */
 public class PantallaLogin extends javax.swing.JFrame {
     
@@ -235,8 +236,19 @@ public class PantallaLogin extends javax.swing.JFrame {
         // Validem l'email.
         if(Utils.validarEmail(textFieldUsuari.getText().toString())){
             
+            // 
+            String usuariemail = textFieldUsuari.getText();
+            String password = passwordFieldParaulaClau.getText();
+            String passwordXifrat = null;
+            try {
+                passwordXifrat = xifratParaulaClau.encrypt(password);
+            } catch (Exception ex) {
+                PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(Utils.error(18));
+                pantallaAdvertencia.setVisible(true);
+            }
+            
             // Criidem a l'api per loginar-se.
-            JSONObject json = Api.login(textFieldUsuari.getText(), passwordFieldParaulaClau.getText());
+            JSONObject json = Api.login(usuariemail, passwordXifrat);
         
             // Controlem el que ens ha arribat
             if(json.isEmpty()) {
@@ -283,15 +295,12 @@ public class PantallaLogin extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(PantallaLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(PantallaLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(PantallaLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(PantallaLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        
         //</editor-fold>
         //</editor-fold>
 

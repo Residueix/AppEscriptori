@@ -2,16 +2,19 @@ package residueix.residueixapp.acces;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.JSONObject;
 import residueix.residueixapp.principal.PantallaAdvertencia;
 import residueix.residueixapp.utils.Api;
 import residueix.residueixapp.utils.EnviamentCorreu;
 import residueix.residueixapp.utils.Utils;
+import residueix.residueixapp.utils.xifratParaulaClau;
 
 /**
  * Classe per obrir la finestra per Restablir paraula clau.
  * @author Daniel Garcia Ruiz
- * @version 24/03/2023
+ * @version 02/05/2023
  */
 public class PantallaRestablirParaulaClau extends javax.swing.JFrame {
 
@@ -170,7 +173,14 @@ public class PantallaRestablirParaulaClau extends javax.swing.JFrame {
                 if(jsonExisteixCorreu.get("codi_error").toString().equals("0")){
                     // Correcte, intenem enviar el correu
                     EnviamentCorreu correu = new EnviamentCorreu();
-                    boolean resultat = correu.enviament("Restabliment de paraula clau a Residueix", "S'ha demanat el restabliment de la paraula clau. La seva paraula clau es : "+ jsonExisteixCorreu.get("password").toString() +" . Aconsellem que la canvii el més aviat possible.", textFieldEmail.getText().toString());
+                    String missatge = "S'ha demanat el restabliment de la paraula clau. La seva paraula clau es : ";
+                    try {
+                        xifratParaulaClau.decrypt(jsonExisteixCorreu.get("password").toString());
+                    } catch (Exception ex) {
+                        Logger.getLogger(PantallaRestablirParaulaClau.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    missatge += " . Aconsellem que la canvii el més aviat possible.";
+                    boolean resultat = correu.enviament("Restabliment de paraula clau a Residueix",missatge, textFieldEmail.getText().toString());
                     if(resultat){
                        PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(Utils.error(11));
                         pantallaAdvertencia.setVisible(true); 

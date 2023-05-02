@@ -4,19 +4,20 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import residueix.residueixapp.principal.PantallaAdvertencia;
 import residueix.residueixapp.models.Usuari;
 import residueix.residueixapp.utils.Api;
 import residueix.residueixapp.utils.Utils;
+import residueix.residueixapp.utils.xifratParaulaClau;
 
 /**
  * Classe per obrir la pantalla per donar d'alta un usuari
  * @author Daniel Garcia Ruiz
- * @version 24/03/2023
+ * @version 02/05/2023
  */
 public class PantallaAltaUsuari extends javax.swing.JFrame {
     
@@ -621,6 +622,8 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
                  missatge += " password mínim 8 caràcters -"; enviament = false;
              }
          }
+         
+         
          if(nom.equals("")){ missatge += " nom -"; enviament = false; }
          if(cognom1.equals("")){ missatge += " cognom1 -"; enviament = false; }
          if(telefon.equals("")){
@@ -641,7 +644,7 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
          
         String poblacio_id = "0";
         String tipusAdherit_id = "0";
-         
+        
         // Comprovem el tipus d'usuari per saber quins camps més hem d'agafar
         switch(tipus){
              case "Administrador","Treballador" -> {
@@ -706,12 +709,21 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
                 }
              }
          }
+        
+        String passwordXifrat = "";
+        // Ara que ja fem l'enviament de les dades a l'api per fer l'alta d'usuari gestionem el xifrat de la paraula clau
+        try {
+            passwordXifrat = xifratParaulaClau.encrypt(password);
+        } catch (Exception ex) {
+            // Si hi ha algun problema deixem el password com està.
+            missatge += " El xifratge de la paraula clau: " + ex.getMessage() + " - "; enviament = false;
+        }
          
         if(enviament){
             // Cridem l'api per donar d'alta usari 
             switch(tipus){
                 case "Administrador" -> {  
-                    JSONObject jsonRetorn = Api.crearUsuariAdministrador(usuari,email,password,tipus_id,nom,cognom1,cognom2,telefon,actiu);
+                    JSONObject jsonRetorn = Api.crearUsuariAdministrador(usuari,email,passwordXifrat,tipus_id,nom,cognom1,cognom2,telefon,actiu);
                     if(!jsonRetorn.isEmpty()){
                         if(jsonRetorn.get("codi_error").toString().equals("0")){
                             PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(jsonRetorn.get("descripcio").toString());
@@ -727,7 +739,7 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
                     }
                 }
                 case "Treballador" -> {
-                    JSONObject jsonRetorn = Api.crearUsuariTreballador(usuari,email,password,tipus_id,nom,cognom1,cognom2,telefon,actiu);
+                    JSONObject jsonRetorn = Api.crearUsuariTreballador(usuari,email,passwordXifrat,tipus_id,nom,cognom1,cognom2,telefon,actiu);
                     if(!jsonRetorn.isEmpty()){
                         if(jsonRetorn.get("codi_error").toString().equals("0")){
                             PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(jsonRetorn.get("descripcio").toString());
@@ -743,7 +755,7 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
                     }
                 }
                 case "Residuent" -> {
-                    JSONObject jsonRetorn = Api.crearUsuariResiduent(usuari,email,password,tipus_id,nom,cognom1,cognom2,telefon,actiu,carrer,cp,poblacio_id);
+                    JSONObject jsonRetorn = Api.crearUsuariResiduent(usuari,email,passwordXifrat,tipus_id,nom,cognom1,cognom2,telefon,actiu,carrer,cp,poblacio_id);
                     if(!jsonRetorn.isEmpty()){
                         if(jsonRetorn.get("codi_error").toString().equals("0")){
                             PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(jsonRetorn.get("descripcio").toString());
@@ -759,7 +771,7 @@ public class PantallaAltaUsuari extends javax.swing.JFrame {
                     }
                 }
                 case "Adherit" -> {
-                    JSONObject jsonRetorn = Api.crearUsuariAdherit(usuari,email,password,tipus_id,nom,cognom1,cognom2,telefon,actiu,carrer,cp,poblacio_id,nomAdherit,horaris,tipusAdherit_id);
+                    JSONObject jsonRetorn = Api.crearUsuariAdherit(usuari,email,passwordXifrat,tipus_id,nom,cognom1,cognom2,telefon,actiu,carrer,cp,poblacio_id,nomAdherit,horaris,tipusAdherit_id);
                     if(!jsonRetorn.isEmpty()){
                         if(jsonRetorn.get("codi_error").toString().equals("0")){
                             PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(jsonRetorn.get("descripcio").toString());

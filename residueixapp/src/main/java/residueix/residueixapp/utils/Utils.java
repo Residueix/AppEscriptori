@@ -3,21 +3,17 @@ package residueix.residueixapp.utils;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import org.apache.commons.io.IOUtils;
 
 /**
  * Classe amb utiitats per poder utilitzar durant el codi.
  * @author Daniel Garcia Ruiz
- * @version 03/04/2023
+ * @version 02/05/2023
  */
 public class Utils {
    
@@ -109,6 +105,8 @@ public class Utils {
             case 14 -> { return "Has de seleccionar una fila de la taula de tipus de residu."; }
             case 15 -> { return "Has de seleccionar una fila de la taula de punts de recollida."; }
             case 16 -> { return "Has de seleccionar una fila de la taula carretó per eliminar el residu."; }
+            case 17 -> { return "Has de seleccionar una fila de la taula de residus."; }
+            case 18 -> { return "Problemes amb el xifratge de la paraula clau."; }
             default -> { return ""; }
         }
     }
