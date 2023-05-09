@@ -6,6 +6,7 @@ import residueix.residueixapp.residus.PantallaLlistatResidus;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import residueix.residueixapp.acces.PantallaLogin;
+import residueix.residueixapp.esdeveniments.PantallaLlistatEsdeveniments;
 import residueix.residueixapp.models.Usuari;
 import residueix.residueixapp.puntsrecollida.PantallaRecollidaIdentificacio;
 import residueix.residueixapp.utils.Api;
@@ -64,6 +65,7 @@ public class PantallaPrincipal extends javax.swing.JFrame {
         labelUsuari = new javax.swing.JLabel();
         panelOpcions = new javax.swing.JPanel();
         buttonRecollida = new javax.swing.JButton();
+        buttonEsdeveniments = new javax.swing.JButton();
         buttonPuntsRecollida = new javax.swing.JButton();
         buttonResidus = new javax.swing.JButton();
         buttonUsuaris = new javax.swing.JButton();
@@ -135,6 +137,24 @@ public class PantallaPrincipal extends javax.swing.JFrame {
             case 1 ->{
                 buttonRecollida.setVisible(false);
             }
+        }
+
+        buttonEsdeveniments.setBackground(new java.awt.Color(51, 102, 255));
+        buttonEsdeveniments.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
+        buttonEsdeveniments.setForeground(new java.awt.Color(255, 255, 255));
+        buttonEsdeveniments.setText("Esdeveniments");
+        buttonEsdeveniments.setToolTipText("Llistat Esdeveniments");
+        buttonEsdeveniments.setAutoscrolls(true);
+        buttonEsdeveniments.setBorderPainted(false);
+        buttonEsdeveniments.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        buttonEsdeveniments.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonEsdevenimentsActionPerformed(evt);
+            }
+        });
+        panelOpcions.add(buttonEsdeveniments, new org.netbeans.lib.awtextra.AbsoluteConstraints(25, 230, 150, 30));
+        if(usuari.getTipus() == 2){
+            buttonPuntsRecollida.setVisible(false);
         }
 
         buttonPuntsRecollida.setBackground(new java.awt.Color(51, 102, 255));
@@ -355,6 +375,16 @@ public class PantallaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonCanviActionPerformed
 
     /**
+     * Mètode utilitzat quan es prem el botó de esdeveniments
+     * @param evt (ActionEvent) : Pulsar el botó.
+     */
+    private void buttonEsdevenimentsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonEsdevenimentsActionPerformed
+        PantallaLlistatEsdeveniments pantallaLlistatEsdeveniments = new PantallaLlistatEsdeveniments(usuari);
+        pantallaLlistatEsdeveniments.setVisible(true);
+        this.dispose();    
+    }//GEN-LAST:event_buttonEsdevenimentsActionPerformed
+
+    /**
      * Mètode principal de la classe.
      * @param args arguments de la linia de comandament
      */
@@ -397,6 +427,10 @@ public class PantallaPrincipal extends javax.swing.JFrame {
     * Botó per tornar a la pantalla principal.
     */
     private javax.swing.JButton buttonCanvi;
+    /**
+    * Botó per accedir al llistat d'esdeveniments
+    */
+    private javax.swing.JButton buttonEsdeveniments;
     /**
     * Botó per desloginar-se i sortir de l'aplicació.
     */

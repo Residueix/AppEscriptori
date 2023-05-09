@@ -50,6 +50,41 @@ public class Utils {
     }
     
     /**
+     * Mètode per validar el format integer
+     * @param valor (String) integer a comprovar.
+     * @return true/false
+     */
+    public static boolean validarHora(String valor){
+        if (valor == null || valor.length() != 5) {
+                return false;
+        }
+        try {
+            int horas = Integer.parseInt(valor.substring(0, 2));
+            int minutos = Integer.parseInt(valor.substring(3, 5));
+            if (horas < 0 || horas > 23 || minutos < 0 || minutos > 59) {
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return valor.charAt(2) == ':';
+    }
+    
+    /**
+     * Mètode per validar el format integer
+     * @param valor (String) integer a comprovar.
+     * @return true/false
+     */
+    public static boolean validarInteger(String valor){
+        try{
+            Integer.valueOf(valor);
+            return true;
+        } catch (NumberFormatException nfe){
+            return false;
+        }
+    }
+    
+    /**
      * Mètode per validar el format del Codi postal
      * @param valor (String) codi postal a comprobar.
      * @return true/false

@@ -49,6 +49,7 @@ public class RenderitzatsTaules {
                 case 1 -> { url1 = "http://169.254.142.250/residueix/img/residus/tipus/" + imatge;}
                 case 2 -> { url1 = "http://169.254.142.250/residueix/img/residus/" + imatge;}
                 case 3 -> { url1 = "http://169.254.142.250/residueix/img/punts/" + imatge;}
+                case 4 -> { url1 = "http://169.254.142.250/residueix/img/esdeveniments/" + imatge;}
             }
             
             URL url = new URL(url1);

@@ -966,5 +966,49 @@ public class Api {
         }       
     }
      
+    // Mètodes Esdeveniments
+    // ------------------------------------------------------------------------
+    
+    /**
+     * Mètode per recuperar el llistat d'esdeveniments
+     * @return JSONObject resposta de l'api
+     */
+    public static JSONObject llistatEsdeveniments(){
+        try{
+           // Instanciem la classe per enviar formularis x-www-form-urlencoded i configurem els camps
+           EnviamentPostUrlEncoded urlencoded = new EnviamentPostUrlEncoded("http://169.254.142.250/residueix/api/esdeveniments/llistat/index.php");
+           urlencoded.afegirCamp("token", Api.token);
+           return urlencoded.resposta();
+        } catch (IOException ex){
+            return new JSONObject("{\"codi_error\":\"excepcio_api_llistatEsdeveniments\",\"error\":\"Error en execució al enviar la petició.\"}");    
+        }
+    }  
+    
+    public static JSONObject altaEsdeveniment(Usuari usuari, String nom, String descripcio, String data, String hora, String poblacio, String valor, String aforament, File imatge, String actiu){
+        try{
+            // Instaciem la classe per enviar formularis multipart i configurem camps
+            EnviamentPostMultipart multipart = new EnviamentPostMultipart("http://169.254.142.250/residueix/api/esdeveniments/alta/index.php");
+            multipart.addHeaderField("User-Agent", "CodeJava");
+            multipart.addHeaderField("Test-Header", "Header-Value");
+            multipart.afegirCamp("id_usuari", String.valueOf(usuari.getId()));
+            multipart.afegirCamp("permis", String.valueOf(usuari.getTipus()));
+            multipart.afegirCamp("token", usuari.getToken());
+            multipart.afegirCamp("nom", nom);
+            multipart.afegirCamp("descripcio", descripcio);
+            multipart.afegirCamp("valor", valor);
+            multipart.afegirCamp("aforament", aforament);
+            multipart.afegirCamp("data", data);
+            multipart.afegirCamp("hora", hora);
+            multipart.afegirCamp("poblacio", poblacio);
+            multipart.afegirArxiu("imatge", imatge);
+            multipart.afegirCamp("actiu", actiu);
+            List<String> response = multipart.finish();
+            System.out.println("---"+response.toString()+"---");           
+            return new JSONObject(response.get(0));
+        } catch (IOException ex){
+            return new JSONObject("{\"codi_error\":\"excepcio_api_altaEsdeveniment\",\"error\":\"Error en execució al enviar el formulari.\"}");
+        }      
+    }
+    
     
 }
