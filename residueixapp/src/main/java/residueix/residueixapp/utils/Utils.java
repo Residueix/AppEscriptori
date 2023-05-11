@@ -22,6 +22,37 @@ public class Utils {
     */
     public Utils(){}
 
+    public static String[] obtenirData(String data){
+        
+        if(data != null){
+            try{
+                String[] retorn = new String[4];
+                String[] parts = data.split(" ");
+                String dataCompleta = parts[0];
+                String horaCompleta = parts[1];        
+                String[] dataSeparada = dataCompleta.split("-");    
+                
+                String any = dataSeparada[0];
+                String mes = dataSeparada[1];
+                String dia = dataSeparada[2];        
+                String hora = horaCompleta.substring(0,5);
+                
+                retorn[0] = any;
+                retorn[1] = mes;
+                retorn[2] = dia;
+                retorn[3] = hora;
+                
+                return retorn;
+            }catch(Exception ex){
+                return null;
+            }
+        }else{
+            return null;
+        }
+        
+        
+    }
+    
     /**
      * Mètode per validar els checbox i pasar-ho a text
      * @param estat (boolean) estat del checkbox
@@ -142,6 +173,7 @@ public class Utils {
             case 16 -> { return "Has de seleccionar una fila de la taula carretó per eliminar el residu."; }
             case 17 -> { return "Has de seleccionar una fila de la taula de residus."; }
             case 18 -> { return "Problemes amb el xifratge de la paraula clau."; }
+            case 19 -> { return "Has de seleccionar una fila de la taula d'esdeveniments."; }
             default -> { return ""; }
         }
     }
@@ -190,6 +222,7 @@ public class Utils {
                     url1 = "http://169.254.142.250/residueix/img/punts/" + imatge;
                     width=200;  height=120;
                 }
+                case 4 -> { url1 = "http://169.254.142.250/residueix/img/esdeveniments/" + imatge;}
             }
             
             // Creem la url 

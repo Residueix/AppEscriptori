@@ -54,6 +54,56 @@ public class TestUtils {
     }
     
     /**
+     * Mètode validarHoraCorrecte per validar si un string que passem té el format d'hora (hh:mm)
+     */
+    @Test
+    public void validarHoraCorrecte(){
+        boolean res = Utils.validarHora("10:00");
+        boolean esp = true;
+        assertEquals(esp,res);
+    }
+    
+    /**
+     * Mètode validarHoraIncoorrecte per validar si un string que passem té el format d'hora (hh:mm) incorrecta
+     */
+    @Test
+    public void validarHoraIncorrecte(){
+        boolean res = Utils.validarHora("aaa");
+        boolean res2 = Utils.validarHora("25:00");
+        boolean res3 = Utils.validarHora("999:999");
+        boolean res4 = Utils.validarHora("aaa:999");
+        boolean esp = false;
+        assertEquals(esp,res);
+        assertEquals(esp,res2);
+        assertEquals(esp,res3);
+        assertEquals(esp,res4);
+    }
+    
+    /**
+     * Mètode validarIntegeCorrecte per validar si un string que passem té el format d'integer
+     */
+    @Test
+    public void validarIntegeCorrecte(){
+        boolean res = Utils.validarInteger("5");
+        boolean esp = true;
+        assertEquals(esp,res);
+    }
+
+    /**
+     * Mètode validarIntegerIncorrecte per validar si un string que passem té el format d'integer incorrecta
+     */
+    @Test
+    public void validarIntegerIncorrecte(){
+        boolean res = Utils.validarInteger("1.5");
+        boolean res2 = Utils.validarInteger("aaa");
+        boolean res3 = Utils.validarInteger("1'5");
+        boolean esp = false;
+        assertEquals(esp,res);
+        assertEquals(esp,res2);
+        assertEquals(esp,res3);
+    }    
+    
+    /**
      * Mètode validarCPCorrecte per validar si l'string que passem té format de CP (5 números fins el 52999)
      */
     @Test

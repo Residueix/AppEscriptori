@@ -507,12 +507,12 @@ public class PantallaLlistatEsdeveniments extends javax.swing.JFrame {
         int filaSeleccionada = jTablePunts.getSelectedRow();
         if(filaSeleccionada != -1){
             // Afafem el id seleccionat
-            int idPunt = Integer.parseInt(jTablePunts.getModel().getValueAt(filaSeleccionada, 0).toString());
-            PantallaModificarPuntRecollida pantallaModificarPuntRecollida = new PantallaModificarPuntRecollida(usuari,idPunt);
-            pantallaModificarPuntRecollida.setVisible(true);
+            int idEsdeveniment = Integer.parseInt(jTablePunts.getModel().getValueAt(filaSeleccionada, 0).toString());
+            PantallaModificarEsdeveniment pantallaModificarEsdeveniment = new PantallaModificarEsdeveniment(usuari,idEsdeveniment);
+            pantallaModificarEsdeveniment.setVisible(true);
             this.dispose();
         }else{
-            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(Utils.error(15));
+            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(Utils.error(19));
             pantallaAdvertencia.setVisible(true);
         }
     }//GEN-LAST:event_buttonModificacioActionPerformed

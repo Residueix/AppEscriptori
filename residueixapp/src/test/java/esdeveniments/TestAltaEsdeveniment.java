@@ -1,4 +1,4 @@
-package puntsrecollida;
+package esdeveniments;
 
 // Imports
 import java.awt.Graphics;
@@ -15,21 +15,22 @@ import org.junit.After;
 import static org.junit.Assert.assertEquals;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import residueix.residueixapp.esdeveniments.PantallaAltaEsdeveniment;
 import residueix.residueixapp.models.Usuari;
-import residueix.residueixapp.puntsrecollida.PantallaAltaPuntRecollida;
 import residueix.residueixapp.utils.Api;
+import residueix.residueixapp.utils.xifratParaulaClau;
 
 /**
- * Classe TestAltaPuntRecollida per proves en la pantalla de alta punts de recolida
+ * Classe TestAltaEsdeveniment per proves en la pantalla de alta esdeveniments
  * @author Daniel Garcia Ruiz
- * @version 19/04/2023
+ * @version 09/05/2023
  */
-public class TestAltaPuntRecollida {
+public class TestAltaEsdeveniment {
     
     /**
      * Instància de la classe PantallaPrincipal
      */
-    static PantallaAltaPuntRecollida papr;
+    static PantallaAltaEsdeveniment pae;
     
     /**
      * Instància d'usuari
@@ -49,13 +50,12 @@ public class TestAltaPuntRecollida {
      * @throws java.lang.InterruptedException
      */
     @BeforeClass
-    public static void beforeClass() throws InterruptedException{
-        JSONObject jsonUser = Api.login("danisvh@gmail.com", "danisvh1");
-        
+    public static void beforeClass() throws InterruptedException, Exception{
+        JSONObject jsonUser = Api.login("danisvh@gmail.com", xifratParaulaClau.encrypt("danisvh1"));
         System.out.println("JSON USER" + jsonUser.toString());
-        TestAltaPuntRecollida.usuari = new Usuari(jsonUser.getInt("id"),jsonUser.getInt("tipus"),jsonUser.getString("tipus_nom"),jsonUser.getString("email"),jsonUser.getString("password"),jsonUser.getString("nom"),jsonUser.getString("cognom1"),jsonUser.getString("cognom2"),jsonUser.getString("telefon"),jsonUser.getString("token")); 
+        TestAltaEsdeveniment.usuari = new Usuari(jsonUser.getInt("id"),jsonUser.getInt("tipus"),jsonUser.getString("tipus_nom"),jsonUser.getString("email"),jsonUser.getString("password"),jsonUser.getString("nom"),jsonUser.getString("cognom1"),jsonUser.getString("cognom2"),jsonUser.getString("telefon"),jsonUser.getString("token")); 
         Thread.sleep(1000);
-        papr = new PantallaAltaPuntRecollida(usuari);
+        pae = new PantallaAltaEsdeveniment(usuari);
     }
     
     /**
@@ -65,7 +65,7 @@ public class TestAltaPuntRecollida {
     @After
     public void after() throws IOException{
         if(id!=null){
-            JSONObject jsonObject = (JSONObject) Api.eliminarRegistre("punt",id);
+            JSONObject jsonObject = (JSONObject) Api.eliminarRegistre("esdeveniment",id);
             id = null;
         }
     }
@@ -104,11 +104,11 @@ public class TestAltaPuntRecollida {
     
     
     /**
-     * Mètode altaResiduCorrecte quan donem d'alta un residu correcte
+     * Mètode altaEsdevenimentCorrecte quan donem d'alta un esdeveniment correcte
      */
     @Test
-    public void altaPuntCorrecte() throws IOException{
-        JSONObject jsonObject = Api.altaPunt(usuari, "jUnit prova", "jUnit prova", "42.0001", "2.891", "jUnit prova", "08080", "18", "jUnit prova",carregarImatge(), "1");
+    public void altaEsdevenimentCorrecte() throws IOException{
+        JSONObject jsonObject = Api.altaEsdeveniment(usuari,"Nom prova esdeveniment","Descripció prova esdeveniment","2023-12-01","10:02", "105", "0.5000", "100",carregarImatge(),"1");
         String esp = "0";
         String res = jsonObject.getString("codi_error");
         id = jsonObject.getString("id");
@@ -116,27 +116,16 @@ public class TestAltaPuntRecollida {
     }
     
     /**
-     * Mètode altaPuntCorrecteCampsObligatoris quan donem d'alta un residu correcte però només amb les dades obligatories.
+     * Mètode altaEsdevenimentIncorrecte quan donem d'alta un esdeveniment incorrecte
      */
     @Test
-    public void altaPuntCorrecteCampsObligatoris() throws IOException{
-        JSONObject jsonObject = Api.altaPunt(usuari, "jUnit prova", "jUnit prova", "", "", "", "", "", "",carregarImatge(), "1");
-        String esp = "0";
-        String res = jsonObject.getString("codi_error");
-        id = jsonObject.getString("id");
-        assertEquals(esp,res);
-    }
-    
-    /**
-     * Mètode altaResiduCorrecte quan donem d'alta un residu incorrecte (sense paràmetres)
-     */
-    @Test
-    public void altaIncorrecte() throws IOException{
-        JSONObject jsonObject = Api.altaPunt(usuari, "", "", "42.0001", "2.891", "jUnit prova", "08080", "18", "jUnit prova",carregarImatge(), "1");
-        String esp = "punts_recollida_5";
+    public void altaEsdevenimentIncorrecte() throws IOException{
+        
+        JSONObject jsonObject = Api.altaEsdeveniment(usuari,"Nom prova esdeveniment","Descripció prova esdeveniment","","", "105", "0.5000", "100",carregarImatge(),"1");
+        String esp = "esdeveniments_2";
         String res = jsonObject.getString("codi_error");
         assertEquals(esp,res);
-    }
-    
+        
+    }    
     
 }

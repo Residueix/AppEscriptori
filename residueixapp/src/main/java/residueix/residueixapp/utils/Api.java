@@ -984,6 +984,20 @@ public class Api {
         }
     }  
     
+    /**
+     * Mètode per donar d'alta un esdeveniment
+     * @param usuari (Usuari) usuari que fa la petició
+     * @param nom (String) nom esdeveniment
+     * @param descripcio (String) descripcio esdeveniment
+     * @param data (String) data esdeveniment
+     * @param hora (String) hora esdeveniment
+     * @param poblacio (String) poblacio esdeveniment
+     * @param valor (String) valor esdeveniment
+     * @param aforament (String) aforament esdeveniment
+     * @param imatge (String) imatge esdeveniment
+     * @param actiu (String) actiu esdeveniment
+     * @return JSONObject amb el retorn de l'api.
+     */
     public static JSONObject altaEsdeveniment(Usuari usuari, String nom, String descripcio, String data, String hora, String poblacio, String valor, String aforament, File imatge, String actiu){
         try{
             // Instaciem la classe per enviar formularis multipart i configurem camps
@@ -1004,6 +1018,49 @@ public class Api {
             multipart.afegirCamp("actiu", actiu);
             List<String> response = multipart.finish();
             System.out.println("---"+response.toString()+"---");           
+            return new JSONObject(response.get(0));
+        } catch (IOException ex){
+            return new JSONObject("{\"codi_error\":\"excepcio_api_altaEsdeveniment\",\"error\":\"Error en execució al enviar el formulari.\"}");
+        }      
+    }
+    
+    /**
+     * Mètode per consultar un esdeveniment
+     * @param idEsdeveniment (int) id de l'esdeveniment
+     * @return JSONObject amb la resposta
+     */
+    public static JSONObject consultaEsdeveniment(int idEsdeveniment){
+        try{
+           // Instanciem la classe per enviar formularis x-www-form-urlencoded i configurem els camps
+           EnviamentPostUrlEncoded urlencoded = new EnviamentPostUrlEncoded("http://169.254.142.250/residueix/api/esdeveniments/consulta/index.php");
+           urlencoded.afegirCamp("token", Api.token);
+           urlencoded.afegirCamp("id", String.valueOf(idEsdeveniment));
+           return urlencoded.resposta();
+        } catch (IOException ex){
+            return new JSONObject("{\"codi_error\":\"excepcio_api_consultaEsdeveniment\",\"error\":\"Error en execució al enviar la petició.\"}");    
+        }   
+    }
+    
+       public static JSONObject modificarEsdeveniment(Usuari usuari,int idEsdeveniment, String nom, String descripcio, String data, String hora, String poblacio, String valor, String aforament, File imatge, String actiu){
+        try{
+            // Instaciem la classe per enviar formularis multipart i configurem camps
+            EnviamentPostMultipart multipart = new EnviamentPostMultipart("http://169.254.142.250/residueix/api/esdeveniments/modificacio/index.php");
+            multipart.addHeaderField("User-Agent", "CodeJava");
+            multipart.addHeaderField("Test-Header", "Header-Value");
+            multipart.afegirCamp("id_usuari", String.valueOf(usuari.getId()));
+            multipart.afegirCamp("permis", String.valueOf(usuari.getTipus()));
+            multipart.afegirCamp("token", usuari.getToken());
+            multipart.afegirCamp("id", String.valueOf(idEsdeveniment));
+            multipart.afegirCamp("nom", nom);
+            multipart.afegirCamp("descripcio", descripcio);
+            multipart.afegirCamp("valor", valor);
+            multipart.afegirCamp("aforament", aforament);
+            multipart.afegirCamp("data", data);
+            multipart.afegirCamp("hora", hora);
+            multipart.afegirCamp("poblacio", poblacio);
+            multipart.afegirArxiu("imatge", imatge);
+            multipart.afegirCamp("actiu", actiu);
+            List<String> response = multipart.finish(); 
             return new JSONObject(response.get(0));
         } catch (IOException ex){
             return new JSONObject("{\"codi_error\":\"excepcio_api_altaEsdeveniment\",\"error\":\"Error en execució al enviar el formulari.\"}");
