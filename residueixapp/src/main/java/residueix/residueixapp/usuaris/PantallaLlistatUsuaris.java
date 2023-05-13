@@ -78,6 +78,7 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
         comboBoxActiu = new javax.swing.JComboBox<>();
         panelOpcions = new javax.swing.JPanel();
         buttonTornar = new javax.swing.JButton();
+        buttonTransaccions = new javax.swing.JButton();
         buttonAlta = new javax.swing.JButton();
         buttonLogOut = new javax.swing.JButton();
         buttonModificacio = new javax.swing.JButton();
@@ -214,6 +215,20 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
             }
         });
         panelOpcions.add(buttonTornar, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 660, 150, 30));
+
+        buttonTransaccions.setBackground(new java.awt.Color(51, 102, 255));
+        buttonTransaccions.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
+        buttonTransaccions.setForeground(new java.awt.Color(255, 255, 255));
+        buttonTransaccions.setText("Transaccions");
+        buttonTransaccions.setToolTipText("Transaccions d'usuari");
+        buttonTransaccions.setBorderPainted(false);
+        buttonTransaccions.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        buttonTransaccions.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonTransaccionsActionPerformed(evt);
+            }
+        });
+        panelOpcions.add(buttonTransaccions, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 150, 150, 30));
 
         buttonAlta.setBackground(new java.awt.Color(51, 102, 255));
         buttonAlta.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
@@ -479,6 +494,25 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonModificacioActionPerformed
 
     /**
+     * Mètode utilitzat quan es prem el botó de transaccions d'usuari
+     * @param evt  (ActionEevent) : pulsar el botó.
+     */
+    private void buttonTransaccionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonTransaccionsActionPerformed
+        // Mirem si tenim seleccionat fila del llistat 
+        int filaSeleccionada = jTableUsuaris.getSelectedRow();
+        if(filaSeleccionada != -1){
+            DefaultTableModel model = (DefaultTableModel) jTableUsuaris.getModel();
+            int idUsuari = Integer.parseInt(model.getValueAt(filaSeleccionada, 0).toString());
+            PantallaTransaccionsUsuari pantallaTransacciosUsuari = new PantallaTransaccionsUsuari(usuari,idUsuari);
+            pantallaTransacciosUsuari.setVisible(true);
+            this.dispose();
+        }else{
+            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(Utils.error(8));
+            pantallaAdvertencia.setVisible(true);
+        }
+    }//GEN-LAST:event_buttonTransaccionsActionPerformed
+
+    /**
      * Mètode principal de la classe.
      * @param args arguments de la linia de comandament
      */
@@ -541,6 +575,10 @@ public class PantallaLlistatUsuaris extends javax.swing.JFrame {
     * Botó per tornar a la pantalla principal.
     */
     private javax.swing.JButton buttonTornar;
+    /**
+    * Botó per veure les transaccions d'un usuari
+    */
+    private javax.swing.JButton buttonTransaccions;
     /**
     * Combo box amb diferents opcions per filtrar el llistat d'usauris
     */

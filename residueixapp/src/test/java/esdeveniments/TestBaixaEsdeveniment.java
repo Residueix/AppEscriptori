@@ -1,6 +1,7 @@
-package puntsrecollida;
+package esdeveniments;
 
 // Imports
+import static esdeveniments.TestModificarEsdeveniment.usuari;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -16,21 +17,22 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import residueix.residueixapp.esdeveniments.PantallaBaixaEsdeveniment;
 import residueix.residueixapp.models.Usuari;
-import residueix.residueixapp.puntsrecollida.PantallaBaixaPuntRecollida;
 import residueix.residueixapp.utils.Api;
+import residueix.residueixapp.utils.xifratParaulaClau;
 
 /**
- * Classe TestBaixaPuntRecollida per proves en la pantalla de baixa punts de recollida
+ * Classe TestBaixaEsdeveniment per proves en la pantalla de baixa d'esdeveniments
  * @author Daniel Garcia Ruiz
- * @version 19/04/2023
+ * @version 13/05/2023
  */
-public class TestBaixaPuntRecollida {
+public class TestBaixaEsdeveniment {
     
     /**
      * Instància de la classe PantallaPrincipal
      */
-    static PantallaBaixaPuntRecollida pbpr;
+    static PantallaBaixaEsdeveniment pbe;
     
     /**
      * Instància d'usuari
@@ -48,11 +50,13 @@ public class TestBaixaPuntRecollida {
     /**
      * Métode Beforeclass per inicialitzar les classes necessàries per les proves
      * @throws java.lang.InterruptedException
+     * @throws IOException
+     * @throws Exception
      */
     @BeforeClass
-    public static void beforeClass() throws InterruptedException, IOException{
-        JSONObject jsonUser = Api.login("danisvh@gmail.com", "danisvh1");
-        TestBaixaPuntRecollida.usuari = new Usuari(jsonUser.getInt("id"),jsonUser.getInt("tipus"),jsonUser.getString("tipus_nom"),jsonUser.getString("email"),jsonUser.getString("password"),jsonUser.getString("nom"),jsonUser.getString("cognom1"),jsonUser.getString("cognom2"),jsonUser.getString("telefon"),jsonUser.getString("token")); 
+    public static void beforeClass() throws InterruptedException, IOException, Exception{
+        JSONObject jsonUser = Api.login("danisvh@gmail.com", xifratParaulaClau.encrypt("danisvh1"));
+        TestBaixaEsdeveniment.usuari = new Usuari(jsonUser.getInt("id"),jsonUser.getInt("tipus"),jsonUser.getString("tipus_nom"),jsonUser.getString("email"),jsonUser.getString("password"),jsonUser.getString("nom"),jsonUser.getString("cognom1"),jsonUser.getString("cognom2"),jsonUser.getString("telefon"),jsonUser.getString("token")); 
         Thread.sleep(1000);
     }
     
@@ -62,18 +66,18 @@ public class TestBaixaPuntRecollida {
      */
     @Before
     public void before() throws IOException{
-        JSONObject jsonObject = Api.altaPunt(usuari, "jUnit prova", "jUnit prova", "42.0001", "2.891", "jUnit prova", "08080", "18", "jUnit prova",carregarImatge(), "1");
-        id = jsonObject.getString("id");
+       JSONObject jsonObject = Api.altaEsdeveniment(usuari,"Nom prova esdeveniment","Descripció prova esdeveniment","2023-12-01","10:02", "105", "0.5000", "100",carregarImatge(),"1");
+       id = jsonObject.getString("id");
     }
     
     /**
-     * Mètode after per executar després de cada test
+     * Mètode after per executar desrpés de cada test
      * @throws IOException 
      */
     @After
     public void after() throws IOException{
         if(id!=null){
-            JSONObject jsonObject = (JSONObject) Api.eliminarRegistre("punt",id);
+            JSONObject jsonObject = (JSONObject) Api.eliminarRegistre("esdeveniment",id);
             id = null;
         }
     }
@@ -100,12 +104,12 @@ public class TestBaixaPuntRecollida {
     }
     
     /**
-     * Mètode baixaTipusResiduCorrecte quan donem de baixa un tipus residu correcte
+     * Mètode baixaEsdevenimentCorrecte quan donem de baixa un tipus residu correcte
      */
     @Test
-    public void baixaPuntCorrecte() throws IOException{
-        pbpr = new PantallaBaixaPuntRecollida(usuari,Integer.parseInt(id));
-        JSONObject jsonObject = (JSONObject) Api.baixaPunt(usuari, Integer.parseInt(id));
+    public void baixaEsdevenimentCorrecte() throws IOException{
+        pbe = new PantallaBaixaEsdeveniment(usuari,Integer.parseInt(id));
+        JSONObject jsonObject = (JSONObject) Api.baixaEsdeveniment(usuari, Integer.parseInt(id));
         String esp = "0";
         String res = jsonObject.getString("codi_error");
         System.out.println(jsonObject.getString("codi_error"));
@@ -113,25 +117,37 @@ public class TestBaixaPuntRecollida {
     }
     
     /**
-     * Mètode baixaPuntIncorrecte quan donem de baixa un punt de recollida incorrecte
+     * Mètode baixaEsdevenimentIncorrecte quan donem de baixa un punt de recollida incorrecte
      */
     @Test
-    public void baixaPuntIncorrecte() throws IOException{
-        pbpr = new PantallaBaixaPuntRecollida(usuari,-1);
-        JSONObject jsonObject = (JSONObject) Api.baixaPunt(usuari, -1);
-        String esp = "punts_recollida_11";
+    public void baixaEsdevenimentIncorrecte() throws IOException{
+        pbe = new PantallaBaixaEsdeveniment(usuari,Integer.parseInt(id));
+        JSONObject jsonObject = (JSONObject) Api.baixaEsdeveniment(usuari, -1);
+        String esp = "esdeveniments_7";
         String res = jsonObject.getString("codi_error");
-        System.out.println(jsonObject.getString("codi_error"));
         assertEquals(esp,res);
     }
     
     /**
-     * Mètode consultaPuntRecollida quan consultem les dades d'un punt de recollida específic
+     * Mètode per consultar un esdevenimentcorrecte.
+     * @throws IOException 
      */
     @Test
-    public void consultaPuntRecollida() throws IOException{
-        JSONObject jsonObject = Api.consultaPunt(Integer.parseInt(id));
+    public void consultaEsdevenimentCorrecte() throws IOException{
+        JSONObject jsonObject = Api.consultaEsdeveniment(Integer.parseInt(id));
         String esp = "0";
+        String res = jsonObject.getString("codi_error");
+        assertEquals(esp,res);
+    }
+    
+    /**
+     * Mètode per consultar un esdeveniment però incorrecte.
+     * @throws IOException 
+     */
+    @Test
+    public void consultaEsdevenimentIncorrecte() throws IOException{
+        JSONObject jsonObject = Api.consultaEsdeveniment(2000);
+        String esp = "esdeveniments_6";
         String res = jsonObject.getString("codi_error");
         assertEquals(esp,res);
     }

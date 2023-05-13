@@ -1041,7 +1041,22 @@ public class Api {
         }   
     }
     
-       public static JSONObject modificarEsdeveniment(Usuari usuari,int idEsdeveniment, String nom, String descripcio, String data, String hora, String poblacio, String valor, String aforament, File imatge, String actiu){
+    /**
+     * Mètode per modificar un esdeveniment
+     * @param usuari (Usuari) usuari que fa la petició
+     * @param idEsdeveniment (int) id esdeveniment
+     * @param nom (String) nom esdeveniment
+     * @param descripcio (String) descripcio esdeveniment
+     * @param data (String) data esdeveniment
+     * @param hora (String) hora esdeveniment
+     * @param poblacio (String) poblacio esdeveniment
+     * @param valor (String) valor esdeveniment
+     * @param aforament (String) aforament esdeveniment
+     * @param imatge (String) imatge esdeveniment
+     * @param actiu (String) actiu esdeveniment
+     * @return JSONObject amb el retorn de l'api.
+     */
+    public static JSONObject modificarEsdeveniment(Usuari usuari,int idEsdeveniment, String nom, String descripcio, String data, String hora, String poblacio, String valor, String aforament, File imatge, String actiu){
         try{
             // Instaciem la classe per enviar formularis multipart i configurem camps
             EnviamentPostMultipart multipart = new EnviamentPostMultipart("http://169.254.142.250/residueix/api/esdeveniments/modificacio/index.php");
@@ -1066,6 +1081,62 @@ public class Api {
             return new JSONObject("{\"codi_error\":\"excepcio_api_altaEsdeveniment\",\"error\":\"Error en execució al enviar el formulari.\"}");
         }      
     }
+    
+     /**
+     * Mètode per donar de baixa un esdeveniment
+     * @param usuari (Usuari) dades de l'usuari que fa la petició
+     * @param idEsdeveniment (int) id de l'esdeveninment
+     * @return JSONObject amb la resposta de l'api.
+     */
+    public static JSONObject baixaEsdeveniment(Usuari usuari, int idEsdeveniment){
+        try{
+           // Instanciem la classe per enviar formularis x-www-form-urlencoded i configurem els camps
+           EnviamentPostUrlEncoded urlencoded = new EnviamentPostUrlEncoded("http://169.254.142.250/residueix/api/esdeveniments/baixa/index.php");
+           urlencoded.afegirCamp("id_usuari", String.valueOf(usuari.getId()));
+           urlencoded.afegirCamp("permis", String.valueOf(usuari.getTipus()));
+           urlencoded.afegirCamp("token", usuari.getToken());
+           urlencoded.afegirCamp("id", String.valueOf(idEsdeveniment));
+           return urlencoded.resposta();
+        } catch (IOException ex){
+            return new JSONObject("{\"codi_error\":\"excepcio_api_baixaEsdeveniment\",\"error\":\"Error en execució al enviar la petició.\"}");    
+        }     
+    }
+    
+    /**
+     * Mètode per consultar el llistat d'assistents d'un esdeveniment
+     * @param idEsdeveniment (int) id de l'esdeveninment
+     * @return JSONObject amb la resposta de l'api.
+     */
+    public static JSONObject llistatAssistents(int idEsdeveniment){
+        try{
+           // Instanciem la classe per enviar formularis x-www-form-urlencoded i configurem els camps
+           EnviamentPostUrlEncoded urlencoded = new EnviamentPostUrlEncoded("http://169.254.142.250/residueix/api/esdeveniments/assistents/index.php");
+           urlencoded.afegirCamp("token", Api.token);
+           urlencoded.afegirCamp("id", String.valueOf(idEsdeveniment));
+           return urlencoded.resposta();
+        } catch (IOException ex){
+            return new JSONObject("{\"codi_error\":\"excepcio_api_llistatAssistents\",\"error\":\"Error en execució al enviar la petició.\"}");    
+        }   
+    }
+    
+    /**
+     * Mètode per consultar les transaccions d'un usuari
+     * @param idUsuari (int) id de l'usuari a consultar
+     * @return JSONObject amb la resposta de l'api.
+     */
+    public static JSONObject consultaTransaccions(int idUsuari){
+        try{
+           // Instanciem la classe per enviar formularis x-www-form-urlencoded i configurem els camps
+           EnviamentPostUrlEncoded urlencoded = new EnviamentPostUrlEncoded("http://169.254.142.250/residueix/api/transaccions/consulta/index.php");
+           urlencoded.afegirCamp("token", Api.token);
+           urlencoded.afegirCamp("id", String.valueOf(idUsuari));
+           return urlencoded.resposta();
+        } catch (IOException ex){
+            return new JSONObject("{\"codi_error\":\"excepcio_api_transaccions\",\"error\":\"Error en execució al enviar la petició.\"}");    
+        }   
+    }
+    
+    
     
     
 }

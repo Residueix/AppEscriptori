@@ -1,7 +1,6 @@
 package residueix.residueixapp.esdeveniments;
 
 // Imports
-import residueix.residueixapp.puntsrecollida.*;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -23,7 +22,7 @@ import residueix.residueixapp.utils.Utils;
 /**
  * Classe per obrir la pantalla del llistat d'esdeveniments
  * @author Daniel Garcia Ruiz
- * @version 05/05/2023
+ * @version 12/05/2023
  */
 public class PantallaLlistatEsdeveniments extends javax.swing.JFrame {
     
@@ -66,7 +65,7 @@ public class PantallaLlistatEsdeveniments extends javax.swing.JFrame {
         // Recuperar totes les dades necesàries per la gestió d'esdeveniments.
         recuperarDades();
         // Omplir el formulari amb les dades de llistatEsdeveniments
-        omplirFormulari();
+        omplirFormulari("","","");
     }
 
      /**
@@ -87,12 +86,8 @@ public class PantallaLlistatEsdeveniments extends javax.swing.JFrame {
         comboBoxValors = new javax.swing.JComboBox<>();
         comboBoxActiu = new javax.swing.JComboBox<>();
         comboBoxPoblacions = new javax.swing.JComboBox<>();
-        dateChooserDesde = new com.toedter.calendar.JDateChooser();
-        dateChooserFins = new com.toedter.calendar.JDateChooser();
         jSeparator1 = new javax.swing.JSeparator();
-        labelFins = new javax.swing.JLabel();
         labelFiltres = new javax.swing.JLabel();
-        labelDesde = new javax.swing.JLabel();
         panelOpcions = new javax.swing.JPanel();
         buttonTornarPrincipal = new javax.swing.JButton();
         buttonAlta = new javax.swing.JButton();
@@ -174,43 +169,48 @@ public class PantallaLlistatEsdeveniments extends javax.swing.JFrame {
         jTablePunts.setShowVerticalLines(false);
         scrollPaneTipusResidu.setViewportView(jTablePunts);
 
-        panelContingut.add(scrollPaneTipusResidu, new org.netbeans.lib.awtextra.AbsoluteConstraints(22, 250, 700, 470));
+        panelContingut.add(scrollPaneTipusResidu, new org.netbeans.lib.awtextra.AbsoluteConstraints(22, 210, 700, 510));
 
         comboBoxValors.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
         comboBoxValors.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tots els valors" }));
         comboBoxValors.setToolTipText("Filtrar per tipus d'usuari");
         comboBoxValors.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         comboBoxValors.setPreferredSize(new java.awt.Dimension(200, 30));
-        panelContingut.add(comboBoxValors, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 210, -1, -1));
+        comboBoxValors.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboBoxValorsActionPerformed(evt);
+            }
+        });
+        panelContingut.add(comboBoxValors, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 160, -1, -1));
 
         comboBoxActiu.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
         comboBoxActiu.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tots els esdeveniments", "Esdeveniments actius", "Esdeveniments de baixa" }));
         comboBoxActiu.setToolTipText("Filtre actiu");
         comboBoxActiu.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         comboBoxActiu.setPreferredSize(new java.awt.Dimension(200, 30));
-        panelContingut.add(comboBoxActiu, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 210, -1, -1));
+        comboBoxActiu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboBoxActiuActionPerformed(evt);
+            }
+        });
+        panelContingut.add(comboBoxActiu, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 160, -1, -1));
 
         comboBoxPoblacions.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
         comboBoxPoblacions.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Totes les poblacions" }));
         comboBoxPoblacions.setToolTipText("Filtrar per tipus d'usuari");
         comboBoxPoblacions.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         comboBoxPoblacions.setPreferredSize(new java.awt.Dimension(200, 30));
-        panelContingut.add(comboBoxPoblacions, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 210, -1, -1));
-        panelContingut.add(dateChooserDesde, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 170, 200, 30));
-        panelContingut.add(dateChooserFins, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 170, 200, 30));
+        comboBoxPoblacions.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboBoxPoblacionsActionPerformed(evt);
+            }
+        });
+        panelContingut.add(comboBoxPoblacions, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 160, -1, -1));
         panelContingut.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 140, 610, -1));
-
-        labelFins.setFont(new java.awt.Font("Sansation", 0, 12)); // NOI18N
-        labelFins.setText("Fins");
-        panelContingut.add(labelFins, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 150, -1, -1));
 
         labelFiltres.setFont(new java.awt.Font("Sansation", 0, 12)); // NOI18N
         labelFiltres.setText("Filtres");
         panelContingut.add(labelFiltres, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 120, -1, -1));
-
-        labelDesde.setFont(new java.awt.Font("Sansation", 0, 12)); // NOI18N
-        labelDesde.setText("Desde");
-        panelContingut.add(labelDesde, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 150, -1, -1));
 
         panelPrincipal.add(panelContingut, new org.netbeans.lib.awtextra.AbsoluteConstraints(2, 2, 798, 746));
 
@@ -368,7 +368,7 @@ public class PantallaLlistatEsdeveniments extends javax.swing.JFrame {
             
         }else{
             // Hi ha un error posem a null la variable i creem problemes.s
-            problemes += " - " + jsonEsdeveniments.getString("error") + " ";
+            this.problemes += " - " + jsonEsdeveniments.getString("error") + " ";
         }
         
     }
@@ -376,8 +376,50 @@ public class PantallaLlistatEsdeveniments extends javax.swing.JFrame {
     /**
      * Mètode per omplir la taula amb les dades dels usuaris.
      */
-    private void omplirFormulari(){
-               
+    private void omplirFormulari(String valor, String poblacio, String actiu){
+        if(valor.equals("Tots els valors")){ valor = ""; }
+        if(poblacio.equals("Totes les poblacions")){ poblacio = ""; }
+        if(actiu.equals("Tots els esdeveniments")){ actiu = ""; }
+        if(actiu.equals("Tots els esdeveniments")){ actiu = ""; }
+        if(actiu.equals("Esdeveniments actius")){ actiu = "1"; }
+        if(actiu.equals("Esdeveniments de baixa")){ actiu = "0"; }
+        
+        // Omplim el combobox de valors
+        if(llistatEsdeveniments != null){
+            for(int i = 0; i < llistatEsdeveniments.size(); i++){
+                HashMap<String,Object> element = llistatEsdeveniments.get(i);
+                // Comprovem si en el combobox ja existeix. recorrem i si trobem coincidencia ho indiquem.
+                int index = -1;
+                for(int x = 0; x < comboBoxValors.getItemCount(); x++){
+                    if(comboBoxValors.getItemAt(x).equals(element.get("valor").toString())){
+                        index = x;
+                        break;
+                    }
+                }
+                if(index==-1){
+                 comboBoxValors.addItem(element.get("valor").toString());    
+                }
+            }
+        }
+        
+        // Omplim el combobox de poblacions
+        if(llistatEsdeveniments != null){
+            for(int i = 0; i < llistatEsdeveniments.size(); i++){
+                HashMap<String,Object> element = llistatEsdeveniments.get(i);
+                // Comprovem si en el combobox ja existeix. recorrem i si trobem coincidencia ho indiquem.
+                int index = -1;
+                for(int x = 0; x < comboBoxPoblacions.getItemCount(); x++){
+                    if(comboBoxPoblacions.getItemAt(x).equals(element.get("nomPoblacio").toString())){
+                        index = x;
+                        break;
+                    }
+                }
+                if(index==-1){
+                 comboBoxPoblacions.addItem(element.get("nomPoblacio").toString());    
+                }
+            }
+        }
+        
         // Afegim el model a la taula
         DefaultTableModel model = new DefaultTableModel(){
              @Override 
@@ -409,16 +451,107 @@ public class PantallaLlistatEsdeveniments extends javax.swing.JFrame {
         
         // Omplim la taula amb les dades
         if(llistatEsdeveniments != null){
+            
+           // Definim l'estat en funció delque ens arriba
+            String estat = "000";
+            switch(valor){
+                case  "": switch(poblacio){ case "": switch(actiu){ case "": estat = "000"; break; default: estat = "001"; break; } break; default: switch(actiu){ case "": estat = "010"; break; default: estat = "011"; break; } break; } break;
+                default: switch(poblacio){ case "": switch(actiu){ case "": estat = "100"; break; default: estat = "101"; break; } break; default: switch(actiu){ case "": estat = "110"; break; default: estat = "111"; break;  } break; } break;
+            }
+            
             for(int i = 0; i < llistatEsdeveniments.size(); i++){
                 HashMap<String,Object> element = llistatEsdeveniments.get(i);
-                model.addRow( new Object[]{
-                    element.get("id"),
-                    element.get("nom"),
-                    element.get("data"),
-                    RenderitzatsTaules.cellaImatge((String) element.get("imatge"),4)           
-                });
+                
+                switch(estat){
+                    case "001":
+                        if(element.get("actiu").equals(actiu)){
+                            model.addRow( new Object[]{
+                                element.get("id"),
+                                element.get("nom"),
+                                element.get("data"),
+                                RenderitzatsTaules.cellaImatge((String) element.get("imatge"),4)           
+                            });
+                        }
+                    break;
+                    case "010":
+                        if(element.get("nomPoblacio").equals(poblacio)){
+                            model.addRow( new Object[]{
+                                element.get("id"),
+                                element.get("nom"),
+                                element.get("data"),
+                                RenderitzatsTaules.cellaImatge((String) element.get("imatge"),4)           
+                            });
+                        }
+                    break;
+                    case "011":
+                        if(element.get("nomPoblacio").equals(poblacio)){
+                        if(element.get("actiu").equals(actiu)){
+                            model.addRow( new Object[]{
+                                element.get("id"),
+                                element.get("nom"),
+                                element.get("data"),
+                                RenderitzatsTaules.cellaImatge((String) element.get("imatge"),4)           
+                            });
+                        }}
+                    break;
+                    case "100":
+                        if(element.get("valor").equals(valor)){
+                            model.addRow( new Object[]{
+                                element.get("id"),
+                                element.get("nom"),
+                                element.get("data"),
+                                RenderitzatsTaules.cellaImatge((String) element.get("imatge"),4)           
+                            });
+                        }
+                    break;
+                    case "101":
+                        if(element.get("valor").equals(valor)){
+                        if(element.get("actiu").equals(actiu)){
+                            model.addRow( new Object[]{
+                                element.get("id"),
+                                element.get("nom"),
+                                element.get("data"),
+                                RenderitzatsTaules.cellaImatge((String) element.get("imatge"),4)           
+                            });
+                        }}
+                    break;
+                    case "110":
+                        if(element.get("valor").equals(valor)){
+                        if(element.get("nomPoblacio").equals(poblacio)){
+                            model.addRow( new Object[]{
+                                element.get("id"),
+                                element.get("nom"),
+                                element.get("data"),
+                                RenderitzatsTaules.cellaImatge((String) element.get("imatge"),4)           
+                            });
+                        }}
+                    break;
+                    case "111":
+                        if(element.get("valor").equals(valor)){
+                        if(element.get("nomPoblacio").equals(poblacio)){
+                        if(element.get("actiu").equals(actiu)){
+                            model.addRow( new Object[]{
+                                element.get("id"),
+                                element.get("nom"),
+                                element.get("data"),
+                                RenderitzatsTaules.cellaImatge((String) element.get("imatge"),4)           
+                            });
+                        }}}
+                    break;
+                    case "000":
+                    default:
+                        model.addRow( new Object[]{
+                            element.get("id"),
+                            element.get("nom"),
+                            element.get("data"),
+                            RenderitzatsTaules.cellaImatge((String) element.get("imatge"),4)           
+                        });
+                    break;
+                }
             }
+            
         }
+        
         
     }
     
@@ -485,14 +618,14 @@ public class PantallaLlistatEsdeveniments extends javax.swing.JFrame {
         int filaSeleccionada = jTablePunts.getSelectedRow();
         if(filaSeleccionada != -1){
             // Agafem el id seleccionat
-            int idPunt = Integer.parseInt(jTablePunts.getModel().getValueAt(filaSeleccionada, 0).toString());
+            int idEsdeveniment = Integer.parseInt(jTablePunts.getModel().getValueAt(filaSeleccionada, 0).toString());
             // Obrim pantalla baixa tipus residu
-            PantallaBaixaPuntRecollida pantallaBaixaPuntRecollida = new PantallaBaixaPuntRecollida(usuari,idPunt);
-            pantallaBaixaPuntRecollida.setVisible(true);
+            PantallaAssistentsEsdeveniment pantallaAssistentsEsdeveniment = new PantallaAssistentsEsdeveniment(usuari,idEsdeveniment);
+            pantallaAssistentsEsdeveniment.setVisible(true);
             this.dispose();
         }else{
             // Missatge error (no seleccionada)
-            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(Utils.error(14));
+            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(Utils.error(19));
             pantallaAdvertencia.setVisible(true);
         }
         
@@ -518,8 +651,43 @@ public class PantallaLlistatEsdeveniments extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonModificacioActionPerformed
 
     private void buttonBaixaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonBaixaActionPerformed
-        // TODO add your handling code here:
+        // Mirem si tenim seleccionat fila del llistat 
+        int filaSeleccionada = jTablePunts.getSelectedRow();
+        if(filaSeleccionada != -1){
+            // Afafem el id seleccionat
+            int idEsdeveniment = Integer.parseInt(jTablePunts.getModel().getValueAt(filaSeleccionada, 0).toString());
+            PantallaBaixaEsdeveniment pantallaBaixaEsdeveniment = new PantallaBaixaEsdeveniment(usuari,idEsdeveniment);
+            pantallaBaixaEsdeveniment.setVisible(true);
+            this.dispose();
+        }else{
+            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(Utils.error(19));
+            pantallaAdvertencia.setVisible(true);
+        }
     }//GEN-LAST:event_buttonBaixaActionPerformed
+    
+    /**
+     * Mètode quan es canvia la selecció del combobox poblacions
+     * @param evt (Action event) canviar la selecció.
+     */
+    private void comboBoxPoblacionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboBoxPoblacionsActionPerformed
+        omplirFormulari(comboBoxValors.getSelectedItem().toString(),comboBoxPoblacions.getSelectedItem().toString(),comboBoxActiu.getSelectedItem().toString());
+    }//GEN-LAST:event_comboBoxPoblacionsActionPerformed
+
+    /**
+     * Mètode quan es canvia la selecció del combobox valors
+     * @param evt (Action event) canviar la selecció.
+     */
+    private void comboBoxValorsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboBoxValorsActionPerformed
+        omplirFormulari(comboBoxValors.getSelectedItem().toString(),comboBoxPoblacions.getSelectedItem().toString(),comboBoxActiu.getSelectedItem().toString());
+    }//GEN-LAST:event_comboBoxValorsActionPerformed
+
+    /**
+     * Mètode quan es canvia la selecció del combobox actiu
+     * @param evt (Action event) canviar la selecció.
+     */
+    private void comboBoxActiuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboBoxActiuActionPerformed
+        omplirFormulari(comboBoxValors.getSelectedItem().toString(),comboBoxPoblacions.getSelectedItem().toString(),comboBoxActiu.getSelectedItem().toString());
+    }//GEN-LAST:event_comboBoxActiuActionPerformed
 
     /**
      * Mètode principal de la classe.
@@ -661,30 +829,17 @@ public class PantallaLlistatEsdeveniments extends javax.swing.JFrame {
     */
     private javax.swing.JComboBox<String> comboBoxValors;
     /**
-    * DateChooser desde
+    * Separador
     */
-    private com.toedter.calendar.JDateChooser dateChooserDesde;
-    /**
-    * DateChooser fins
-    */
-    private com.toedter.calendar.JDateChooser dateChooserFins;
     private javax.swing.JSeparator jSeparator1;
     /**
     * Taula per contenir els esdeveniments
     */
     private javax.swing.JTable jTablePunts;
     /**
-    * Label titol desde
-    */
-    private javax.swing.JLabel labelDesde;
-    /**
     * Label titol filtres
     */
     private javax.swing.JLabel labelFiltres;
-    /**
-    * Label titol fins
-    */
-    private javax.swing.JLabel labelFins;
     /**
     * Label per contenir el logo de l'aplicació.
     */

@@ -21,7 +21,12 @@ public class Utils {
     * Constructor - Crea una nova instància de la classe Utils
     */
     public Utils(){}
-
+    
+    /**
+     * Mètode per obtenir la data d'una string des de mysql
+     * @param data (String) data
+     * @return null o array d'strings
+     */
     public static String[] obtenirData(String data){
         
         if(data != null){

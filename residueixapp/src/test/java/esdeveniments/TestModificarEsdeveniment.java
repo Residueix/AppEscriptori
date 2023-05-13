@@ -1,4 +1,4 @@
-package puntsrecollida;
+package esdeveniments;
 
 // Imports
 import java.awt.Graphics;
@@ -16,22 +16,22 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import residueix.residueixapp.esdeveniments.PantallaModificarEsdeveniment;
 import residueix.residueixapp.models.Usuari;
-import residueix.residueixapp.residus.PantallaModificarResidu;
 import residueix.residueixapp.utils.Api;
 import residueix.residueixapp.utils.xifratParaulaClau;
 
 /**
- * Classe TestModificarPuntRecollida per proves en la pantalla de modificació punt de recollida
+ * Classe TestModificarEsdeveniment per proves en la pantalla de modificacio esdeveniments
  * @author Daniel Garcia Ruiz
- * @version 19/04/2023
+ * @version 13/05/2023
  */
-public class TestModificarPuntRecollida {
+public class TestModificarEsdeveniment {
     
     /**
      * Instància de la classe PantallaPrincipal
      */
-    static PantallaModificarResidu pmr;
+    static PantallaModificarEsdeveniment pme;
     
     /**
      * Instància d'usuari
@@ -51,9 +51,9 @@ public class TestModificarPuntRecollida {
      * @throws java.lang.InterruptedException
      */
     @BeforeClass
-    public static void beforeClass() throws InterruptedException, IOException, Exception{
+    public static void beforeClass() throws InterruptedException, Exception{
         JSONObject jsonUser = Api.login("danisvh@gmail.com", xifratParaulaClau.encrypt("danisvh1"));
-        TestModificarPuntRecollida.usuari = new Usuari(jsonUser.getInt("id"),jsonUser.getInt("tipus"),jsonUser.getString("tipus_nom"),jsonUser.getString("email"),jsonUser.getString("password"),jsonUser.getString("nom"),jsonUser.getString("cognom1"),jsonUser.getString("cognom2"),jsonUser.getString("telefon"),jsonUser.getString("token")); 
+        TestModificarEsdeveniment.usuari = new Usuari(jsonUser.getInt("id"),jsonUser.getInt("tipus"),jsonUser.getString("tipus_nom"),jsonUser.getString("email"),jsonUser.getString("password"),jsonUser.getString("nom"),jsonUser.getString("cognom1"),jsonUser.getString("cognom2"),jsonUser.getString("telefon"),jsonUser.getString("token")); 
         Thread.sleep(1000);
     }
     
@@ -63,18 +63,18 @@ public class TestModificarPuntRecollida {
      */
     @Before
     public void before() throws IOException{
-       JSONObject jsonObject = Api.altaPunt(usuari, "jUnit prova", "jUnit prova", "42.0001", "2.891", "jUnit prova", "08080", "18", "jUnit prova",carregarImatge(), "1");
-        id = jsonObject.getString("id");
+       JSONObject jsonObject = Api.altaEsdeveniment(usuari,"Nom prova esdeveniment","Descripció prova esdeveniment","2023-12-01","10:02", "105", "0.5000", "100",carregarImatge(),"1");
+       id = jsonObject.getString("id");
     }
     
     /**
-     * Mètode before per executar desrpés de cada test
+     * Mètode after per executar desrpés de cada test
      * @throws IOException 
      */
     @After
     public void after() throws IOException{
         if(id!=null){
-            JSONObject jsonObject = (JSONObject) Api.eliminarRegistre("punt",id);
+            JSONObject jsonObject = (JSONObject) Api.eliminarRegistre("esdeveniment",id);
             id = null;
         }
     }
@@ -99,9 +99,10 @@ public class TestModificarPuntRecollida {
             return null;
         }
     }
-
+    
     /**
      * Mètode llistatPoblacions per carregar les poblacions al combobox
+     * @throws IOException
      */
     @Test
     public void llistatPoblacions() throws IOException{
@@ -112,50 +113,64 @@ public class TestModificarPuntRecollida {
     }
     
     /**
-     * Mètode consultaPuntRecollida quan consultem les dades d'un punt de recollida específic
+     * Mètode per consultar un esdevenimentcorrecte.
+     * @throws IOException 
      */
     @Test
-    public void consultaPuntRecollida() throws IOException{
-        JSONObject jsonObject = Api.consultaPunt(Integer.parseInt(id));
+    public void consultaEsdevenimentCorrecte() throws IOException{
+        JSONObject jsonObject = Api.consultaEsdeveniment(Integer.parseInt(id));
         String esp = "0";
         String res = jsonObject.getString("codi_error");
         assertEquals(esp,res);
     }
     
     /**
-     * Mètode modificarPuntCorrecte quan modifiquem un punt de recollida correcte
+     * Mètode per consultar un esdeveniment però incorrecte.
+     * @throws IOException 
      */
     @Test
-    public void modificarPuntCorrecte() throws IOException{
-        JSONObject jsonObject = Api.modificacioPunt(usuari, Integer.parseInt(id), "jUnit prova", "jUnit prova", "42.0001", "2.891", "jUnit prova", "08080", "18", "jUnit prova",carregarImatge(), "1");
+    public void consultaEsdevenimentIncorrecte() throws IOException{
+        JSONObject jsonObject = Api.consultaEsdeveniment(2000);
+        String esp = "esdeveniments_6";
+        String res = jsonObject.getString("codi_error");
+        assertEquals(esp,res);
+    }
+    
+    
+    /**
+     * Mètode modificarEsdevenimentCorrecte quan modifiquem un esdeveniment correcte
+     * @throws IOException
+     */
+    @Test
+    public void modificarEsdevenimentCorrecte() throws IOException{
+        JSONObject jsonObject = Api.modificarEsdeveniment(usuari, Integer.parseInt(id), "Nom prova jUnit", "Descripció prova jUnit", "2023-10-20", "10:00", "200", "0.5000", "100",imatge, "1");
         String esp = "0";
         String res = jsonObject.getString("codi_error");
         assertEquals(esp,res);
     }
     
     /**
-     * Mètode modificarPuntCorrecteSenseImatge quan modifiquem un punt de recollida correcte sense Imatge
+     * Mètode modificarEsdevenimentCorrecteSenseImatge quan modifiquem un esdeveniment correcte sense imatge
+     * @throws IOException
      */
     @Test
-    public void modificarPuntCorrecteSenseImatge() throws IOException{
-        pmr = new PantallaModificarResidu(usuari,Integer.parseInt(id));
-        JSONObject jsonObject = Api.modificacioPunt(usuari, Integer.parseInt(id), "jUnit prova", "jUnit prova", "42.0001", "2.891", "jUnit prova", "08080", "18", "jUnit prova",null, "1");
+    public void modificarEsdevenimentCorrecteSenseImatge() throws IOException{
+        JSONObject jsonObject = Api.modificarEsdeveniment(usuari, Integer.parseInt(id), "Nom prova jUnit", "Descripció prova jUnit", "2023-10-20", "10:00", "200", "0.5000", "100",null, "1");
         String esp = "0";
         String res = jsonObject.getString("codi_error");
         assertEquals(esp,res);
     }
     
-    /**
-     * Mètode modificaPuntIncorrecteSenseParametres quan modifiquem un punt de recollida incorrecte sense algun paràmetre
+     /**
+     * Mètode modificarEsdevenimentIncorrecteSenseParametres quan modifiquem un esdeveniment sense parametres
+     * @throws IOException
      */
     @Test
-    public void modificaPuntIncorrecteSenseParametres() throws IOException{
-        pmr = new PantallaModificarResidu(usuari,Integer.parseInt(id));
-        JSONObject jsonObject = Api.modificacioPunt(usuari, Integer.parseInt(id), "", "jUnit prova", "42.0001", "2.891", "jUnit prova", "08080", "18", "jUnit prova",carregarImatge(), "1");
-        String esp = "0"; // perquè si no es passa algun paràmetre obligatori, es queda com està.
+    public void modificarEsdevenimentIncorrecteSenseParametres() throws IOException{
+        JSONObject jsonObject = Api.modificarEsdeveniment(usuari, Integer.parseInt(id), "", "Descripció prova jUnit", "2023-10-20", "10:00", "200", "0.5000", "100",null, "1");
+        String esp = "esdeveniments_15";
         String res = jsonObject.getString("codi_error");
         assertEquals(esp,res);
-    }
+    }  
     
-  
 }

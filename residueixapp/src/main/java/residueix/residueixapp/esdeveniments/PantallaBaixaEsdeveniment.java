@@ -26,7 +26,7 @@ import residueix.residueixapp.utils.SelectorImatge;
  * @author Daniel Garcia Ruiz
  * @version 07/05/2023
  */
-public class PantallaModificarEsdeveniment extends javax.swing.JFrame {
+public class PantallaBaixaEsdeveniment extends javax.swing.JFrame {
     
     
     // Atributs
@@ -60,7 +60,7 @@ public class PantallaModificarEsdeveniment extends javax.swing.JFrame {
      * @param usuari: Usuari loginat a l'aplicació.
      * @param idEsd: Int amb el id de l'esdeveniment
      */
-    public PantallaModificarEsdeveniment(Usuari usuari, int idEsd) {
+    public PantallaBaixaEsdeveniment(Usuari usuari, int idEsd) {
         // Assignació de l'usuari
         this.usuari = usuari;
         // Assignem l'id esdeveniment
@@ -73,6 +73,8 @@ public class PantallaModificarEsdeveniment extends javax.swing.JFrame {
         gestioUsuari();
         // Càrrega inicial del formulari.
         carregaFormulari();
+        // Deixar els formulari en només lectura
+        formulariDeLectura();
     }
 
      /**
@@ -88,6 +90,7 @@ public class PantallaModificarEsdeveniment extends javax.swing.JFrame {
         labelUsuari = new javax.swing.JLabel();
         panelTitol = new javax.swing.JPanel();
         labelTitol = new javax.swing.JLabel();
+        textFieldPoblacio = new javax.swing.JTextField();
         labelPathImatge = new javax.swing.JLabel();
         labelHoraFormat = new javax.swing.JLabel();
         labelHora = new javax.swing.JLabel();
@@ -95,7 +98,6 @@ public class PantallaModificarEsdeveniment extends javax.swing.JFrame {
         labelActiu = new javax.swing.JLabel();
         checkBoxActiu = new javax.swing.JCheckBox();
         labelDescripcio = new javax.swing.JLabel();
-        buttonSeleccionarImatge = new javax.swing.JButton();
         buttonAlta = new javax.swing.JButton();
         labelImatge = new javax.swing.JLabel();
         scrollPaneDescripcio = new javax.swing.JScrollPane();
@@ -106,7 +108,6 @@ public class PantallaModificarEsdeveniment extends javax.swing.JFrame {
         labelValor = new javax.swing.JLabel();
         textFieldHora = new javax.swing.JTextField();
         textFieldValor = new javax.swing.JTextField();
-        comboBoxPoblacions = new javax.swing.JComboBox<>();
         labelAforament = new javax.swing.JLabel();
         textFieldAforament = new javax.swing.JTextField();
         dateChooserData = new com.toedter.calendar.JDateChooser();
@@ -156,15 +157,26 @@ public class PantallaModificarEsdeveniment extends javax.swing.JFrame {
         panelTitol.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         labelTitol.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
-        labelTitol.setText("Modificar Esdeveniment");
+        labelTitol.setText("Baixa Esdeveniment");
         labelTitol.setToolTipText("");
         panelTitol.add(labelTitol, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 600, 30));
 
         panelContingut.add(panelTitol, new org.netbeans.lib.awtextra.AbsoluteConstraints(2, 51, 800, 50));
 
+        textFieldPoblacio.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
+        textFieldPoblacio.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        textFieldPoblacio.setToolTipText("Email");
+        textFieldPoblacio.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        textFieldPoblacio.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                textFieldPoblacioKeyTyped(evt);
+            }
+        });
+        panelContingut.add(textFieldPoblacio, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 380, 320, 30));
+
         labelPathImatge.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
         labelPathImatge.setToolTipText("Imatge del residu");
-        panelContingut.add(labelPathImatge, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 480, 470, 30));
+        panelContingut.add(labelPathImatge, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 480, 640, 30));
 
         labelHoraFormat.setFont(new java.awt.Font("Sansation", 0, 12)); // NOI18N
         labelHoraFormat.setText("Format: hh:mm");
@@ -197,25 +209,11 @@ public class PantallaModificarEsdeveniment extends javax.swing.JFrame {
         labelDescripcio.setToolTipText("Descripció del residu");
         panelContingut.add(labelDescripcio, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 210, 100, 30));
 
-        buttonSeleccionarImatge.setBackground(new java.awt.Color(51, 102, 255));
-        buttonSeleccionarImatge.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
-        buttonSeleccionarImatge.setForeground(new java.awt.Color(255, 255, 255));
-        buttonSeleccionarImatge.setText("Seleccionar...");
-        buttonSeleccionarImatge.setToolTipText("Seleccionar imatge");
-        buttonSeleccionarImatge.setBorderPainted(false);
-        buttonSeleccionarImatge.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        buttonSeleccionarImatge.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonSeleccionarImatgeActionPerformed(evt);
-            }
-        });
-        panelContingut.add(buttonSeleccionarImatge, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 480, 150, 30));
-
         buttonAlta.setBackground(new java.awt.Color(51, 204, 0));
         buttonAlta.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
         buttonAlta.setForeground(new java.awt.Color(255, 255, 255));
-        buttonAlta.setText("Modificar");
-        buttonAlta.setToolTipText("Modificar Esdeveniment");
+        buttonAlta.setText("Baixa");
+        buttonAlta.setToolTipText("Baixa Esdeveniment");
         buttonAlta.setBorderPainted(false);
         buttonAlta.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         buttonAlta.addActionListener(new java.awt.event.ActionListener() {
@@ -280,13 +278,6 @@ public class PantallaModificarEsdeveniment extends javax.swing.JFrame {
             }
         });
         panelContingut.add(textFieldValor, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 380, 190, 30));
-
-        comboBoxPoblacions.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
-        comboBoxPoblacions.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tria població" }));
-        comboBoxPoblacions.setToolTipText("Filtrar per tipus d'usuari");
-        comboBoxPoblacions.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        comboBoxPoblacions.setPreferredSize(new java.awt.Dimension(200, 30));
-        panelContingut.add(comboBoxPoblacions, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 380, 320, -1));
 
         labelAforament.setFont(new java.awt.Font("Sansation", 0, 14)); // NOI18N
         labelAforament.setText("Aforament");
@@ -353,33 +344,29 @@ public class PantallaModificarEsdeveniment extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     
+    
+    /**
+     * Mètode per deixar els elements del formulari com a solament lectura.
+     */
+    private void formulariDeLectura(){
+        textFieldNom.setEditable(false);
+        checkBoxActiu.setEnabled(false);
+        textAreaDescripcio.setEditable(false);
+        textAreaDescripcio.setBackground(new Color(238,238,238,255));
+        textFieldValor.setEditable(false);
+        textFieldValor.setEditable(false);
+        textFieldPoblacio.setEditable(false);
+        textFieldHora.setEditable(false);
+        dateChooserData.setSelectableDateRange(new Date(), new Date());
+    }
+    
     /**
      * Mètode per carregar dades necesàries del formulari
      */
     private void carregaFormulari(){
        
         String problemes = "";
-        
-        // Json array amb les poblacions per al combobox
-        JSONObject jsonPoblacions = Api.llistatPoblacions();
-        
-        // Control del jsonPoblacions
-        if(jsonPoblacions.getString("codi_error").equals("0")){
-            JSONArray arrayLlistatPoblacions = jsonPoblacions.getJSONArray("llistat");
-            if(!arrayLlistatPoblacions.isEmpty()){
-                for(int i = 0; i < arrayLlistatPoblacions.length(); i++){
-                    JSONObject jsonTipus = arrayLlistatPoblacions.getJSONObject(i);
-                    comboBoxPoblacions.addItem(jsonTipus.get("nom").toString());
-                    llistatPoblacions.add(new String[]{jsonTipus.get("id").toString(),jsonTipus.get("nom").toString()});
-                }
-            }else{
-                problemes += "Llistat de poblacions buit. ";
-            }
-        }else{
-            problemes += "Hi ha problemes amb el llistat de poblacions:  " + jsonPoblacions.get("codi_error").toString() + " - " + jsonPoblacions.get("error").toString() ;    
-        }
-        comboBoxPoblacions.setBackground(new Color(255,255,255,255));
-        
+       
         // Seleccionem les dades de l'esdeveniment 
         // Seleccionem les dades del punt de recolida.
         JSONObject jsonEsdeveniment = Api.consultaEsdeveniment(idEsdeveniment);
@@ -406,7 +393,7 @@ public class PantallaModificarEsdeveniment extends javax.swing.JFrame {
                 dateChooserData.setDate(dat);
             }
             // Combo població
-            comboBoxPoblacions.setSelectedItem(jsonEsdeveniment.getString("nomPoblacio"));
+            textFieldPoblacio.setText(jsonEsdeveniment.getString("nomPoblacio"));
             
             // Imatge
             labelPathImatge.setText(jsonEsdeveniment.getString("imatge"));
@@ -445,7 +432,7 @@ public class PantallaModificarEsdeveniment extends javax.swing.JFrame {
      * Mètode per resetejar el formulari
      */
     private void resetFormulari(){
-        comboBoxPoblacions.setSelectedIndex(0);
+        textFieldPoblacio.setText("");
         checkBoxActiu.setSelected(false);
         textFieldNom.setText("");
         textAreaDescripcio.setText("");
@@ -483,96 +470,17 @@ public class PantallaModificarEsdeveniment extends javax.swing.JFrame {
      */
     private void buttonAltaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAltaActionPerformed
          
-        // Variables de control
-        boolean enviament = true;
-        String missatge = "Error: - ";
-        String id_poblacio = "0";
-        
-        // Comprovem les dades del nom
-        if(!Utils.validarText(textFieldNom.getText(),3,255)){
-            enviament = false;
-            missatge += "El nom ha de tenir com a mínim 3 i com a màxim 255 caràcters.";
-        }
-        
-        // Comprovem les dades de la descripció
-        if(!Utils.validarText(textAreaDescripcio.getText(),10,1024)){
-            enviament = false;
-            missatge += "La descripció ha de contemir com a mínim  10 i com a màxim 1024 caràcters.";
-        }
-        
-        // Comprovem el selector de poblacio
-        if(Utils.validarSelector(comboBoxPoblacions.getSelectedIndex())){
-            String poblacio = comboBoxPoblacions.getSelectedItem().toString();
-            for (String[] e : llistatPoblacions) {
-                if (e[1].equals(poblacio)) {
-                    id_poblacio = e[0];
-                    break;
-                }
-            }
+        JSONObject jsonRetorn = Api.baixaEsdeveniment(usuari, idEsdeveniment);
+            
+        if(jsonRetorn.getString("codi_error").equals("0")){
+            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(jsonRetorn.get("descripcio").toString());
+            pantallaAdvertencia.setVisible(true);
+            resetFormulari();
         }else{
-            missatge += "No hi ha una població vàlida.";   
+            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(jsonRetorn.get("codi_error").toString() + " - " +jsonRetorn.get("error").toString());
+            pantallaAdvertencia.setVisible(true);
         }
         
-        // Comprovem la data
-        if(dateChooserData.getDate() == null){
-            enviament = false;
-            missatge += "No hi ha una data vàlida.";   
-        }
-        
-        // Comrpovem la hora
-        if(!Utils.validarHora(textFieldHora.getText())){
-            enviament = false;
-            missatge += "No hi ha una hora vàlida.";
-        }
-        
-        // Comprovem el valor
-        if(!Utils.validarDecimal(textFieldValor.getText())){
-            enviament = false;
-            missatge += "No hi ha un valor vàlid.";
-        }
-        
-        // Comprovem el aforament
-        if(!Utils.validarInteger(textFieldAforament.getText())){
-            enviament = false;
-            missatge += "No hi ha un aforament vàlid.";
-        }
-        
-        // Comprovem la imatge
-        if(!Utils.validarText(labelPathImatge.getText(),8,255)){
-            if(imatge == null){
-                enviament = false;
-                missatge += "No hi ha una imatge vàlida seleccionada.";
-            }else{
-                if(!imatge.isFile()){
-                    enviament = false;
-                    missatge += "No hi ha una imatge vàlida seleccionada.";
-                }
-            }
-        }
-        
-        // Si no hi ha problemes enviem, si no mostrem errors
-        if(enviament){
-            
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(dateChooserData.getDate());
-            String data = String.valueOf(cal.get(Calendar.YEAR)) + '-' + String.valueOf(cal.get(Calendar.MONTH)) + '-' + String.valueOf(cal.get(Calendar.DAY_OF_MONTH));
-            
-            JSONObject jsonRetorn = Api.modificarEsdeveniment(usuari, idEsdeveniment, textFieldNom.getText(), textAreaDescripcio.getText(), data, textFieldHora.getText(), id_poblacio, textFieldValor.getText(), textFieldAforament.getText(),imatge, Utils.validarCheckbox(checkBoxActiu.isSelected()));
-            
-            if(jsonRetorn.getString("codi_error").equals("0")){
-                PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(jsonRetorn.get("descripcio").toString());
-                pantallaAdvertencia.setVisible(true);
-                resetFormulari();
-            }else{
-                PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(jsonRetorn.get("codi_error").toString() + " - " +jsonRetorn.get("error").toString());
-                pantallaAdvertencia.setVisible(true);
-            }
-            
-        }else{
-             PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(missatge);
-             pantallaAdvertencia.setVisible(true);
-         }
-         
     }//GEN-LAST:event_buttonAltaActionPerformed
     
     /**
@@ -595,50 +503,7 @@ public class PantallaModificarEsdeveniment extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_buttonEsdevenimentsActionPerformed
    
-    /** 
-     * Mètode utilitzar quan es vol seleccionar una imatge
-     * @param evt (ActionEvent) Pulsar botó.
-     */
-    private void buttonSeleccionarImatgeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSeleccionarImatgeActionPerformed
-        
-        // Per controlar el resultat
-        int resultat;
-        
-        // Determinem les extensions permitides
-        FileNameExtensionFilter format = new FileNameExtensionFilter("JPG,PNG y GIF", "jpg","png","gif");
-        
-        // Instanciem el selector
-        SelectorImatge selector = new SelectorImatge();
-        
-        // Asignem el format al selector
-        selector.selectorImatge.setFileFilter(format);
-        
-        // Obrim el selector i recuperem el resultat
-        resultat = selector.selectorImatge.showOpenDialog(null);
-        
-        // Comprovem el resultat
-        if(JFileChooser.APPROVE_OPTION == resultat){
-            
-            // Triem la imatge que s'ha seleccionat i la guardem en l'atribut imatge.
-            imatge = SelectorImatge.selectorImatge.getSelectedFile();
-            
-            // Posem la ruta en el label.
-            labelPathImatge.setText(imatge.getAbsolutePath());
-            
-            // Posem la imatge en el label
-            try{
-                ImageIcon imatgeSeleccionada = new ImageIcon(imatge.toString());
-                Icon icona = new ImageIcon(imatgeSeleccionada.getImage().getScaledInstance(200, 120, Image.SCALE_DEFAULT));
-                labelImatgeSeleccionada.setIcon(icona);
-            } catch (Exception ex){
-                PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia("Error: " + ex.getMessage());
-                pantallaAdvertencia.setVisible(true);
-            }
-           
-        }
-        
-    }//GEN-LAST:event_buttonSeleccionarImatgeActionPerformed
-    
+   
     /**
      * Mètode per validar el que es posa al textfield de valor
      * @param evt (KeyEvent) pulsar el teclat.
@@ -681,6 +546,10 @@ public class PantallaModificarEsdeveniment extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_textFieldHoraKeyTyped
 
+    private void textFieldPoblacioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textFieldPoblacioKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_textFieldPoblacioKeyTyped
+
    
     /**
      * Mètode principal de la classe.
@@ -700,14 +569,142 @@ public class PantallaModificarEsdeveniment extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(PantallaModificarEsdeveniment.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PantallaBaixaEsdeveniment.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(PantallaModificarEsdeveniment.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PantallaBaixaEsdeveniment.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(PantallaModificarEsdeveniment.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PantallaBaixaEsdeveniment.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(PantallaModificarEsdeveniment.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PantallaBaixaEsdeveniment.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -840,7 +837,7 @@ public class PantallaModificarEsdeveniment extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new PantallaModificarEsdeveniment(usuari,idEsdeveniment).setVisible(true);
+                new PantallaBaixaEsdeveniment(usuari,idEsdeveniment).setVisible(true);
             }
         });
         
@@ -862,17 +859,9 @@ public class PantallaModificarEsdeveniment extends javax.swing.JFrame {
     */
     private javax.swing.JButton buttonLogOut;
     /**
-    * Botó per seleccionar imatge
-    */
-    private javax.swing.JButton buttonSeleccionarImatge;
-    /**
     * Checkbox actiu
     */
     private javax.swing.JCheckBox checkBoxActiu;
-    /**
-    * Combo box poblacions
-    */
-    private javax.swing.JComboBox<String> comboBoxPoblacions;
     /**
     * DateChooser data
     */
@@ -977,6 +966,8 @@ public class PantallaModificarEsdeveniment extends javax.swing.JFrame {
     * Text Field nom punt de recollida
     */
     private javax.swing.JTextField textFieldNom;
+    /**  * Text Field poblacio  */
+    private javax.swing.JTextField textFieldPoblacio;
     /**
     * Text Field carrer
     */
