@@ -91,6 +91,7 @@ public class PantallaLlistatEsdeveniments extends javax.swing.JFrame {
         panelOpcions = new javax.swing.JPanel();
         buttonTornarPrincipal = new javax.swing.JButton();
         buttonAlta = new javax.swing.JButton();
+        buttonEstadistiques = new javax.swing.JButton();
         buttonLogOut = new javax.swing.JButton();
         buttonModificacio = new javax.swing.JButton();
         buttonAssistents = new javax.swing.JButton();
@@ -244,6 +245,20 @@ public class PantallaLlistatEsdeveniments extends javax.swing.JFrame {
             }
         });
         panelOpcions.add(buttonAlta, new org.netbeans.lib.awtextra.AbsoluteConstraints(25, 30, 150, 30));
+
+        buttonEstadistiques.setBackground(new java.awt.Color(51, 102, 255));
+        buttonEstadistiques.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
+        buttonEstadistiques.setForeground(new java.awt.Color(255, 255, 255));
+        buttonEstadistiques.setText("Estadístiques");
+        buttonEstadistiques.setToolTipText("Estadístiques");
+        buttonEstadistiques.setBorderPainted(false);
+        buttonEstadistiques.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        buttonEstadistiques.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonEstadistiquesActionPerformed(evt);
+            }
+        });
+        panelOpcions.add(buttonEstadistiques, new org.netbeans.lib.awtextra.AbsoluteConstraints(25, 190, 150, 30));
 
         buttonLogOut.setBackground(new java.awt.Color(153, 0, 0));
         buttonLogOut.setFont(new java.awt.Font("Sansation", 1, 14)); // NOI18N
@@ -689,6 +704,21 @@ public class PantallaLlistatEsdeveniments extends javax.swing.JFrame {
         omplirFormulari(comboBoxValors.getSelectedItem().toString(),comboBoxPoblacions.getSelectedItem().toString(),comboBoxActiu.getSelectedItem().toString());
     }//GEN-LAST:event_comboBoxActiuActionPerformed
 
+    private void buttonEstadistiquesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonEstadistiquesActionPerformed
+        // Mirem si tenim seleccionat fila del llistat 
+        int filaSeleccionada = jTablePunts.getSelectedRow();
+        if(filaSeleccionada != -1){
+            // Afafem el id seleccionat
+            int idEsdeveniment = Integer.parseInt(jTablePunts.getModel().getValueAt(filaSeleccionada, 0).toString());
+            PantallaEstadisticaEsdeveniment pantallaEstadisticaEsdeveniment = new PantallaEstadisticaEsdeveniment(usuari,idEsdeveniment);
+            pantallaEstadisticaEsdeveniment.setVisible(true);
+            this.dispose();
+        }else{
+            PantallaAdvertencia pantallaAdvertencia = new PantallaAdvertencia(Utils.error(19));
+            pantallaAdvertencia.setVisible(true);
+        }
+    }//GEN-LAST:event_buttonEstadistiquesActionPerformed
+
     /**
      * Mètode principal de la classe.
      * @param args arguments de la linia de comandament
@@ -804,6 +834,10 @@ public class PantallaLlistatEsdeveniments extends javax.swing.JFrame {
     * Botó per donar de baixa un esdeveniment
     */
     private javax.swing.JButton buttonBaixa;
+    /**
+    * Botó per veure estadistiques
+    */
+    private javax.swing.JButton buttonEstadistiques;
     /**
     * Botó per desloginar-se i sortir de l'aplicació.
     */
