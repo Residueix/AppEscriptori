@@ -5,21 +5,16 @@ import org.json.JSONObject;
 import static org.junit.Assert.assertEquals;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import residueix.residueixapp.usuaris.PantallaModificarUsuari;
 import residueix.residueixapp.models.Usuari;
 import residueix.residueixapp.utils.Api;
+import residueix.residueixapp.utils.xifratParaulaClau;
 
 /**
  * Classe TestModificarUsuari per proves en la pantalla Modificar usuari.
  * @author Daniel Garcia Ruiz
- * @version 19/04/2023
+ * @version 16/05/2023
  */
 public class TestModificarUsuari {
-    
-    /**
-     * Instància de la classe PantallaPrincipal
-     */
-    static PantallaModificarUsuari pmu;
     
     /**
      * Instància d'usuari
@@ -30,13 +25,13 @@ public class TestModificarUsuari {
     /**
      * Métode Beforeclass per inicialitzar les classes necessàries per les proves
      * @throws java.lang.InterruptedException
+     * @throws Exception
      */
     @BeforeClass
-    public static void beforeClass() throws InterruptedException{
-        JSONObject jsonUser = Api.login("danisvh@gmail.com", "danisvh1");
+    public static void beforeClass() throws InterruptedException, Exception{
+        JSONObject jsonUser = Api.login("danisvh@gmail.com", xifratParaulaClau.encrypt("danisvh1"));
         TestModificarUsuari.usuari = new Usuari(jsonUser.getInt("id"),jsonUser.getInt("tipus"),jsonUser.getString("tipus_nom"),jsonUser.getString("email"),jsonUser.getString("password"),jsonUser.getString("nom"),jsonUser.getString("cognom1"),jsonUser.getString("cognom2"),jsonUser.getString("telefon"),jsonUser.getString("token")); 
-        Thread.sleep(1000);
-        pmu = new PantallaModificarUsuari(usuari,usuari.getId());   
+        Thread.sleep(1000);   
     }
     
     

@@ -15,7 +15,6 @@ import org.junit.After;
 import static org.junit.Assert.assertEquals;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import residueix.residueixapp.esdeveniments.PantallaAltaEsdeveniment;
 import residueix.residueixapp.models.Usuari;
 import residueix.residueixapp.utils.Api;
 import residueix.residueixapp.utils.xifratParaulaClau;
@@ -23,23 +22,14 @@ import residueix.residueixapp.utils.xifratParaulaClau;
 /**
  * Classe TestAltaEsdeveniment per proves en la pantalla de alta esdeveniments
  * @author Daniel Garcia Ruiz
- * @version 09/05/2023
+ * @version 15/05/2023
  */
 public class TestAltaEsdeveniment {
-    
-    /**
-     * Instància de la classe PantallaPrincipal
-     */
-    static PantallaAltaEsdeveniment pae;
-    
+      
     /**
      * Instància d'usuari
      */
     static Usuari usuari;
-    /**
-     * File per les proves d'alta d'imatges
-     */
-    static File imatge;
     /**
      * Id del tipus creat.
      */
@@ -55,11 +45,10 @@ public class TestAltaEsdeveniment {
         System.out.println("JSON USER" + jsonUser.toString());
         TestAltaEsdeveniment.usuari = new Usuari(jsonUser.getInt("id"),jsonUser.getInt("tipus"),jsonUser.getString("tipus_nom"),jsonUser.getString("email"),jsonUser.getString("password"),jsonUser.getString("nom"),jsonUser.getString("cognom1"),jsonUser.getString("cognom2"),jsonUser.getString("telefon"),jsonUser.getString("token")); 
         Thread.sleep(1000);
-        pae = new PantallaAltaEsdeveniment(usuari);
     }
     
     /**
-     * Mètode before per executar desrpés de cada test
+     * Mètode after per executar desrpés de cada test
      * @throws IOException 
      */
     @After
@@ -93,6 +82,7 @@ public class TestAltaEsdeveniment {
     
     /**
      * Mètode llistatPoblacions per carregar les poblacions al combobox
+     * @throws IOException 
      */
     @Test
     public void llistatPoblacions() throws IOException{
@@ -105,6 +95,7 @@ public class TestAltaEsdeveniment {
     
     /**
      * Mètode altaEsdevenimentCorrecte quan donem d'alta un esdeveniment correcte
+     * @throws IOException 
      */
     @Test
     public void altaEsdevenimentCorrecte() throws IOException{
@@ -117,6 +108,7 @@ public class TestAltaEsdeveniment {
     
     /**
      * Mètode altaEsdevenimentIncorrecte quan donem d'alta un esdeveniment incorrecte
+     * @throws IOException 
      */
     @Test
     public void altaEsdevenimentIncorrecte() throws IOException{

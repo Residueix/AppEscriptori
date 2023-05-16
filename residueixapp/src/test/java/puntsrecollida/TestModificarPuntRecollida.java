@@ -17,30 +17,20 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import residueix.residueixapp.models.Usuari;
-import residueix.residueixapp.residus.PantallaModificarResidu;
 import residueix.residueixapp.utils.Api;
 import residueix.residueixapp.utils.xifratParaulaClau;
 
 /**
  * Classe TestModificarPuntRecollida per proves en la pantalla de modificació punt de recollida
  * @author Daniel Garcia Ruiz
- * @version 19/04/2023
+ * @version 16/05/2023
  */
 public class TestModificarPuntRecollida {
-    
-    /**
-     * Instància de la classe PantallaPrincipal
-     */
-    static PantallaModificarResidu pmr;
     
     /**
      * Instància d'usuari
      */
     static Usuari usuari;
-    /**
-     * File per les proves d'alta d'imatges
-     */
-    static File imatge;
     /**
      * Id del tipus creat.
      */
@@ -49,9 +39,10 @@ public class TestModificarPuntRecollida {
     /**
      * Métode Beforeclass per inicialitzar les classes necessàries per les proves
      * @throws java.lang.InterruptedException
+     * @throws Exception
      */
     @BeforeClass
-    public static void beforeClass() throws InterruptedException, IOException, Exception{
+    public static void beforeClass() throws InterruptedException, Exception{
         JSONObject jsonUser = Api.login("danisvh@gmail.com", xifratParaulaClau.encrypt("danisvh1"));
         TestModificarPuntRecollida.usuari = new Usuari(jsonUser.getInt("id"),jsonUser.getInt("tipus"),jsonUser.getString("tipus_nom"),jsonUser.getString("email"),jsonUser.getString("password"),jsonUser.getString("nom"),jsonUser.getString("cognom1"),jsonUser.getString("cognom2"),jsonUser.getString("telefon"),jsonUser.getString("token")); 
         Thread.sleep(1000);
@@ -68,7 +59,7 @@ public class TestModificarPuntRecollida {
     }
     
     /**
-     * Mètode before per executar desrpés de cada test
+     * Mètode before per executar després de cada test
      * @throws IOException 
      */
     @After
@@ -102,6 +93,7 @@ public class TestModificarPuntRecollida {
 
     /**
      * Mètode llistatPoblacions per carregar les poblacions al combobox
+     * @throws IOException
      */
     @Test
     public void llistatPoblacions() throws IOException{
@@ -113,6 +105,7 @@ public class TestModificarPuntRecollida {
     
     /**
      * Mètode consultaPuntRecollida quan consultem les dades d'un punt de recollida específic
+     * @throws IOException
      */
     @Test
     public void consultaPuntRecollida() throws IOException{
@@ -124,6 +117,7 @@ public class TestModificarPuntRecollida {
     
     /**
      * Mètode modificarPuntCorrecte quan modifiquem un punt de recollida correcte
+     * @throws IOException
      */
     @Test
     public void modificarPuntCorrecte() throws IOException{
@@ -135,10 +129,10 @@ public class TestModificarPuntRecollida {
     
     /**
      * Mètode modificarPuntCorrecteSenseImatge quan modifiquem un punt de recollida correcte sense Imatge
+     * @throws IOException
      */
     @Test
     public void modificarPuntCorrecteSenseImatge() throws IOException{
-        pmr = new PantallaModificarResidu(usuari,Integer.parseInt(id));
         JSONObject jsonObject = Api.modificacioPunt(usuari, Integer.parseInt(id), "jUnit prova", "jUnit prova", "42.0001", "2.891", "jUnit prova", "08080", "18", "jUnit prova",null, "1");
         String esp = "0";
         String res = jsonObject.getString("codi_error");
@@ -147,10 +141,10 @@ public class TestModificarPuntRecollida {
     
     /**
      * Mètode modificaPuntIncorrecteSenseParametres quan modifiquem un punt de recollida incorrecte sense algun paràmetre
+     * @throws IOException
      */
     @Test
     public void modificaPuntIncorrecteSenseParametres() throws IOException{
-        pmr = new PantallaModificarResidu(usuari,Integer.parseInt(id));
         JSONObject jsonObject = Api.modificacioPunt(usuari, Integer.parseInt(id), "", "jUnit prova", "42.0001", "2.891", "jUnit prova", "08080", "18", "jUnit prova",carregarImatge(), "1");
         String esp = "0"; // perquè si no es passa algun paràmetre obligatori, es queda com està.
         String res = jsonObject.getString("codi_error");

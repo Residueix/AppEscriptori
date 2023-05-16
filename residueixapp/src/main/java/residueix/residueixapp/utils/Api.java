@@ -318,7 +318,7 @@ public class Api {
     public static JSONObject crearUsuariAdherit(Usuari usuari, String email, String password, String tipus, String nom, String cognom1, String cognom2, String telefon, String actiu, String carrer, String cp, String poblacio, String nomAdherit, String horaris, String tipusAdherit){
         try{
            // Instanciem la classe per enviar formularis x-www-form-urlencoded i configurem els camps
-           EnviamentPostUrlEncoded urlencoded = new EnviamentPostUrlEncoded("http://169.254.142.250/residueix/api/usuaris/alta/residuent/index.php");
+           EnviamentPostUrlEncoded urlencoded = new EnviamentPostUrlEncoded("http://169.254.142.250/residueix/api/usuaris/alta/adherit/index.php");
            urlencoded.afegirCamp("id_usuari", String.valueOf(usuari.getId()));
            urlencoded.afegirCamp("token", usuari.getToken());
            urlencoded.afegirCamp("permis", String.valueOf(usuari.getTipus()));
@@ -978,6 +978,7 @@ public class Api {
            // Instanciem la classe per enviar formularis x-www-form-urlencoded i configurem els camps
            EnviamentPostUrlEncoded urlencoded = new EnviamentPostUrlEncoded("http://169.254.142.250/residueix/api/esdeveniments/llistat/index.php");
            urlencoded.afegirCamp("token", Api.token);
+           System.out.println("Resposta: " + urlencoded.resposta().toString());
            return urlencoded.resposta();
         } catch (IOException ex){
             return new JSONObject("{\"codi_error\":\"excepcio_api_llistatEsdeveniments\",\"error\":\"Error en execució al enviar la petició.\"}");    

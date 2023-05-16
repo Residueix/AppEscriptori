@@ -12,7 +12,7 @@ import puntsrecollida.TestRecollidaIdentifcacio;
 import puntsrecollida.TestRecollida;
 
 /**
- * Classe amb el suite de proves per la funcionalitat de residus
+ * Classe amb el suite de proves per la funcionalitat de punts de recollida
  * @author Daniel Garcia Ruiz
  * @version 21/04/2023
  */

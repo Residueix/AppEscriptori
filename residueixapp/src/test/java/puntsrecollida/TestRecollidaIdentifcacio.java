@@ -6,8 +6,8 @@ import static org.junit.Assert.assertEquals;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import residueix.residueixapp.models.Usuari;
-import residueix.residueixapp.puntsrecollida.PantallaLlistatPuntsRecollida;
 import residueix.residueixapp.utils.Api;
+import residueix.residueixapp.utils.xifratParaulaClau;
 
 /**
  * Classe TestLlistatPuntsRecollida per proves en la pantalla de llistat de punts de recollida
@@ -15,12 +15,7 @@ import residueix.residueixapp.utils.Api;
  * @version 19/04/2023
  */
 public class TestRecollidaIdentifcacio {
-    
-    /**
-     * Instància de la classe PantallaPrincipal
-     */
-    static PantallaLlistatPuntsRecollida plpr;
-    
+   
     /**
      * Instància d'usuari
      */
@@ -30,13 +25,13 @@ public class TestRecollidaIdentifcacio {
     /**
      * Métode Beforeclass per inicialitzar les classes necessàries per les proves
      * @throws java.lang.InterruptedException
+     * @throws Exception
      */
     @BeforeClass
-    public static void beforeClass() throws InterruptedException{
-        JSONObject jsonUser = Api.login("danisvh@gmail.com", "danisvh1");
+    public static void beforeClass() throws InterruptedException, Exception{
+        JSONObject jsonUser = Api.login("treballador@residueix.com", xifratParaulaClau.encrypt("treballador"));
         TestRecollidaIdentifcacio.usuari = new Usuari(jsonUser.getInt("id"),jsonUser.getInt("tipus"),jsonUser.getString("tipus_nom"),jsonUser.getString("email"),jsonUser.getString("password"),jsonUser.getString("nom"),jsonUser.getString("cognom1"),jsonUser.getString("cognom2"),jsonUser.getString("telefon"),jsonUser.getString("token")); 
         Thread.sleep(1000);
-        plpr = new PantallaLlistatPuntsRecollida(usuari);
     }
     
     

@@ -5,40 +5,37 @@ import org.json.JSONObject;
 import static org.junit.Assert.assertEquals;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import residueix.residueixapp.usuaris.PantallaBaixaUsuari;
 import residueix.residueixapp.models.Usuari;
 import residueix.residueixapp.utils.Api;
+import residueix.residueixapp.utils.xifratParaulaClau;
 
 /**
  * Classe TestBaixaUsuari per proves en la pantalla Baixa usuari.
  * @author Daniel Garcia Ruiz
- * @version 19/04/2023
+ * @version 16/05/2023
  */
 public class TestBaixaUsuari {
-    
-    /**
-     * Instància de la classe PantallaPrincipal
-     */
-    static PantallaBaixaUsuari pbu;
     
     /**
      * Instància d'usuari
      */
     static Usuari usuari;
-    
+    /**
+     * Id del tipus creat.
+     */
+    String id = null;
     
     /**
      * Métode Beforeclass per inicialitzar les classes necessàries per les proves
      * @throws java.lang.InterruptedException
+     * @throws Exception
      */
     @BeforeClass
-    public static void beforeClass() throws InterruptedException{
-        JSONObject jsonUser = Api.login("danisvh@gmail.com", "danisvh1");
+    public static void beforeClass() throws InterruptedException, Exception{
+        JSONObject jsonUser = Api.login("danisvh@gmail.com", xifratParaulaClau.encrypt("danisvh1"));
         TestBaixaUsuari.usuari = new Usuari(jsonUser.getInt("id"),jsonUser.getInt("tipus"),jsonUser.getString("tipus_nom"),jsonUser.getString("email"),jsonUser.getString("password"),jsonUser.getString("nom"),jsonUser.getString("cognom1"),jsonUser.getString("cognom2"),jsonUser.getString("telefon"),jsonUser.getString("token")); 
-        Thread.sleep(1000);
-        pbu = new PantallaBaixaUsuari(usuari,1);   
-    }
-    
+        Thread.sleep(1000); 
+    }    
     
     /**
      * Mètode consultaUsuari per demanar les daeds del usuari

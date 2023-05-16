@@ -4,6 +4,7 @@ package Suites;
 import esdeveniments.TestAltaEsdeveniment;
 import esdeveniments.TestAssistentsEsdeveniments;
 import esdeveniments.TestBaixaEsdeveniment;
+import esdeveniments.TestEstadistiguesEsdeveniments;
 import esdeveniments.TestLlistatEsdeveniments;
 import esdeveniments.TestModificarEsdeveniment;
 import org.junit.runner.RunWith;
@@ -13,7 +14,7 @@ import utils.TestUtils;
 /**
  * Classe amb el suite de proves per la funcionalitat d'esdeveniments
  * @author Daniel Garcia Ruiz
- * @version 13/05/2023
+ * @version 15/05/2023
  */
 @RunWith(value = Suite.class)
 @Suite.SuiteClasses({
@@ -23,6 +24,7 @@ import utils.TestUtils;
     TestModificarEsdeveniment.class,
     TestBaixaEsdeveniment.class,
     TestAssistentsEsdeveniments.class,
+    TestEstadistiguesEsdeveniments.class
 })
 
 public class Suite_Esdeveniments {}

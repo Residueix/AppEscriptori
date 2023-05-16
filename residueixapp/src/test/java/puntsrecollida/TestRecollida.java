@@ -8,21 +8,15 @@ import static org.junit.Assert.assertEquals;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import residueix.residueixapp.models.Usuari;
-import residueix.residueixapp.puntsrecollida.PantallaLlistatPuntsRecollida;
-import residueix.residueixapp.puntsrecollida.PantallaRecollida;
 import residueix.residueixapp.utils.Api;
+import residueix.residueixapp.utils.xifratParaulaClau;
 
 /**
  * Classe TestRecollida per proves en la pantalla on es genera el carretó de residuent per deixar residus
  * @author Daniel Garcia Ruiz
- * @version 19/04/2023
+ * @version 16/05/2023
  */
 public class TestRecollida {
-    
-    /**
-     * Instància de la classe PantallaPrincipal
-     */
-    static PantallaRecollida pr;
     
     /**
      * Instància d'usuari
@@ -37,13 +31,13 @@ public class TestRecollida {
     /**
      * Métode Beforeclass per inicialitzar les classes necessàries per les proves
      * @throws java.lang.InterruptedException
+     * @throws Exception
      */
     @BeforeClass
-    public static void beforeClass() throws InterruptedException{
-        JSONObject jsonUser = Api.login("treballador@residueix.com", "treballador");
+    public static void beforeClass() throws InterruptedException, Exception{
+        JSONObject jsonUser = Api.login("treballador@residueix.com", xifratParaulaClau.encrypt("treballador"));
         TestRecollida.usuari = new Usuari(jsonUser.getInt("id"),jsonUser.getInt("tipus"),jsonUser.getString("tipus_nom"),jsonUser.getString("email"),jsonUser.getString("password"),jsonUser.getString("nom"),jsonUser.getString("cognom1"),jsonUser.getString("cognom2"),jsonUser.getString("telefon"),jsonUser.getString("token")); 
         Thread.sleep(1000);
-        pr = new PantallaRecollida(usuari,"27","17");
     }
     
     /**

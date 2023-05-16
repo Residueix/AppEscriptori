@@ -195,7 +195,7 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonEsdevenimentsActionPerformed"/>
               </Events>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="if(usuari.getTipus() == 2){&#xa;    buttonPuntsRecollida.setVisible(false);&#xa;}"/>
+                <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="if(usuari.getTipus() == 2){&#xa;    buttonEsdeveniments.setVisible(false);&#xa;}"/>
                 <AuxValue name="JavaCodeGenerator_DeclarationPre" type="java.lang.String" value="/**&#xa; * Bot&#xf3; per accedir al llistat d&apos;esdeveniments&#xa; */"/>
               </AuxValues>
               <Constraints>

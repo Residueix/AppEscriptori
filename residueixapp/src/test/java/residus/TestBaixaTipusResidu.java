@@ -17,30 +17,20 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import residueix.residueixapp.models.Usuari;
-import residueix.residueixapp.residus.PantallaBaixaTipusResidu;
-import residueix.residueixapp.residus.PantallaModificarTipusResidu;
 import residueix.residueixapp.utils.Api;
+import residueix.residueixapp.utils.xifratParaulaClau;
 
 /**
  * Classe TestBaixaTipusResidu per proves en la pantalla de baixa tipus residu
  * @author Daniel Garcia Ruiz
- * @version 19/04/2023
+ * @version 16/05/2023
  */
 public class TestBaixaTipusResidu {
-    
-    /**
-     * Instància de la classe PantallaPrincipal
-     */
-    static PantallaBaixaTipusResidu pbtr;
-    
+
     /**
      * Instància d'usuari
      */
     static Usuari usuari;
-    /**
-     * File per les proves d'alta d'imatges
-     */
-    static File imatge;
     /**
      * Id del tipus creat.
      */
@@ -49,10 +39,11 @@ public class TestBaixaTipusResidu {
     /**
      * Métode Beforeclass per inicialitzar les classes necessàries per les proves
      * @throws java.lang.InterruptedException
+     * @throws Exception
      */
     @BeforeClass
-    public static void beforeClass() throws InterruptedException, IOException{
-        JSONObject jsonUser = Api.login("danisvh@gmail.com", "danisvh1");
+    public static void beforeClass() throws InterruptedException, Exception{
+        JSONObject jsonUser = Api.login("danisvh@gmail.com", xifratParaulaClau.encrypt("danisvh1"));
         TestBaixaTipusResidu.usuari = new Usuari(jsonUser.getInt("id"),jsonUser.getInt("tipus"),jsonUser.getString("tipus_nom"),jsonUser.getString("email"),jsonUser.getString("password"),jsonUser.getString("nom"),jsonUser.getString("cognom1"),jsonUser.getString("cognom2"),jsonUser.getString("telefon"),jsonUser.getString("token")); 
         Thread.sleep(1000);
     }
@@ -102,10 +93,10 @@ public class TestBaixaTipusResidu {
     
     /**
      * Mètode baixaTipusResiduCorrecte quan donem de baixa un tipus residu correcte
+     * @throws IOException
      */
     @Test
     public void baixaTipusResiduCorrecte() throws IOException{
-        pbtr = new PantallaBaixaTipusResidu(usuari,Integer.parseInt(idTipus));
         JSONObject jsonObject = (JSONObject) Api.baixaTipusResidu(usuari, Integer.parseInt(idTipus));
         String esp = "0";
         String res = jsonObject.getString("codi_error");
@@ -115,11 +106,11 @@ public class TestBaixaTipusResidu {
     
     /**
      * Mètode modificarTipusResiduIncorrecte quan donem de baixa un tipus residu incorrecte
+     * @throws IOException
      */
     @Test
     public void baixaTipusResiduIncorrecte() throws IOException{
-        pbtr = new PantallaBaixaTipusResidu(usuari,Integer.parseInt(idTipus));
-        JSONObject jsonObject = (JSONObject) Api.baixaTipusResidu(usuari, -1);
+         JSONObject jsonObject = (JSONObject) Api.baixaTipusResidu(usuari, -1);
         String esp = "tipus_residu_10";
         String res = jsonObject.getString("codi_error");
         System.out.println(jsonObject.getString("codi_error"));

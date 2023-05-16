@@ -10,7 +10,7 @@ import residueix.residueixapp.utils.Api;
 /**
  * Classe TestEstadistiguesEsdeveniments per proves en la pantalla de estadistiques de esdeveniments
  * @author Daniel Garcia Ruiz
- * @version 14/05/2023
+ * @version 15/05/2023
  */
 public class TestEstadistiguesEsdeveniments {
     

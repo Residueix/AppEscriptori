@@ -17,29 +17,20 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import residueix.residueixapp.models.Usuari;
-import residueix.residueixapp.residus.PantallaModificarTipusResidu;
 import residueix.residueixapp.utils.Api;
+import residueix.residueixapp.utils.xifratParaulaClau;
 
 /**
  * Classe TestModificarTipusResidu per proves en la pantalla de modificació tipus residu
  * @author Daniel Garcia Ruiz
- * @version 19/04/2023
+ * @version 16/05/2023
  */
 public class TestModificarTipusResidu {
-    
-    /**
-     * Instància de la classe PantallaPrincipal
-     */
-    static PantallaModificarTipusResidu pmtr;
     
     /**
      * Instància d'usuari
      */
     static Usuari usuari;
-    /**
-     * File per les proves d'alta d'imatges
-     */
-    static File imatge;
     /**
      * Id del tipus creat.
      */
@@ -48,10 +39,11 @@ public class TestModificarTipusResidu {
     /**
      * Métode Beforeclass per inicialitzar les classes necessàries per les proves
      * @throws java.lang.InterruptedException
+     * @throws Exception
      */
     @BeforeClass
-    public static void beforeClass() throws InterruptedException, IOException{
-        JSONObject jsonUser = Api.login("danisvh@gmail.com", "danisvh1");
+    public static void beforeClass() throws InterruptedException, Exception{
+        JSONObject jsonUser = Api.login("danisvh@gmail.com", xifratParaulaClau.encrypt("danisvh1"));
         TestModificarTipusResidu.usuari = new Usuari(jsonUser.getInt("id"),jsonUser.getInt("tipus"),jsonUser.getString("tipus_nom"),jsonUser.getString("email"),jsonUser.getString("password"),jsonUser.getString("nom"),jsonUser.getString("cognom1"),jsonUser.getString("cognom2"),jsonUser.getString("telefon"),jsonUser.getString("token")); 
         Thread.sleep(1000);
     }
@@ -72,7 +64,10 @@ public class TestModificarTipusResidu {
      */
     @After
     public void after() throws IOException{
-        JSONObject jsonObject = (JSONObject) Api.eliminarRegistre("tipusresidus",idTipus);
+        if(idTipus!=null){
+            JSONObject jsonObject = (JSONObject) Api.eliminarRegistre("tipusresidus",idTipus);
+            idTipus = null;
+        }
     }
     
     /**
@@ -98,10 +93,10 @@ public class TestModificarTipusResidu {
     
     /**
      * Mètode modificarTipusResiduCorrecte quan modifiquem un tipus residu correcte
+     * @throws IOException
      */
     @Test
     public void modificarTipusResiduCorrecte() throws IOException{
-        pmtr = new PantallaModificarTipusResidu(usuari,Integer.parseInt(idTipus));
         JSONObject jsonObject = (JSONObject) Api.modificacioTipuResidu(usuari, idTipus, "jUnit Prova", carregarImatge());
         String esp = "0";
         String res = jsonObject.getString("codi_error");
@@ -111,10 +106,10 @@ public class TestModificarTipusResidu {
     
     /**
      * Mètode modificarTipusResiduCorrecteSenseImatge quan modifiquem un tipus residu correcte sense Imatge
-     */
+      * @throws IOException
+      */
     @Test
     public void modificarTipusResiduCorrecteSenseImatge() throws IOException{
-        pmtr = new PantallaModificarTipusResidu(usuari,Integer.parseInt(idTipus));
         JSONObject jsonObject = (JSONObject) Api.modificacioTipuResidu(usuari, idTipus, "jUnit Prova", null);
         String esp = "0";
         String res = jsonObject.getString("codi_error");
@@ -124,10 +119,10 @@ public class TestModificarTipusResidu {
     
     /**
      * Mètode modificarTipusResiduIncorrecteSenseNom quan modifiquem un tipus residu correcte sense nom
-     */
+      * @throws IOException
+      */
     @Test
     public void modificarTipusResiduIncorrecteSenseNom() throws IOException{
-        pmtr = new PantallaModificarTipusResidu(usuari,Integer.parseInt(idTipus));
         JSONObject jsonObject = (JSONObject) Api.modificacioTipuResidu(usuari, idTipus, "", null);
         String esp = "tipus_residu_6";
         String res = jsonObject.getString("codi_error");

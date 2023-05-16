@@ -906,6 +906,9 @@ public class PantallaAssistentsEsdeveniment extends javax.swing.JFrame {
     * Botó per desloginar-se i sortir de l'aplicació.
     */
     private javax.swing.JButton buttonLogOut;
+    /**
+    * scrollpanel per el llistat d'assistents
+    */
     private javax.swing.JScrollPane jScrollPane1;
     /**
     * Separador

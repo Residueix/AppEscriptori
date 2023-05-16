@@ -4,30 +4,15 @@ package acces;
 import org.json.JSONObject;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.junit.BeforeClass;
-import residueix.residueixapp.acces.PantallaRestablirParaulaClau;
 import residueix.residueixapp.utils.Api;
 import residueix.residueixapp.utils.EnviamentCorreu;
 
 /**
  * Classe TestRestablirParaulaClau per proves en la pantalla de restablir paraula clau.
  * @author Daniel Garcia Ruiz
- * @version 19/04/2023
+ * @version 15/05/2023
  */
 public class TestRestablirParaulaClau {
-    
-    /**
-     * Instància de la classe PantallaLogin
-     */
-    static PantallaRestablirParaulaClau prpc;
-
-    /**
-     * Mètode before utilitzar per inicialitzar la PantallaLogin a cada prova.
-     */
-    @BeforeClass
-    public static void before() {
-        prpc = new PantallaRestablirParaulaClau();
-    }
     
     /**
      * Mètode apiValidarExisteixCorreu utilitzat per validar que el email existeix

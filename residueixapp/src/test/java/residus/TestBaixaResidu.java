@@ -17,29 +17,20 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import residueix.residueixapp.models.Usuari;
-import residueix.residueixapp.residus.PantallaBaixaResidu;
 import residueix.residueixapp.utils.Api;
+import residueix.residueixapp.utils.xifratParaulaClau;
 
 /**
  * Classe TestBaixaResidu per proves en la pantalla de baixa residu
  * @author Daniel Garcia Ruiz
- * @version 19/04/2023
+ * @version 16/05/2023
  */
 public class TestBaixaResidu {
-    
-    /**
-     * Instància de la classe PantallaPrincipal
-     */
-    static PantallaBaixaResidu pbr;
     
     /**
      * Instància d'usuari
      */
     static Usuari usuari;
-    /**
-     * File per les proves d'alta d'imatges
-     */
-    static File imatge;
     /**
      * Id del tipus creat.
      */
@@ -48,10 +39,11 @@ public class TestBaixaResidu {
     /**
      * Métode Beforeclass per inicialitzar les classes necessàries per les proves
      * @throws java.lang.InterruptedException
+     * @throws Exception
      */
     @BeforeClass
-    public static void beforeClass() throws InterruptedException, IOException{
-        JSONObject jsonUser = Api.login("danisvh@gmail.com", "danisvh1");
+    public static void beforeClass() throws InterruptedException, Exception{
+        JSONObject jsonUser = Api.login("danisvh@gmail.com", xifratParaulaClau.encrypt("danisvh1"));
         TestBaixaResidu.usuari = new Usuari(jsonUser.getInt("id"),jsonUser.getInt("tipus"),jsonUser.getString("tipus_nom"),jsonUser.getString("email"),jsonUser.getString("password"),jsonUser.getString("nom"),jsonUser.getString("cognom1"),jsonUser.getString("cognom2"),jsonUser.getString("telefon"),jsonUser.getString("token")); 
         Thread.sleep(1000);
     }
@@ -101,10 +93,10 @@ public class TestBaixaResidu {
     
     /**
      * Mètode baixaResiduCorrecte quan donem de baixa un residu correcte
+     * @throws IOException
      */
     @Test
     public void baixaResiduCorrecte() throws IOException{
-        pbr = new PantallaBaixaResidu(usuari,Integer.parseInt(id));
         JSONObject jsonObject = (JSONObject) Api.baixaResidu(usuari, Integer.parseInt(id));
         String esp = "0";
         String res = jsonObject.getString("codi_error");
@@ -114,10 +106,10 @@ public class TestBaixaResidu {
     
     /**
      * Mètode baixaResiduIncorrecte quan donem de baixa un residu incorrecte
+     * * @throws IOException
      */
     @Test
     public void baixaResiduIncorrecte() throws IOException{
-        pbr = new PantallaBaixaResidu(usuari,Integer.parseInt(id));
         JSONObject jsonObject = (JSONObject) Api.baixaResidu(usuari, -1);
         String esp = "0";
         String res = jsonObject.getString("codi_error");
@@ -127,10 +119,10 @@ public class TestBaixaResidu {
     
     /**
      * Mètode consultaResiduCorrecte quan demanem la info del residu per omplir el formulari
+     * * @throws IOException
      */
     @Test
     public void consultaResiduCorrecte() throws IOException{
-         pbr = new PantallaBaixaResidu(usuari,Integer.parseInt(id));
         JSONObject jsonObject = (JSONObject) Api.consultaResidu(usuari, Integer.parseInt(id));
         String esp = "0";
         String res = jsonObject.getString("codi_error");

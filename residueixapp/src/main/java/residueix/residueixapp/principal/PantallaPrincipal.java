@@ -154,7 +154,7 @@ public class PantallaPrincipal extends javax.swing.JFrame {
         });
         panelOpcions.add(buttonEsdeveniments, new org.netbeans.lib.awtextra.AbsoluteConstraints(25, 230, 150, 30));
         if(usuari.getTipus() == 2){
-            buttonPuntsRecollida.setVisible(false);
+            buttonEsdeveniments.setVisible(false);
         }
 
         buttonPuntsRecollida.setBackground(new java.awt.Color(51, 102, 255));

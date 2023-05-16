@@ -17,30 +17,20 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import residueix.residueixapp.models.Usuari;
-import residueix.residueixapp.residus.PantallaModificarResidu;
-import residueix.residueixapp.residus.PantallaModificarTipusResidu;
 import residueix.residueixapp.utils.Api;
+import residueix.residueixapp.utils.xifratParaulaClau;
 
 /**
  * Classe TestModificarResidu per proves en la pantalla de modificació residu
  * @author Daniel Garcia Ruiz
- * @version 19/04/2023
+ * @version 16/05/2023
  */
 public class TestModificarResidu {
-    
-    /**
-     * Instància de la classe PantallaPrincipal
-     */
-    static PantallaModificarResidu pmr;
-    
+
     /**
      * Instància d'usuari
      */
     static Usuari usuari;
-    /**
-     * File per les proves d'alta d'imatges
-     */
-    static File imatge;
     /**
      * Id del tipus creat.
      */
@@ -49,10 +39,11 @@ public class TestModificarResidu {
     /**
      * Métode Beforeclass per inicialitzar les classes necessàries per les proves
      * @throws java.lang.InterruptedException
+     * @throws Exception
      */
     @BeforeClass
-    public static void beforeClass() throws InterruptedException, IOException{
-        JSONObject jsonUser = Api.login("danisvh@gmail.com", "danisvh1");
+    public static void beforeClass() throws InterruptedException, Exception{
+        JSONObject jsonUser = Api.login("danisvh@gmail.com", xifratParaulaClau.encrypt("danisvh1"));
         TestModificarResidu.usuari = new Usuari(jsonUser.getInt("id"),jsonUser.getInt("tipus"),jsonUser.getString("tipus_nom"),jsonUser.getString("email"),jsonUser.getString("password"),jsonUser.getString("nom"),jsonUser.getString("cognom1"),jsonUser.getString("cognom2"),jsonUser.getString("telefon"),jsonUser.getString("token")); 
         Thread.sleep(1000);
     }
@@ -102,10 +93,10 @@ public class TestModificarResidu {
     
     /**
      * Mètode modificarResiduCorrecte quan modifiquem un residu correcte
+     * @throws IOException
      */
     @Test
     public void modificarResiduCorrecte() throws IOException{
-        pmr = new PantallaModificarResidu(usuari,Integer.parseInt(id));
         JSONObject jsonObject = (JSONObject) Api.modificacioResidu(usuari,Integer.parseInt(id),"1","jUnit Prova 2","jUnit Prova 2","0.001", carregarImatge(),"1");
         String esp = "0";
         String res = jsonObject.getString("codi_error");
@@ -114,10 +105,10 @@ public class TestModificarResidu {
     
     /**
      * Mètode modificarResiduCorrecteSenseImatge quan modifiquem un residu correcte sense Imatge
+     * @throws IOException
      */
     @Test
     public void modificarResiduCorrecteSenseImatge() throws IOException{
-        pmr = new PantallaModificarResidu(usuari,Integer.parseInt(id));
         JSONObject jsonObject = (JSONObject) Api.modificacioResidu(usuari,Integer.parseInt(id),"1","jUnit Prova 2","jUnit Prova 2","0.001", null,"1");
         String esp = "0";
         String res = jsonObject.getString("codi_error");
@@ -126,10 +117,10 @@ public class TestModificarResidu {
     
     /**
      * Mètode modificaResiduIncorrecteSenseParametres quan modifiquem un residu incorrecte sense algun paràmetre
+     * @throws IOException
      */
     @Test
     public void modificaResiduIncorrecteSenseParametres() throws IOException{
-        pmr = new PantallaModificarResidu(usuari,Integer.parseInt(id));
         JSONObject jsonObject = (JSONObject) Api.modificacioResidu(usuari,Integer.parseInt(id),"1","","jUnit Prova 2","0.001", null,"1");
         String esp = "residu_13";
         String res = jsonObject.getString("codi_error");
@@ -138,10 +129,10 @@ public class TestModificarResidu {
     
     /**
      * Mètode llistatTipusResidusCorrecte quan demanem el llistat de tipus de residu per els combos
+     * @throws IOException
      */
     @Test
     public void llistatTipusResidusCorrecte() throws IOException{
-        pmr = new PantallaModificarResidu(usuari,Integer.parseInt(id));
         JSONObject jsonObject = (JSONObject) Api.llistatTipusResidu(usuari);
         String esp = "0";
         String res = jsonObject.getString("codi_error");
@@ -150,10 +141,10 @@ public class TestModificarResidu {
     
     /**
      * Mètode consultaResiduCorrecte quan demanem la info del residu per omplir el formulari
+     * @throws IOException
      */
     @Test
     public void consultaResiduCorrecte() throws IOException{
-        pmr = new PantallaModificarResidu(usuari,Integer.parseInt(id));
         JSONObject jsonObject = (JSONObject) Api.consultaResidu(usuari, Integer.parseInt(id));
         String esp = "0";
         String res = jsonObject.getString("codi_error");

@@ -16,29 +16,20 @@ import static org.junit.Assert.assertEquals;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import residueix.residueixapp.models.Usuari;
-import residueix.residueixapp.residus.PantallaAltaResidu;
 import residueix.residueixapp.utils.Api;
+import residueix.residueixapp.utils.xifratParaulaClau;
 
 /**
  * Classe TestAltaResidus per proves en la pantalla de alta residus
  * @author Daniel Garcia Ruiz
- * @version 19/04/2023
+ * @version 16/05/2023
  */
 public class TestAltaResidus {
-    
-    /**
-     * Instància de la classe PantallaPrincipal
-     */
-    static PantallaAltaResidu par;
-    
+      
     /**
      * Instància d'usuari
      */
     static Usuari usuari;
-    /**
-     * File per les proves d'alta d'imatges
-     */
-    static File imatge;
     /**
      * Id del tipus creat.
      */
@@ -47,13 +38,13 @@ public class TestAltaResidus {
     /**
      * Métode Beforeclass per inicialitzar les classes necessàries per les proves
      * @throws java.lang.InterruptedException
+     * @throws Exception
      */
     @BeforeClass
-    public static void beforeClass() throws InterruptedException{
-        JSONObject jsonUser = Api.login("danisvh@gmail.com", "danisvh1");
+    public static void beforeClass() throws InterruptedException, Exception{
+        JSONObject jsonUser = Api.login("danisvh@gmail.com", xifratParaulaClau.encrypt("danisvh1"));
         TestAltaResidus.usuari = new Usuari(jsonUser.getInt("id"),jsonUser.getInt("tipus"),jsonUser.getString("tipus_nom"),jsonUser.getString("email"),jsonUser.getString("password"),jsonUser.getString("nom"),jsonUser.getString("cognom1"),jsonUser.getString("cognom2"),jsonUser.getString("telefon"),jsonUser.getString("token")); 
         Thread.sleep(1000);
-        par = new PantallaAltaResidu(usuari);
     }
     
     /**
@@ -91,6 +82,7 @@ public class TestAltaResidus {
     
     /**
      * Mètode altaResiduCorrecte quan donem d'alta un residu correcte
+     * @throws IOException
      */
     @Test
     public void altaResiduCorrecte() throws IOException{
@@ -103,6 +95,7 @@ public class TestAltaResidus {
     
     /**
      * Mètode altaResiduIncorrecteSenseParametres quan donem d'alta un residu incorrecte perquè no hi ha algun paràmetre
+     * @throws IOException
      */
     @Test
     public void altaResiduIncorrecteSenseParametres() throws IOException{
@@ -114,6 +107,7 @@ public class TestAltaResidus {
     
      /**
      * Mètode altaResiduIncorrecteSenseImatge quan donem d'alta un residu incorrecte perquè no hi ha imatge
+     * @throws IOException
      */
     @Test
     public void altaResiduIncorrecteSenseImatge() throws IOException{
@@ -125,6 +119,7 @@ public class TestAltaResidus {
     
      /**
      * Mètode llistatTipusResidusCorrecte quan demanem el llistat de tipus de residu per els combos
+     * @throws IOException
      */
     @Test
     public void llistatTipusResidusCorrecte() throws IOException{

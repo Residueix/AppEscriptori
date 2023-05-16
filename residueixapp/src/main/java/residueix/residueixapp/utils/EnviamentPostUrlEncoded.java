@@ -66,8 +66,6 @@ public class EnviamentPostUrlEncoded {
             }
             // Calculem els bytes
             byte[] postBytes = postData.toString().getBytes("UTF-8");
-            
-            // Obrim la connexió amb l'url i assignem configuració
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");

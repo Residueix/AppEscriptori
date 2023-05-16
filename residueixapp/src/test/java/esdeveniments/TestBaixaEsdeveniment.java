@@ -1,7 +1,6 @@
 package esdeveniments;
 
 // Imports
-import static esdeveniments.TestModificarEsdeveniment.usuari;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -30,18 +29,9 @@ import residueix.residueixapp.utils.xifratParaulaClau;
 public class TestBaixaEsdeveniment {
     
     /**
-     * Instància de la classe PantallaPrincipal
-     */
-    static PantallaBaixaEsdeveniment pbe;
-    
-    /**
      * Instància d'usuari
      */
     static Usuari usuari;
-    /**
-     * File per les proves d'alta d'imatges
-     */
-    static File imatge;
     /**
      * Id del tipus creat.
      */
@@ -108,7 +98,6 @@ public class TestBaixaEsdeveniment {
      */
     @Test
     public void baixaEsdevenimentCorrecte() throws IOException{
-        pbe = new PantallaBaixaEsdeveniment(usuari,Integer.parseInt(id));
         JSONObject jsonObject = (JSONObject) Api.baixaEsdeveniment(usuari, Integer.parseInt(id));
         String esp = "0";
         String res = jsonObject.getString("codi_error");
@@ -121,7 +110,6 @@ public class TestBaixaEsdeveniment {
      */
     @Test
     public void baixaEsdevenimentIncorrecte() throws IOException{
-        pbe = new PantallaBaixaEsdeveniment(usuari,Integer.parseInt(id));
         JSONObject jsonObject = (JSONObject) Api.baixaEsdeveniment(usuari, -1);
         String esp = "esdeveniments_7";
         String res = jsonObject.getString("codi_error");

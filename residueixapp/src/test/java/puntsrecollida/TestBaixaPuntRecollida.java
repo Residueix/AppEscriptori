@@ -17,29 +17,20 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import residueix.residueixapp.models.Usuari;
-import residueix.residueixapp.puntsrecollida.PantallaBaixaPuntRecollida;
 import residueix.residueixapp.utils.Api;
+import residueix.residueixapp.utils.xifratParaulaClau;
 
 /**
  * Classe TestBaixaPuntRecollida per proves en la pantalla de baixa punts de recollida
  * @author Daniel Garcia Ruiz
- * @version 19/04/2023
+ * @version 16/05/2023
  */
 public class TestBaixaPuntRecollida {
-    
-    /**
-     * Instància de la classe PantallaPrincipal
-     */
-    static PantallaBaixaPuntRecollida pbpr;
     
     /**
      * Instància d'usuari
      */
     static Usuari usuari;
-    /**
-     * File per les proves d'alta d'imatges
-     */
-    static File imatge;
     /**
      * Id del tipus creat.
      */
@@ -48,10 +39,11 @@ public class TestBaixaPuntRecollida {
     /**
      * Métode Beforeclass per inicialitzar les classes necessàries per les proves
      * @throws java.lang.InterruptedException
+     * @throws Exception
      */
     @BeforeClass
-    public static void beforeClass() throws InterruptedException, IOException{
-        JSONObject jsonUser = Api.login("danisvh@gmail.com", "danisvh1");
+    public static void beforeClass() throws InterruptedException, Exception{
+        JSONObject jsonUser = Api.login("danisvh@gmail.com", xifratParaulaClau.encrypt("danisvh1"));
         TestBaixaPuntRecollida.usuari = new Usuari(jsonUser.getInt("id"),jsonUser.getInt("tipus"),jsonUser.getString("tipus_nom"),jsonUser.getString("email"),jsonUser.getString("password"),jsonUser.getString("nom"),jsonUser.getString("cognom1"),jsonUser.getString("cognom2"),jsonUser.getString("telefon"),jsonUser.getString("token")); 
         Thread.sleep(1000);
     }
@@ -100,11 +92,11 @@ public class TestBaixaPuntRecollida {
     }
     
     /**
-     * Mètode baixaTipusResiduCorrecte quan donem de baixa un tipus residu correcte
+     * Mètode baixaPuntCorrecte quan donem de baixa un punt de recollida
+     * @throws IOException 
      */
     @Test
     public void baixaPuntCorrecte() throws IOException{
-        pbpr = new PantallaBaixaPuntRecollida(usuari,Integer.parseInt(id));
         JSONObject jsonObject = (JSONObject) Api.baixaPunt(usuari, Integer.parseInt(id));
         String esp = "0";
         String res = jsonObject.getString("codi_error");
@@ -114,10 +106,10 @@ public class TestBaixaPuntRecollida {
     
     /**
      * Mètode baixaPuntIncorrecte quan donem de baixa un punt de recollida incorrecte
+     * @throws IOException 
      */
     @Test
     public void baixaPuntIncorrecte() throws IOException{
-        pbpr = new PantallaBaixaPuntRecollida(usuari,-1);
         JSONObject jsonObject = (JSONObject) Api.baixaPunt(usuari, -1);
         String esp = "punts_recollida_11";
         String res = jsonObject.getString("codi_error");
@@ -127,6 +119,7 @@ public class TestBaixaPuntRecollida {
     
     /**
      * Mètode consultaPuntRecollida quan consultem les dades d'un punt de recollida específic
+     * @throws IOException
      */
     @Test
     public void consultaPuntRecollida() throws IOException{

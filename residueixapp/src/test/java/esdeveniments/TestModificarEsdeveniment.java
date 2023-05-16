@@ -16,7 +16,6 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import residueix.residueixapp.esdeveniments.PantallaModificarEsdeveniment;
 import residueix.residueixapp.models.Usuari;
 import residueix.residueixapp.utils.Api;
 import residueix.residueixapp.utils.xifratParaulaClau;
@@ -24,15 +23,10 @@ import residueix.residueixapp.utils.xifratParaulaClau;
 /**
  * Classe TestModificarEsdeveniment per proves en la pantalla de modificacio esdeveniments
  * @author Daniel Garcia Ruiz
- * @version 13/05/2023
+ * @version 15/05/2023
  */
 public class TestModificarEsdeveniment {
-    
-    /**
-     * Instància de la classe PantallaPrincipal
-     */
-    static PantallaModificarEsdeveniment pme;
-    
+        
     /**
      * Instància d'usuari
      */

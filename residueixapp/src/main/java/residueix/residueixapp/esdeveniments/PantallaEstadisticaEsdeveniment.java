@@ -36,15 +36,7 @@ public class PantallaEstadisticaEsdeveniment extends javax.swing.JFrame {
      * Posició y del ratolí.
      */
     private int yMouse;  
-    /**
-     * Llistat de tipus d'usuari.
-     */
-    private ArrayList<String[]> llistatAssistents = new ArrayList<String[]>();
-    /**
-     * Imatge del residu.
-     */
-    private File imatge;
-    /**
+     /**
      * Esdeveniment id
      */
     private static int idEsdeveniment;  
@@ -217,7 +209,7 @@ public class PantallaEstadisticaEsdeveniment extends javax.swing.JFrame {
                 }
                 dataset.setValue("Disponibles",aforament);
                 
-                // Create a chart
+                // Crear el chart
                     JFreeChart chart = ChartFactory.createPieChart(
                      "Assistents", // Chart title
                         dataset, // Dataset
@@ -226,19 +218,12 @@ public class PantallaEstadisticaEsdeveniment extends javax.swing.JFrame {
                      false // Do not include URLs
                     );
                     
-                     // Display the chart
-                     /*
-                    ChartFrame frame = new ChartFrame("Assistents", chart);
-                    frame.pack();
-                    frame.setVisible(true);
-                     */
-                     
-                     // Set the chart to the ChartPanel
-    ChartPanel chartPanel = new ChartPanel(chart);
-    panelGrafic.add(chartPanel);
-    //chartPanel.setSize(panelGrafic.getSize());
-    chartPanel.setPreferredSize(panelGrafic.getSize());
-    chartPanel.setVisible(true);
+                    // Posem el chart al panell
+                    ChartPanel chartPanel = new ChartPanel(chart);
+                    panelGrafic.add(chartPanel);
+                    //chartPanel.setSize(panelGrafic.getSize());
+                    chartPanel.setPreferredSize(panelGrafic.getSize());
+                    chartPanel.setVisible(true);
                 
             }else{
                 problemes += "Hi ha problemes amb la consulta dels assistents:  " + jsonAssistents.get("codi_error").toString() + " - " + jsonAssistents.get("error").toString() ;                 
@@ -890,6 +875,9 @@ public class PantallaEstadisticaEsdeveniment extends javax.swing.JFrame {
     * Panel per tenir el contingut de la pantalla.
     */
     private javax.swing.JPanel panelContingut;
+    /**
+    * jpanel per contenir el gràfic
+    */
     private javax.swing.JPanel panelGrafic;
     /**
     * Panel per tenir les opcions.

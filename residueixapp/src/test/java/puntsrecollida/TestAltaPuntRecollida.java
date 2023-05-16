@@ -16,29 +16,20 @@ import static org.junit.Assert.assertEquals;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import residueix.residueixapp.models.Usuari;
-import residueix.residueixapp.puntsrecollida.PantallaAltaPuntRecollida;
 import residueix.residueixapp.utils.Api;
+import residueix.residueixapp.utils.xifratParaulaClau;
 
 /**
  * Classe TestAltaPuntRecollida per proves en la pantalla de alta punts de recolida
  * @author Daniel Garcia Ruiz
- * @version 19/04/2023
+ * @version 16/05/2023
  */
 public class TestAltaPuntRecollida {
-    
-    /**
-     * Instància de la classe PantallaPrincipal
-     */
-    static PantallaAltaPuntRecollida papr;
     
     /**
      * Instància d'usuari
      */
     static Usuari usuari;
-    /**
-     * File per les proves d'alta d'imatges
-     */
-    static File imatge;
     /**
      * Id del tipus creat.
      */
@@ -47,19 +38,18 @@ public class TestAltaPuntRecollida {
     /**
      * Métode Beforeclass per inicialitzar les classes necessàries per les proves
      * @throws java.lang.InterruptedException
+     * @throws Exception
      */
     @BeforeClass
-    public static void beforeClass() throws InterruptedException{
-        JSONObject jsonUser = Api.login("danisvh@gmail.com", "danisvh1");
-        
+    public static void beforeClass() throws InterruptedException, Exception{
+        JSONObject jsonUser = Api.login("danisvh@gmail.com", xifratParaulaClau.encrypt("danisvh1"));
         System.out.println("JSON USER" + jsonUser.toString());
         TestAltaPuntRecollida.usuari = new Usuari(jsonUser.getInt("id"),jsonUser.getInt("tipus"),jsonUser.getString("tipus_nom"),jsonUser.getString("email"),jsonUser.getString("password"),jsonUser.getString("nom"),jsonUser.getString("cognom1"),jsonUser.getString("cognom2"),jsonUser.getString("telefon"),jsonUser.getString("token")); 
         Thread.sleep(1000);
-        papr = new PantallaAltaPuntRecollida(usuari);
     }
     
     /**
-     * Mètode before per executar desrpés de cada test
+     * Mètode before per executar després de cada test
      * @throws IOException 
      */
     @After
@@ -93,6 +83,7 @@ public class TestAltaPuntRecollida {
     
     /**
      * Mètode llistatPoblacions per carregar les poblacions al combobox
+     * @throws IOException
      */
     @Test
     public void llistatPoblacions() throws IOException{
@@ -105,6 +96,7 @@ public class TestAltaPuntRecollida {
     
     /**
      * Mètode altaResiduCorrecte quan donem d'alta un residu correcte
+     * @throws IOException
      */
     @Test
     public void altaPuntCorrecte() throws IOException{
@@ -117,6 +109,7 @@ public class TestAltaPuntRecollida {
     
     /**
      * Mètode altaPuntCorrecteCampsObligatoris quan donem d'alta un residu correcte però només amb les dades obligatories.
+     * @throws IOException
      */
     @Test
     public void altaPuntCorrecteCampsObligatoris() throws IOException{
@@ -129,6 +122,7 @@ public class TestAltaPuntRecollida {
     
     /**
      * Mètode altaResiduCorrecte quan donem d'alta un residu incorrecte (sense paràmetres)
+     * @throws IOException
      */
     @Test
     public void altaIncorrecte() throws IOException{
